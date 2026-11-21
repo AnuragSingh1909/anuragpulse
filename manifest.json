@@ -1,0 +1,18 @@
+{
+  "name": "AnuragPulse Pro",
+  "short_name": "AnuragPulse",
+  "description": "Intraday Options Screener, FII/DII Radar & Upstox Auto-Trade Terminal",
+  "start_url": "/anuragpulse/Index.html",
+  "scope": "/anuragpulse/",
+  "display": "standalone",
+  "background_color": "#070b14",
+  "theme_color": "#070b14",
+  "icons": [
+    {
+      "src": "https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Chart%20increasing/3D/chart_increasing_3d.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
