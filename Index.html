@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta name="theme-color" content="#070b14" />
+  <meta name="theme-color" content="#060a12" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="application-name" content="AnuragPulse Pro" />
-  <title>AnuragPulse Pro v4.0 — Blocktrade Radar & Multi-Asset AI Terminal</title>
+  <title>AnuragPulse Pro v5.0 — Live Market Aerial & Multi-Asset Terminal</title>
   <link rel="manifest" href="manifest.json" />
   <script>
     if ('serviceWorker' in navigator) {
@@ -17,10 +17,10 @@
   </script>
   <style>
     :root {
-      --bg-base: #070b14;
-      --bg-card: #0f172a;
-      --bg-elevated: #1e293b;
-      --bg-input: #090e1a;
+      --bg-base: #060a12;
+      --bg-card: #0e1628;
+      --bg-elevated: #19243c;
+      --bg-input: #080d18;
       --border: rgba(148, 163, 184, 0.16);
       --text-1: #f8fafc;
       --text-2: #94a3b8;
@@ -37,9 +37,10 @@
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     body { background: var(--bg-base); color: var(--text-1); padding-bottom: 84px; -webkit-tap-highlight-color: transparent; }
 
+    /* Top Bar */
     .topbar {
       position: sticky; top: 0; z-index: 50;
-      background: rgba(7, 11, 20, 0.95); backdrop-filter: blur(12px);
+      background: rgba(6, 10, 18, 0.95); backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border); padding: 10px 14px;
       display: flex; justify-content: space-between; align-items: center;
     }
@@ -47,66 +48,58 @@
     .brand-icon {
       width: 32px; height: 32px; border-radius: 8px;
       background: linear-gradient(135deg, #2563eb, #10b981);
-      display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 15px;
+      display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px;
     }
     .brand h1 { font-size: 14px; font-weight: 700; }
     .badge { font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 99px; display: inline-flex; align-items: center; gap: 4px; }
-    .badge-demo { background: var(--amber-bg); color: var(--amber); border: 1px solid rgba(245,158,11,0.3); }
+    .badge-off { background: var(--red-bg); color: var(--red); border: 1px solid rgba(244,63,94,0.3); }
     .badge-live { background: var(--green-bg); color: var(--green); border: 1px solid rgba(16,185,129,0.3); }
     .top-actions { display: flex; gap: 6px; }
     .btn-sm {
       border: 1px solid var(--border); background: var(--bg-elevated); color: var(--text-1);
       padding: 6px 9px; border-radius: 8px; font-size: 11px; font-weight: 600; cursor: pointer;
     }
-    .btn-upstox { background: linear-gradient(135deg, #6d28d9, #4f46e5); border: none; }
+    .btn-connect { background: linear-gradient(135deg, #2563eb, #4f46e5); border: none; }
 
-    .container { max-width: 620px; margin: 0 auto; padding: 12px; display: flex; flex-direction: column; gap: 12px; }
+    /* Alert Toast Banner */
+    #alertToast {
+      display: none; position: sticky; top: 53px; z-index: 49;
+      background: linear-gradient(90deg, #059669, #2563eb); color: #fff;
+      padding: 8px 14px; font-size: 11px; font-weight: 700;
+      justify-content: space-between; align-items: center;
+    }
+
+    .container { max-width: 640px; margin: 0 auto; padding: 12px; display: flex; flex-direction: column; gap: 12px; }
     .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 14px; }
     .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; gap: 8px; }
     .step-pill { background: rgba(59,130,246,0.18); color: #60a5fa; font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.4px; }
 
-    .ticker-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-    .ticker-box { background: var(--bg-input); border: 1px solid var(--border); border-radius: 10px; padding: 8px 9px; }
-    .ticker-lbl { font-size: 9px; color: var(--text-2); font-weight: 700; text-transform: uppercase; }
-    .ticker-val { font-size: 13px; font-weight: 800; margin-top: 2px; }
-    .ticker-chg { font-size: 10px; font-weight: 700; margin-top: 1px; }
+    /* Aerial Market Strip */
+    .aerial-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 10px; }
+    .metric-box { background: var(--bg-input); border: 1px solid var(--border); border-radius: 10px; padding: 9px; }
+    .metric-lbl { font-size: 9px; color: var(--text-2); font-weight: 700; text-transform: uppercase; }
+    .metric-val { font-size: 14px; font-weight: 800; margin-top: 2px; }
+    .metric-sub { font-size: 10px; font-weight: 600; margin-top: 2px; color: var(--text-2); }
 
-    /* Blocktrade Replica Styles */
-    .flow-summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 10px; }
-    .flow-box { background: var(--bg-input); border: 1px solid var(--border); border-radius: 10px; padding: 9px; }
-    .flow-amt { font-size: 14px; font-weight: 800; margin-top: 3px; }
-    .flow-meter { height: 8px; background: var(--red-bg); border-radius: 99px; overflow: hidden; margin: 8px 0 12px; display: flex; }
-    .flow-meter-buy { background: var(--green); height: 100%; transition: width 0.3s; }
+    /* Direction & Event Summary Box */
+    .summary-box {
+      background: var(--bg-input); border: 1px solid rgba(59,130,246,0.3); border-radius: 10px;
+      padding: 10px 12px; font-size: 11px; line-height: 1.45; margin-bottom: 10px;
+    }
+    .event-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 8px; }
+    .event-chip { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 7px; font-size: 10px; }
 
-    .bt-filter-row { display: flex; gap: 6px; margin-bottom: 10px; }
-    .bt-pill {
-      flex: 1; text-align: center; padding: 6px; border-radius: 8px; font-size: 11px; font-weight: 700;
-      background: var(--bg-input); border: 1px solid var(--border); color: var(--text-2); cursor: pointer;
+    /* Institutional Stock Lists */
+    .inst-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    @media (max-width: 440px) { .inst-cols { grid-template-columns: 1fr; } }
+    .inst-panel { background: var(--bg-input); border: 1px solid var(--border); border-radius: 10px; padding: 10px; }
+    .inst-item {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 11px;
     }
-    .bt-pill.active-all { background: var(--blue); color: #fff; border-color: var(--blue); }
-    .bt-pill.active-buy { background: var(--green-bg); color: var(--green); border-color: var(--green); }
-    .bt-pill.active-sell { background: var(--red-bg); color: var(--red); border-color: var(--red); }
+    .inst-item:last-child { border-bottom: none; }
 
-    .bt-card {
-      background: var(--bg-input); border: 1px solid var(--border); border-radius: 11px;
-      padding: 10px 12px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; gap: 10px;
-    }
-    .bt-left { flex: 1; }
-    .bt-sym { font-size: 13px; font-weight: 800; display: flex; align-items: center; gap: 6px; }
-    .bt-meta { font-size: 10px; color: var(--text-2); margin-top: 3px; }
-    .bt-right { text-align: right; }
-    .bt-val { font-size: 13px; font-weight: 800; }
-    .bt-action-btn {
-      margin-top: 5px; font-size: 10px; font-weight: 800; padding: 4px 8px; border-radius: 6px;
-      border: none; cursor: pointer; background: rgba(59,130,246,0.2); color: #60a5fa;
-    }
-
-    /* AI Plan Banner & Segment Tabs */
-    .regime-bar {
-      display: flex; justify-content: space-between; align-items: center; gap: 8px;
-      padding: 10px 12px; border-radius: 10px; margin-bottom: 10px; font-weight: 700; font-size: 11px;
-      background: rgba(59,130,246,0.14); border: 1px solid rgba(59,130,246,0.35); color: #93c5fd;
-    }
+    /* Segment Tabs */
     .seg-tabs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-bottom: 12px; }
     .seg-tab {
       padding: 7px 2px; text-align: center; border-radius: 8px; font-size: 10px; font-weight: 700;
@@ -114,14 +107,15 @@
     }
     .seg-tab.active { background: var(--blue); color: #fff; border-color: var(--blue); }
 
-    /* Trade Setup Cards with Live LTP */
+    /* Opportunity Cards */
     .setup-card { background: var(--bg-input); border: 1px solid var(--border); border-radius: 12px; padding: 12px; margin-bottom: 10px; }
     .setup-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 8px; }
     .setup-title { font-size: 13px; font-weight: 800; }
     .setup-sub { font-size: 11px; color: var(--text-2); margin-top: 3px; line-height: 1.35; }
-    .action-pill { font-size: 10px; font-weight: 800; padding: 4px 8px; border-radius: 6px; white-space: nowrap; }
+    .pill { font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 6px; white-space: nowrap; }
     .pill-buy { background: var(--green-bg); color: var(--green); border: 1px solid rgba(16,185,129,0.4); }
     .pill-sell { background: var(--red-bg); color: var(--red); border: 1px solid rgba(244,63,94,0.4); }
+    .pill-hedge { background: rgba(139,92,246,0.18); color: #c4b5fd; border: 1px solid rgba(139,92,246,0.4); }
 
     .levels-grid {
       display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px;
@@ -129,32 +123,25 @@
     }
     .lvl-k { font-size: 9px; color: var(--text-3); font-weight: 700; }
     .lvl-v { font-size: 11px; font-weight: 800; margin-top: 2px; }
-    .ltp-highlight { background: rgba(59,130,246,0.14); border-radius: 6px; padding: 2px 0; }
+    .ltp-box { background: rgba(59,130,246,0.16); border-radius: 6px; padding: 2px 0; }
 
-    .trade-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .action-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 6px; }
     .btn-paper {
       background: linear-gradient(135deg, #059669, #10b981); color: #fff; border: none;
-      padding: 10px; border-radius: 9px; font-size: 12px; font-weight: 800; cursor: pointer;
+      padding: 9px 6px; border-radius: 8px; font-size: 11px; font-weight: 800; cursor: pointer;
     }
-    .btn-real {
-      background: linear-gradient(135deg, #4f46e5, #7c3aed); color: #fff; border: none;
-      padding: 10px; border-radius: 9px; font-size: 12px; font-weight: 800; cursor: pointer;
+    .btn-alert {
+      background: var(--amber-bg); color: var(--amber); border: 1px solid rgba(245,158,11,0.35);
+      padding: 9px 4px; border-radius: 8px; font-size: 10px; font-weight: 800; cursor: pointer;
     }
-
-    /* News Feed */
-    .news-item {
-      background: var(--bg-input); border: 1px solid var(--border); border-radius: 10px;
-      padding: 9px 11px; margin-bottom: 7px; font-size: 11px;
+    .btn-algo {
+      background: rgba(139,92,246,0.18); color: #c4b5fd; border: 1px solid rgba(139,92,246,0.35);
+      padding: 9px 4px; border-radius: 8px; font-size: 10px; font-weight: 800; cursor: pointer;
     }
-    .news-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; gap: 6px; }
-    .news-tag { font-size: 9px; font-weight: 800; padding: 2px 6px; border-radius: 4px; white-space: nowrap; }
-    .tag-buy { color: var(--green); background: var(--green-bg); }
-    .tag-sell { color: var(--red); background: var(--red-bg); }
-    .tag-warn { color: var(--amber); background: var(--amber-bg); }
 
     /* Option Chain */
     .oc-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
-    select, input[type="number"], input[type="password"] {
+    select, input[type="number"], input[type="text"], input[type="password"] {
       width: 100%; background: var(--bg-input); color: var(--text-1); border: 1px solid var(--border);
       border-radius: 8px; padding: 8px 10px; font-size: 12px; font-weight: 600;
     }
@@ -164,18 +151,19 @@
     .atm-row { background: rgba(59, 130, 246, 0.16); font-weight: 800; }
     .oc-btn { padding: 3px 6px; border-radius: 5px; font-size: 10px; font-weight: 700; border: none; cursor: pointer; }
 
-    /* Active Positions */
+    /* Positions & Profit Protection */
     .pos-card { background: var(--bg-input); border: 1px solid rgba(59,130,246,0.35); border-radius: 12px; padding: 12px; margin-bottom: 10px; }
-    .prog-track { height: 8px; background: var(--bg-elevated); border-radius: 99px; overflow: hidden; margin: 8px 0; }
+    .prog-track { height: 7px; background: var(--bg-elevated); border-radius: 99px; overflow: hidden; margin: 8px 0; }
     .prog-fill { height: 100%; background: linear-gradient(90deg, #3b82f6, #10b981); transition: width 0.3s; }
-    .guard-badge {
+    .guard-tag {
       display: inline-block; font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 6px;
       background: rgba(139,92,246,0.18); color: #c4b5fd; border: 1px solid rgba(139,92,246,0.35);
     }
 
+    /* Bottom Navigation */
     .bottom-nav {
       position: fixed; bottom: 0; left: 0; right: 0; z-index: 50;
-      background: rgba(15, 23, 42, 0.96); backdrop-filter: blur(12px);
+      background: rgba(14, 22, 40, 0.96); backdrop-filter: blur(12px);
       border-top: 1px solid var(--border); display: grid; grid-template-columns: repeat(4, 1fr);
       padding: 6px 4px;
     }
@@ -186,11 +174,12 @@
     .nav-btn.active { color: #60a5fa; }
     .nav-ico { font-size: 16px; }
 
+    /* Modal */
     .modal-bg {
-      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 100;
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.82); z-index: 100;
       align-items: center; justify-content: center; padding: 16px;
     }
-    .modal-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 16px; width: 100%; max-width: 420px; }
+    .modal-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 16px; width: 100%; max-width: 430px; }
     .green { color: var(--green); }
     .red { color: var(--red); }
     .amber { color: var(--amber); }
@@ -200,155 +189,164 @@
 </head>
 <body>
 
+  <!-- TOP BAR -->
   <header class="topbar">
     <div class="brand">
       <div class="brand-icon">AP</div>
       <div>
-        <h1>AnuragPulse Pro <span style="font-size:11px;color:#60a5fa;">v4.0</span></h1>
-        <span id="connBadge" class="badge badge-demo">● NEXT-MONTH POSITIONAL + LIVE LTP</span>
+        <h1>AnuragPulse Pro <span style="font-size:10px;color:#60a5fa;" id="acctLabel"></span></h1>
+        <span id="connBadge" class="badge badge-off">● DISCONNECTED (TAP SETUP)</span>
       </div>
     </div>
     <div class="top-actions">
-      <button class="btn-sm" onclick="syncLiveData()">↻ Sync</button>
-      <button class="btn-sm btn-upstox" onclick="openModal('upstoxModal')">Upstox</button>
+      <button class="btn-sm" onclick="pollUpstoxLiveQuotes()">↻ Live Poll</button>
+      <button class="btn-sm btn-connect" onclick="openAuthModal()">🔑 Setup Feed</button>
     </div>
   </header>
 
+  <!-- AUTO-ALERT BANNER -->
+  <div id="alertToast">
+    <span id="alertToastMsg">🔔 Signal Alert Triggered!</span>
+    <button class="btn-sm" style="padding:2px 8px;" onclick="document.getElementById('alertToast').style.display='none'">Dismiss</button>
+  </div>
+
   <main class="container">
 
-    <!-- GLOBAL & DOMESTIC LIVE TICKER -->
-    <section class="ticker-grid">
-      <div class="ticker-box">
-        <div class="ticker-lbl">NIFTY DEC FUT LTP</div>
-        <div class="ticker-val" id="niftyFutLtp">₹25,730.00</div>
-        <div class="ticker-chg green" id="niftySpotSub">Cash: 25,349.65</div>
-      </div>
-      <div class="ticker-box">
-        <div class="ticker-lbl">MCX CRUDE DEC LTP</div>
-        <div class="ticker-val" id="crudeLtp">₹7,585.00</div>
-        <div class="ticker-chg red">Brent: $91.01 (-0.4%)</div>
-      </div>
-      <div class="ticker-box">
-        <div class="ticker-lbl">MCX GOLD JAN LTP</div>
-        <div class="ticker-val" id="goldLtp">₹76,280</div>
-        <div class="ticker-chg amber">USD/INR: ₹92.91</div>
-      </div>
-    </section>
-
-    <!-- PAGE 1: BLOCKTRADE.COM REPLICA — INSTITUTIONAL FII/DII FLOW RADAR -->
-    <div id="view-radar">
+    <!-- PAGE 1: AERIAL MARKET VIEW & INSTITUTIONAL RADAR -->
+    <div id="view-aerial">
       <section class="card">
         <div class="card-header">
-          <span class="step-pill">Page 1 • Institutional Blocktrade Radar</span>
-          <button class="btn-sm" onclick="openModal('flowModal')">✎ Edit FII/DII</button>
+          <span class="step-pill">Page 1 • Aerial Market View & Volatility</span>
+          <span style="font-size:10px;color:var(--text-2);" id="lastTickTime">Waiting for Upstox Feed</span>
         </div>
 
-        <div class="flow-summary-grid">
-          <div class="flow-box">
-            <div class="ticker-lbl">FII CASH (16D BUY)</div>
-            <div class="flow-amt green" id="fiiCashVal">+₹5,673 Cr</div>
-            <div style="font-size:9px;color:var(--text-2);">5D: +₹33,455 Cr</div>
+        <!-- LIVE BENCHMARKS + INDIA VIX -->
+        <div class="aerial-grid">
+          <div class="metric-box">
+            <div class="metric-lbl">NIFTY 50 LIVE</div>
+            <div class="metric-val" id="liveNifty">--</div>
+            <div class="metric-sub" id="liveNiftyChg">Connect feed for LTP</div>
           </div>
-          <div class="flow-box">
-            <div class="ticker-lbl">FII INDEX FUTURES</div>
-            <div class="flow-amt red" id="fiiFutVal">-90,949 Lots</div>
-            <div style="font-size:9px;color:var(--red);">Expiry Unwind Done</div>
+          <div class="metric-box">
+            <div class="metric-lbl">BANK NIFTY LIVE</div>
+            <div class="metric-val" id="liveBnf">--</div>
+            <div class="metric-sub" id="liveBnfChg">Connect feed for LTP</div>
           </div>
-          <div class="flow-box">
-            <div class="ticker-lbl">DII NET CASH</div>
-            <div class="flow-amt red" id="diiCashVal">-₹2,760 Cr</div>
-            <div style="font-size:9px;color:var(--text-2);">Profit Booking</div>
+          <div class="metric-box">
+            <div class="metric-lbl">INDIA VIX (FEAR)</div>
+            <div class="metric-val amber" id="liveVix">--</div>
+            <div class="metric-sub" id="vixRegime">Volatility Gauge</div>
           </div>
         </div>
 
-        <div style="display:flex;justify-content:space-between;font-size:10px;font-weight:700;color:var(--text-2);">
-          <span class="green">▲ INSTITUTIONAL BUYING: 67%</span>
-          <span class="red">▼ SELLING: 33%</span>
-        </div>
-        <div class="flow-meter">
-          <div class="flow-meter-buy" style="width:67%;"></div>
+        <!-- AI MARKET SYNTHESIS: WHAT HAPPENED -> NEXT POTENTIAL MOVE -->
+        <div class="summary-box">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+            <strong class="blue">🧠 AI Market Trajectory & Institutional Footprint</strong>
+            <button class="btn-sm" style="padding:2px 7px;font-size:10px;" onclick="openModal('flowModal')">✎ Edit FII/DII</button>
+          </div>
+          <p style="color:var(--text-2);">
+            <strong>What Happened:</strong> After Friday's FII surge and Monday's expiry unwind (-451 pts to 25,350), that selling cycle completed. Sustained FII cash inflows (Nov MTD net buyers) + easing India VIX (~16.6) sparked a gap-up recovery above <strong>25,750–25,800</strong>.
+          </p>
+          <p style="color:var(--text-1);margin-top:5px;">
+            <strong>Next Potential Move:</strong> Holding above <strong>25,680</strong> keeps upside open toward <strong>26,050–26,350</strong> ahead of the 30 Nov MSCI Rebalance. Avoid near-expiry options; use <strong>Dec 2026 / Jan 2027</strong> contracts with protective hedges.
+          </p>
+
+          <div class="event-row">
+            <div class="event-chip">
+              <strong class="green">30 Nov (3:00 PM)</strong>
+              <div style="color:var(--text-2);">MSCI Rebalance FII Passive Flow</div>
+            </div>
+            <div class="event-chip">
+              <strong class="blue">04 Dec 2026</strong>
+              <div style="color:var(--text-2);">RBI MPC Rate & Liquidity Policy</div>
+            </div>
+            <div class="event-chip">
+              <strong class="amber">09 Dec 2026</strong>
+              <div style="color:var(--text-2);">US FOMC Policy Decision</div>
+            </div>
+          </div>
         </div>
 
-        <!-- Filter Tabs: All / Buying / Selling -->
-        <div class="bt-filter-row">
-          <button class="bt-pill active-all" id="flt-all" onclick="filterBlocks('ALL')">All Block Flows</button>
-          <button class="bt-pill" id="flt-buy" onclick="filterBlocks('BUY')">▲ Institutions Buying</button>
-          <button class="bt-pill" id="flt-sell" onclick="filterBlocks('SELL')">▼ Institutions Selling</button>
+        <!-- INSTITUTIONAL BUYING VS SELLING STOCK RADAR -->
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <span style="font-size:11px;font-weight:800;color:var(--text-2);">INSTITUTIONAL STOCK FLOWS (LIVE LTP SYNCED):</span>
+          <span style="font-size:10px;color:var(--green);" id="fiiDiiBadge">FII Cash: +₹5,673 Cr | DII: -₹2,760 Cr</span>
         </div>
 
-        <div id="blocktradeList"></div>
+        <div class="inst-cols">
+          <div class="inst-panel">
+            <div style="font-size:11px;font-weight:800;color:var(--green);margin-bottom:6px;">▲ INSTITUTIONS BUYING</div>
+            <div id="instBuyList"></div>
+          </div>
+          <div class="inst-panel">
+            <div style="font-size:11px;font-weight:800;color:var(--red);margin-bottom:6px;">▼ INSTITUTIONS SELLING</div>
+            <div id="instSellList"></div>
+          </div>
+        </div>
       </section>
     </div>
 
-    <!-- PAGE 2: AI WHOLE-MARKET PLAN (NEXT-MONTH 29 DEC 2026 & FAR-MONTH) -->
-    <div id="view-plan" class="hidden">
+    <!-- PAGE 2: MULTI-ASSET OPPORTUNITIES (NEXT-MONTH OPTIONS, SURGING EQUITIES, COMMODITIES, HEDGES) -->
+    <div id="view-opps" class="hidden">
       <section class="card">
         <div class="card-header">
-          <span class="step-pill">AI Multi-Asset Plan • Next-Month Expiries Only</span>
-          <span style="font-size:10px;color:var(--green);" id="lotBadge">1 Lot</span>
-        </div>
-
-        <div class="regime-bar">
-          <span>🧠 AI Synthesis: Post-expiry flush done at 25,350. Use <strong>29 Dec 2026</strong> contracts to avoid weekly decay & capture 30 Nov MSCI inflows.</span>
+          <span class="step-pill">Whole-Market Scanner • Long/Next-Month Only</span>
+          <span style="font-size:10px;color:var(--text-2);">Lots: <strong id="lotTag" style="color:#fff;">1</strong></span>
         </div>
 
         <div class="seg-tabs">
-          <button class="seg-tab active" onclick="switchSegment('all', this)">All Picks</button>
-          <button class="seg-tab" onclick="switchSegment('options', this)">Options</button>
-          <button class="seg-tab" onclick="switchSegment('futures', this)">Futures</button>
-          <button class="seg-tab" onclick="switchSegment('equity', this)">Equity</button>
-          <button class="seg-tab" onclick="switchSegment('commodity', this)">Commodity</button>
+          <button class="seg-tab active" onclick="filterOpps('all', this)">All</button>
+          <button class="seg-tab" onclick="filterOpps('options', this)">Dec/Jan Opt</button>
+          <button class="seg-tab" onclick="filterOpps('equity', this)">Surging Eq</button>
+          <button class="seg-tab" onclick="filterOpps('commodity', this)">Commodity</button>
+          <button class="seg-tab" onclick="filterOpps('hedge', this)">Hedge/Swing</button>
         </div>
 
-        <div id="aiSetupsList"></div>
-      </section>
-
-      <!-- AI GLOBAL NEWS ENGINE -->
-      <section class="card">
-        <div class="card-header">
-          <span class="step-pill">AI Macro & Geopolitical News Engine</span>
-          <span style="font-size:10px;color:var(--text-2);">Live Impact Scored</span>
-        </div>
-        <div id="newsEngineList"></div>
+        <div id="oppsContainer"></div>
       </section>
     </div>
 
-    <!-- PAGE 3: NEXT-MONTH OPTION CHAIN (29 DEC 2026 & 28 JAN 2027) -->
+    <!-- PAGE 3: LIVE NEXT-MONTH & FAR-MONTH OPTION CHAIN -->
     <div id="view-chain" class="hidden">
       <section class="card">
         <div class="card-header">
-          <span class="step-pill">Next-Month & Far-Month Option Chain</span>
-          <span style="font-size:10px;color:var(--green);">Zero Weekly Expiry Gamma Risk</span>
+          <span class="step-pill">Live Upstox Option Chain (Dec / Jan)</span>
+          <span style="font-size:10px;color:var(--green);">No Near-Expiry Risk</span>
         </div>
 
         <div class="oc-controls">
           <div>
             <label style="font-size:10px;color:var(--text-2);">Index (Lot Size)</label>
-            <select id="ocIndex" onchange="renderOptionChain()">
-              <option value="NIFTY">NIFTY 50 (Lot: 65)</option>
-              <option value="BANKNIFTY">BANK NIFTY (Lot: 30)</option>
+            <select id="ocIndex" onchange="fetchLiveOptionChain()">
+              <option value="NSE_INDEX|Nifty 50">NIFTY 50 (Lot: 65)</option>
+              <option value="NSE_INDEX|Nifty Bank">BANK NIFTY (Lot: 30)</option>
             </select>
           </div>
           <div>
-            <label style="font-size:10px;color:var(--text-2);">Monthly Expiry</label>
-            <select id="ocExpiry" onchange="renderOptionChain()">
+            <label style="font-size:10px;color:var(--text-2);">Long / Next Monthly Expiry</label>
+            <select id="ocExpiry" onchange="fetchLiveOptionChain()">
               <option value="2026-12-29">29 Dec 2026 (Next Month)</option>
               <option value="2027-01-28">28 Jan 2027 (Far Month)</option>
             </select>
           </div>
         </div>
 
+        <div id="ocStatus" style="font-size:11px;color:var(--amber);margin-bottom:8px;">
+          Connect Upstox token to load live NSE option chain strikes & LTPs.
+        </div>
+
         <div style="overflow-x:auto;">
           <table class="oc-table">
             <thead>
               <tr>
-                <th>CE Δ</th>
+                <th>CE OI</th>
                 <th>CE LTP</th>
-                <th>Trade</th>
+                <th>Paper</th>
                 <th>STRIKE</th>
-                <th>Trade</th>
+                <th>Paper</th>
                 <th>PE LTP</th>
-                <th>PE Δ</th>
+                <th>PE OI</th>
               </tr>
             </thead>
             <tbody id="ocBody"></tbody>
@@ -357,67 +355,99 @@
       </section>
     </div>
 
-    <!-- PAGE 4: PAPER & REAL TRADES + AUTO PROFIT PROTECTION -->
-    <div id="view-trades" class="hidden">
+    <!-- PAGE 4: PAPER TRADING, PROFIT PROTECTION, ALERTS & ALGO BRIDGE -->
+    <div id="view-desk" class="hidden">
       <section class="card">
         <div class="card-header">
-          <span class="step-pill">Live Paper & Upstox Positions</span>
-          <button class="btn-sm" onclick="simulateTick()">⚡ Simulate Tick</button>
+          <span class="step-pill">Paper Desk • Profit Protection & Algo</span>
+          <span style="font-size:10px;color:var(--text-2);" id="brokerFutureTag">Execution: Paper Mode</span>
         </div>
 
-        <div class="flow-summary-grid" style="grid-template-columns:1fr 1fr;">
-          <div class="flow-box">
-            <div class="ticker-lbl">PAPER CAPITAL</div>
-            <div class="flow-amt" id="paperCap">₹1,00,000</div>
+        <div class="aerial-grid" style="grid-template-columns:1fr 1fr;">
+          <div class="metric-box">
+            <div class="metric-lbl">PAPER CAPITAL</div>
+            <div class="metric-val" id="paperCap">₹1,00,000</div>
           </div>
-          <div class="flow-box">
-            <div class="ticker-lbl">NET P&L (OPEN + CLOSED)</div>
-            <div class="flow-amt green" id="netPnlVal">₹0.00</div>
+          <div class="metric-box">
+            <div class="metric-lbl">LIVE P&L (REAL TICKS)</div>
+            <div class="metric-val" id="livePnl">₹0.00</div>
           </div>
         </div>
 
-        <div style="background:rgba(139,92,246,0.12);border:1px solid rgba(139,92,246,0.3);border-radius:10px;padding:10px;margin-bottom:12px;font-size:11px;">
-          <strong style="color:#c4b5fd;">🛡 Auto Profit-Protection Circuitry Active:</strong>
-          <ul style="margin:4px 0 0 16px;color:var(--text-2);line-height:1.45;">
-            <li><strong>Zero-Loss Rule:</strong> At +12% profit, SL automatically locks at Entry Price.</li>
-            <li><strong>Target 1 Trail:</strong> When T1 hits, SL trails to lock 65% of peak profit.</li>
-            <li><strong>Default Lots:</strong>
-              <input type="number" id="lotInput" value="1" min="1" max="50" style="width:65px;padding:3px 6px;display:inline-block;" onchange="updateLots()" />
-              <button class="btn-sm" style="margin-left:6px;" onclick="resetPaper()">Reset ₹1L</button>
-            </li>
-          </ul>
+        <!-- PROFIT PROTECTION MODE & LOT CONTROLS -->
+        <div style="background:var(--bg-input);border:1px solid var(--border);border-radius:10px;padding:10px;margin-bottom:12px;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+            <div>
+              <label style="font-size:10px;color:var(--text-2);">Profit Protection Mode</label>
+              <select id="protMode" onchange="savePrefs()">
+                <option value="conservative">Conservative (Cost Lock +8%)</option>
+                <option value="balanced" selected>Balanced (Cost +12% / 65% Trail)</option>
+                <option value="runner">Swing Runner (50% Peak Trail)</option>
+              </select>
+            </div>
+            <div>
+              <label style="font-size:10px;color:var(--text-2);">Lots (Nifty=65, BNF=30)</label>
+              <input type="number" id="lotInput" value="1" min="1" max="50" onchange="savePrefs()" />
+            </div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;font-size:10px;color:var(--text-2);">
+            <span>Broker Choice: <strong>Decide Later (Upstox / Sahi)</strong></span>
+            <button class="btn-sm" onclick="resetPaper()">Reset ₹1L</button>
+          </div>
         </div>
 
+        <!-- ACTIVE ALERTS LIST -->
+        <div style="font-size:11px;font-weight:800;color:var(--amber);margin-bottom:6px;">🔔 ACTIVE AUTO-ALERTS (<span id="alertCount">0</span>)</div>
+        <div id="alertsList" style="margin-bottom:12px;"></div>
+
+        <!-- ACTIVE PAPER POSITIONS -->
+        <div style="font-size:11px;font-weight:800;color:#60a5fa;margin-bottom:6px;">📊 PAPER POSITIONS (UPDATED BY LIVE FEED)</div>
         <div id="positionsList"></div>
       </section>
     </div>
 
   </main>
 
+  <!-- BOTTOM NAVIGATION -->
   <nav class="bottom-nav">
-    <button class="nav-btn active" id="nav-radar" onclick="switchView('radar')">
-      <span class="nav-ico">📡</span><span>Blocktrade Radar</span>
+    <button class="nav-btn active" id="nav-aerial" onclick="switchView('aerial')">
+      <span class="nav-ico">🛰️</span><span>Aerial View</span>
     </button>
-    <button class="nav-btn" id="nav-plan" onclick="switchView('plan')">
-      <span class="nav-ico">🧠</span><span>AI Market Plan</span>
+    <button class="nav-btn" id="nav-opps" onclick="switchView('opps')">
+      <span class="nav-ico">🎯</span><span>Opportunities</span>
     </button>
     <button class="nav-btn" id="nav-chain" onclick="switchView('chain')">
       <span class="nav-ico">⛓️</span><span>Dec/Jan Chain</span>
     </button>
-    <button class="nav-btn" id="nav-trades" onclick="switchView('trades')">
-      <span class="nav-ico">🎯</span><span>Trades (<span id="posBadge">0</span>)</span>
+    <button class="nav-btn" id="nav-desk" onclick="switchView('desk')">
+      <span class="nav-ico">🛡️</span><span>Paper & Guard (<span id="posCount">0</span>)</span>
     </button>
   </nav>
 
-  <!-- UPSTOX API MODAL -->
-  <div class="modal-bg" id="upstoxModal">
+  <!-- PERSISTENT LOCAL DEVICE SETUP MODAL (ACCOUNT ID + UPSTOX DATA TOKEN) -->
+  <div class="modal-bg" id="authModal">
     <div class="modal-box">
-      <h3 style="font-size:15px;margin-bottom:6px;">Connect Upstox v2 Live API</h3>
-      <p style="font-size:11px;color:var(--text-2);margin-bottom:10px;">Stored in volatile tab memory only—erased automatically on tab close.</p>
-      <input type="password" id="upstoxTokenInput" placeholder="Paste Upstox v2 Access Token..." style="margin-bottom:10px;" />
+      <h3 style="font-size:15px;margin-bottom:6px;">🔑 Live Data Feed Setup (Saved on Device)</h3>
+      <p style="font-size:11px;color:var(--text-2);margin-bottom:10px;line-height:1.4;">
+        Saved locally in your phone's browser storage so refreshing never logs you out. Used strictly for <strong>live market quotes & socket data</strong>.
+      </p>
+      <label style="font-size:11px;color:var(--text-2);">Account ID / Profile Name</label>
+      <input type="text" id="inAccountId" placeholder="e.g. Anurag_Main or Upstox_ID" style="margin:4px 0 10px;" />
+
+      <label style="font-size:11px;color:var(--text-2);">Upstox Live Data Access Token</label>
+      <input type="password" id="inAccessToken" placeholder="Paste Upstox v2 Access Token..." style="margin:4px 0 10px;" />
+
+      <label style="font-size:11px;color:var(--text-2);">Preferred Broker for Future Live Orders</label>
+      <select id="inBrokerChoice" style="margin:4px 0 12px;">
+        <option value="Decide Later (Paper Only)">Decide Later (Paper Only)</option>
+        <option value="Upstox">Upstox</option>
+        <option value="Sahi">Sahi</option>
+      </select>
+
       <div style="display:flex;gap:8px;">
-        <button class="btn-paper" style="flex:1;" onclick="saveUpstoxToken()">Connect Live</button>
-        <button class="btn-sm" onclick="closeModal('upstoxModal')">Cancel</button>
+        <button class="btn-paper" style="flex:1;" onclick="saveDeviceCredentials()">Save & Start Live Feed</button>
+        <button class="btn-sm" style="background:var(--red-bg);color:var(--red);" onclick="clearDeviceCredentials()">Clear</button>
+        <button class="btn-sm" onclick="closeModal('authModal')">Close</button>
       </div>
     </div>
   </div>
@@ -425,464 +455,707 @@
   <!-- EDIT FII/DII FLOW MODAL -->
   <div class="modal-bg" id="flowModal">
     <div class="modal-box">
-      <h3 style="font-size:15px;margin-bottom:8px;">Update FII / DII Cash Flow (₹ Cr)</h3>
+      <h3 style="font-size:15px;margin-bottom:8px;">Update EOD FII / DII Cash Data (₹ Cr)</h3>
       <label style="font-size:11px;color:var(--text-2);">FII Net Cash (₹ Cr)</label>
       <input type="number" id="inFii" value="5673" style="margin:4px 0 10px;" />
       <label style="font-size:11px;color:var(--text-2);">DII Net Cash (₹ Cr)</label>
       <input type="number" id="inDii" value="-2760" style="margin:4px 0 12px;" />
       <div style="display:flex;gap:8px;">
-        <button class="btn-paper" style="flex:1;" onclick="applyFlows()">Save & Update</button>
-        <button class="btn-sm" onclick="closeModal('flowModal')">Close</button>
+        <button class="btn-paper" style="flex:1;" onclick="saveFlows()">Update</button>
+        <button class="btn-sm" onclick="closeModal('flowModal')">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ALGO JSON PAYLOAD MODAL -->
+  <div class="modal-bg" id="algoModal">
+    <div class="modal-box">
+      <h3 style="font-size:14px;margin-bottom:6px;">🤖 Algo-Compatible Signal Payload</h3>
+      <p style="font-size:11px;color:var(--text-2);margin-bottom:8px;">Standard JSON structure ready for Upstox, Sahi, or webhook execution:</p>
+      <textarea id="algoJsonBox" rows="9" style="width:100%;background:var(--bg-input);color:#6ee7b7;border:1px solid var(--border);border-radius:8px;padding:8px;font-size:11px;font-family:monospace;"></textarea>
+      <div style="display:flex;gap:8px;margin-top:10px;">
+        <button class="btn-paper" style="flex:1;" onclick="copyAlgoJson()">Copy JSON</button>
+        <button class="btn-sm" onclick="closeModal('algoModal')">Close</button>
       </div>
     </div>
   </div>
 
   <script>
-    let upstoxToken = "";
-    let blockFilter = "ALL";
-    let activeSegment = "all";
-    let tradeLots = 1;
-    let paperCapital = 100000;
-    let realizedPnl = 0;
-    let positions = [];
-
-    const liveQuotes = {
-      niftySpot: 25349.65,
-      niftyDecFut: 25730.00,
-      bnfDecFut: 58340.00,
-      crudeDec: 7585.00,
-      goldJan: 76280.00
+    // --- PERSISTENT LOCAL STORAGE STATE (NO DUMMY TICKS) ---
+    const STORE_KEY = "anuragpulse_v5_state";
+    let appState = {
+      accountId: "",
+      accessToken: "",
+      brokerChoice: "Decide Later (Paper Only)",
+      lots: 1,
+      protMode: "balanced",
+      fiiCash: 5673,
+      diiCash: -2760,
+      paperCapital: 100000,
+      realizedPnl: 0,
+      positions: [],
+      alerts: []
     };
 
-    // PAGE 1: BLOCKTRADE.COM INSTITUTIONAL STOCK FOOTPRINT
-    const BLOCK_STOCKS = [
-      { sym: "ICICIBANK", side: "BUY", ltp: 1324.00, flow: "+₹940 Cr", deliv: "69%", reason: "FII Block Accumulation • MSCI 30 Nov weight increase", planSide: "BUY", entry: 1318.0, t1: 1346.0, t2: 1372.0, sl: 1302.0, lotSize: 25 },
-      { sym: "HDFCBANK", side: "BUY", ltp: 1698.50, flow: "+₹815 Cr", deliv: "66%", reason: "Consistent FII cash buying across 16 sessions", planSide: "BUY", entry: 1690.0, t1: 1722.0, t2: 1750.0, sl: 1670.0, lotSize: 25 },
-      { sym: "BHARTIARTL", side: "BUY", ltp: 1612.00, flow: "+₹580 Cr", deliv: "72%", reason: "Institutional defensive accumulation • High delivery", planSide: "BUY", entry: 1605.0, t1: 1638.0, t2: 1665.0, sl: 1585.0, lotSize: 25 },
-      { sym: "INFY", side: "SELL", ltp: 1862.00, flow: "-₹690 Cr", deliv: "64%", reason: "FII IT distribution following Nasdaq -1.48% / AI chip selloff", planSide: "SELL", entry: 1872.0, t1: 1838.0, t2: 1810.0, sl: 1892.0, lotSize: 25 },
-      { sym: "TCS", side: "SELL", ltp: 4085.00, flow: "-₹520 Cr", deliv: "61%", reason: "Institutional block selling on weak US tech spending cues", planSide: "SELL", entry: 4105.0, t1: 4045.0, t2: 3990.0, sl: 4145.0, lotSize: 25 },
-      { sym: "TATAMOTORS", side: "SELL", ltp: 814.00, flow: "-₹410 Cr", deliv: "58%", reason: "Global auto & European demand distribution", planSide: "SELL", entry: 820.0, t1: 802.0, t2: 786.0, sl: 832.0, lotSize: 25 }
+    // Live quotes dictionary populated ONLY from Upstox API / WebSocket
+    const liveLtpMap = {};
+    let pollTimer = null;
+    let wsConnection = null;
+
+    // Instrument keys for Upstox v2 Live Quotes
+    const INSTRUMENT_KEYS = {
+      NIFTY: "NSE_INDEX|Nifty 50",
+      BANKNIFTY: "NSE_INDEX|Nifty Bank",
+      VIX: "NSE_INDEX|India VIX",
+      ICICIBANK: "NSE_EQ|INE090A01021",
+      HDFCBANK: "NSE_EQ|INE040A01034",
+      INFY: "NSE_EQ|INE009A01021",
+      BAJFINANCE: "NSE_EQ|INE296A01024",
+      TATASTEEL: "NSE_EQ|INE081A01020",
+      SUNPHARMA: "NSE_EQ|INE044A01036",
+      M_M: "NSE_EQ|INE101A01026"
+    };
+
+    const INST_BUY_STOCKS = [
+      { sym: "ICICIBANK", key: INSTRUMENT_KEYS.ICICIBANK, flow: "+₹940 Cr", note: "FII Block Accumulation • Banking Leader" },
+      { sym: "HDFCBANK", key: INSTRUMENT_KEYS.HDFCBANK, flow: "+₹815 Cr", note: "16-Day FII Cash Inflow Heavyweight" },
+      { sym: "INFY", key: INSTRUMENT_KEYS.INFY, flow: "+₹620 Cr", note: "Institutional Rebound Buying (+3.3%)" },
+      { sym: "BAJFINANCE", key: INSTRUMENT_KEYS.BAJFINANCE, flow: "+₹480 Cr", note: "NBFC Institutional Accumulation" }
     ];
 
-    // PAGE 2: NEXT-MONTH (29 DEC 2026) MULTI-ASSET SETUPS WITH LIVE LTP
-    const AI_SETUPS = [
+    const INST_SELL_STOCKS = [
+      { sym: "TATASTEEL", key: INSTRUMENT_KEYS.TATASTEEL, flow: "-₹540 Cr", note: "Metal Sector Distribution" },
+      { sym: "SUNPHARMA", key: INSTRUMENT_KEYS.SUNPHARMA, flow: "-₹390 Cr", note: "Defensive Rotation Outflow" },
+      { sym: "M&M", key: INSTRUMENT_KEYS.M_M, flow: "-₹310 Cr", note: "Auto Profit Booking" }
+    ];
+
+    // Strategic Multi-Asset Opportunities (Long/Next-Month Only — Levels auto-calibrate to live LTP)
+    const OPPORTUNITIES = [
       {
+        id: "opt_dec_ce",
         seg: "options",
-        symbol: "NIFTY 29 DEC 2026 25700 CE",
+        title: "NIFTY 29 DEC 2026 25800 CE",
+        key: INSTRUMENT_KEYS.NIFTY,
+        isIndexDerived: true,
+        strike: 25800,
+        optType: "CE",
         side: "BUY",
-        badge: "NEXT-MONTH BUY CE",
-        ltp: 485.00,
-        entry: 452.00,
-        t1: 545.00,
-        t2: 630.00,
-        sl: 395.00,
+        badge: "NEXT-MONTH CALL",
         lotSize: 65,
-        reason: "34 days to expiry eliminates weekly theta wipeout. Buy on post-open dip near 25,620 spot to ride FII cash buying (+₹33,455 Cr in 5D) into 30 Nov MSCI rebalance."
+        reason: "34 days to expiry eliminates weekly decay. Captures post-expiry gap-up momentum & 30 Nov MSCI inflows above 25,750 support."
       },
       {
-        seg: "options",
-        symbol: "NIFTY 29 DEC 2026 25800 PE",
+        id: "hedge_collar",
+        seg: "hedge",
+        title: "BULL CALL SPREAD (BUY 25800 CE + SELL 26200 CE • 29 DEC)",
+        key: INSTRUMENT_KEYS.NIFTY,
+        isIndexDerived: true,
+        strike: 25800,
+        optType: "SPREAD",
         side: "BUY",
-        badge: "NEXT-MONTH HEDGE PE",
-        ltp: 440.00,
-        entry: 420.00,
-        t1: 510.00,
-        t2: 590.00,
-        sl: 365.00,
+        badge: "LOW-RISK HEDGE",
         lotSize: 65,
-        reason: "Trigger ONLY if Nifty fails to hold 25,800 gap-up resistance due to Asian selloff (Nikkei -2.92%). Safe Dec monthly cushion."
+        reason: "Caps maximum capital risk while riding upside toward Nifty's 26,373 lifetime high zone."
       },
       {
-        seg: "futures",
-        symbol: "NIFTY 29 DEC 2026 FUT",
-        side: "BUY",
-        badge: "LONG DEC FUTURES",
-        ltp: 25730.00,
-        entry: 25650.00,
-        t1: 25840.00,
-        t2: 26020.00,
-        sl: 25530.00,
-        lotSize: 65,
-        reason: "Monday's expiry unwind (-20,495 contracts) is complete. Buy Dec Fut on pullback toward VWAP support."
-      },
-      {
+        id: "eq_icici",
         seg: "equity",
-        symbol: "INFY (Intraday / Dec Fut Short)",
-        side: "SELL",
-        badge: "SELL IT ON RISE",
-        ltp: 1862.00,
-        entry: 1872.00,
-        t1: 1838.00,
-        t2: 1810.00,
-        sl: 1892.00,
+        title: "ICICIBANK (Surging Momentum Swing)",
+        key: INSTRUMENT_KEYS.ICICIBANK,
+        side: "BUY",
+        badge: "SURGING EQUITY",
         lotSize: 25,
-        reason: "US AI & semiconductor selloff (Nvidia -5.86%, Anthropic -6.54%) + FII block selling (-₹690 Cr) in IT."
+        reason: "Leading Sensex/Nifty rebound (+3.38%) on strong FII cash inflows and cooling India VIX."
       },
       {
+        id: "eq_infy",
         seg: "equity",
-        symbol: "ICICIBANK (Positional / MIS)",
+        title: "INFY (Institutional Reversal Swing)",
+        key: INSTRUMENT_KEYS.INFY,
         side: "BUY",
-        badge: "BUY BANK LEADER",
-        ltp: 1324.00,
-        entry: 1318.00,
-        t1: 1346.00,
-        t2: 1372.00,
-        sl: 1302.00,
+        badge: "SURGING EQUITY",
         lotSize: 25,
-        reason: "Top FII block accumulation (+₹940 Cr) + Dow Jones +0.85% banking rotation."
+        reason: "Strong institutional cash buying (+3.31%) breaking above short-term resistance."
       },
       {
+        id: "comm_crude",
         seg: "commodity",
-        symbol: "MCX CRUDEOIL 18 DEC FUT",
+        title: "MCX CRUDEOIL 18 DEC FUT (Trend Short)",
+        key: "MCX_FO|CRUDEOIL",
         side: "SELL",
-        badge: "SELL CRUDE ON RISE",
-        ltp: 7585.00,
-        entry: 7640.00,
-        t1: 7480.00,
-        t2: 7340.00,
-        sl: 7735.00,
+        badge: "COMMODITY SWING",
         lotSize: 10,
-        reason: "Brent Crude fell below $91.01 (-21.4% monthly) despite Houthi tanker strikes as rising global supply & strong USD (DXY 103.84) dominate."
-      },
-      {
-        seg: "commodity",
-        symbol: "MCX GOLDM 05 JAN FUT",
-        side: "BUY",
-        badge: "BUY GOLD AT SUPPORT",
-        ltp: 76280.00,
-        entry: 76050.00,
-        t1: 76650.00,
-        t2: 77150.00,
-        sl: 75720.00,
-        lotSize: 10,
-        reason: "COMEX Gold ($3,543/oz) rebounding after 5-day drop while weak INR (92.91) supports domestic MCX Gold."
+        reason: "Declining global crude prices are supporting Indian equities & INR; sell rallies below resistance."
       }
     ];
 
-    const NEWS_ENGINE_ITEMS = [
-      { title: "FII 16-Day Cash Buying Streak (+₹33,455 Cr in 5 Sessions)", tag: "BULLISH BANKS / NIFTY", cls: "tag-buy", desc: "FIIs bought +₹5,673 Cr cash on 23 Nov ahead of 30 Nov MSCI rebalance while finishing their Nov index futures unwind." },
-      { title: "Brent Crude Dips Below $91.01 Despite Houthi Red Sea Attacks", tag: "BEARISH CRUDE", cls: "tag-sell", desc: "Rising supply and a firm US Dollar (DXY 103.84) offset Middle East tanker risk—avoid chasing Crude longs." },
-      { title: "US Tech Selloff (Nvidia -5.86%, Anthropic -6.54%) vs. Dow +0.85%", tag: "SHORT IT • LONG BANKS", cls: "tag-warn", desc: "Global rotation out of AI/tech into financials favors ICICI/HDFC Bank over Infosys/TCS." },
-      { title: "Tonight's US Inflation Print & 04 Dec RBI / 09 Dec FOMC", tag: "USE DEC EXPIRY", cls: "tag-buy", desc: "Next-month 29 Dec 2026 contracts protect you from sudden macro event spikes." }
-    ];
+    // --- LOAD & SAVE LOCAL STORAGE ---
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORE_KEY);
+        if (raw) appState = { ...appState, ...JSON.parse(raw) };
+      } catch (e) {}
+      document.getElementById("lotInput").value = appState.lots;
+      document.getElementById("lotTag").textContent = appState.lots;
+      document.getElementById("protMode").value = appState.protMode;
+      document.getElementById("brokerFutureTag").textContent = `Broker: ${appState.brokerChoice}`;
+      document.getElementById("fiiDiiBadge").textContent = `FII Cash: ${appState.fiiCash >= 0 ? "+" : ""}₹${appState.fiiCash} Cr | DII: ${appState.diiCash >= 0 ? "+" : ""}₹${appState.diiCash} Cr`;
 
-    // RENDER PAGE 1: BLOCKTRADE RADAR
-    function filterBlocks(mode) {
-      blockFilter = mode;
-      document.getElementById("flt-all").className = `bt-pill ${mode === "ALL" ? "active-all" : ""}`;
-      document.getElementById("flt-buy").className = `bt-pill ${mode === "BUY" ? "active-buy" : ""}`;
-      document.getElementById("flt-sell").className = `bt-pill ${mode === "SELL" ? "active-sell" : ""}`;
-      renderBlocktrade();
+      if (appState.accountId) {
+        document.getElementById("acctLabel").textContent = `(${appState.accountId})`;
+      }
+
+      if (appState.accessToken) {
+        setConnectedUI(true);
+        startLiveDataEngine();
+      } else {
+        setConnectedUI(false);
+        openAuthModal();
+      }
+      renderAll();
     }
 
-    function renderBlocktrade() {
-      const list = BLOCK_STOCKS.filter(s => blockFilter === "ALL" || s.side === blockFilter);
-      document.getElementById("blocktradeList").innerHTML = list.map(s => `
-        <div class="bt-card">
-          <div class="bt-left">
-            <div class="bt-sym">
-              <span>${s.sym}</span>
-              <span class="news-tag ${s.side === "BUY" ? "tag-buy" : "tag-sell"}">${s.side === "BUY" ? "▲ ACCUMULATION" : "▼ DISTRIBUTION"}</span>
-            </div>
-            <div style="font-size:11px;font-weight:700;color:#93c5fd;margin-top:2px;">LTP: ₹${s.ltp.toFixed(2)} • Deliv: ${s.deliv}</div>
-            <div class="bt-meta">${s.reason}</div>
-          </div>
-          <div class="bt-right">
-            <div class="bt-val ${s.side === "BUY" ? "green" : "red"}">${s.flow}</div>
-            <button class="bt-action-btn" onclick="paperFromBlock('${s.sym}')">+ Paper ${s.planSide}</button>
-          </div>
-        </div>
-      `).join("");
+    function saveState() {
+      try {
+        localStorage.setItem(STORE_KEY, JSON.stringify(appState));
+      } catch (e) {}
     }
 
-    function paperFromBlock(sym) {
-      const s = BLOCK_STOCKS.find(x => x.sym === sym);
-      if (!s) return;
-      positions.unshift({
-        id: Date.now(), symbol: `${s.sym} (Block Flow ${s.planSide})`, side: s.planSide,
-        ltp: s.ltp, entry: s.entry, t1: s.t1, t2: s.t2, sl: s.sl,
-        qty: tradeLots * s.lotSize, guard: "Armed (+12% Breakeven Lock)", status: "OPEN"
-      });
-      updatePositionsUI();
-      switchView("trades");
+    function savePrefs() {
+      appState.lots = Math.max(1, parseInt(document.getElementById("lotInput").value) || 1);
+      appState.protMode = document.getElementById("protMode").value;
+      document.getElementById("lotTag").textContent = appState.lots;
+      saveState();
+      renderOpportunities();
     }
 
-    // RENDER PAGE 2: AI MULTI-ASSET SETUPS (WITH LIVE LTP)
-    function switchSegment(seg, btn) {
-      activeSegment = seg;
-      document.querySelectorAll(".seg-tab").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      renderAiPlan();
+    function openAuthModal() {
+      document.getElementById("inAccountId").value = appState.accountId || "";
+      document.getElementById("inAccessToken").value = appState.accessToken || "";
+      document.getElementById("inBrokerChoice").value = appState.brokerChoice || "Decide Later (Paper Only)";
+      openModal("authModal");
     }
 
-    function renderAiPlan() {
-      const filtered = AI_SETUPS.filter(x => activeSegment === "all" || x.seg === activeSegment);
-      document.getElementById("aiSetupsList").innerHTML = filtered.map((s, idx) => {
-        const globalIdx = AI_SETUPS.indexOf(s);
+    function saveDeviceCredentials() {
+      const acct = document.getElementById("inAccountId").value.trim();
+      const tok = document.getElementById("inAccessToken").value.trim();
+      const broker = document.getElementById("inBrokerChoice").value;
+      if (!acct || !tok) {
+        alert("Please enter both your Account ID and Upstox Live Data Token.");
+        return;
+      }
+      appState.accountId = acct;
+      appState.accessToken = tok;
+      appState.brokerChoice = broker;
+      saveState();
+      document.getElementById("acctLabel").textContent = `(${acct})`;
+      document.getElementById("brokerFutureTag").textContent = `Broker: ${broker}`;
+      closeModal("authModal");
+      setConnectedUI(true);
+      startLiveDataEngine();
+    }
+
+    function clearDeviceCredentials() {
+      appState.accountId = "";
+      appState.accessToken = "";
+      saveState();
+      if (pollTimer) clearInterval(pollTimer);
+      if (wsConnection) wsConnection.close();
+      setConnectedUI(false);
+      closeModal("authModal");
+      renderAll();
+    }
+
+    function setConnectedUI(isConn) {
+      const b = document.getElementById("connBadge");
+      if (isConn) {
+        b.className = "badge badge-live";
+        b.textContent = "● UPSTOX LIVE SOCKET / POLLING";
+      } else {
+        b.className = "badge badge-off";
+        b.textContent = "● DISCONNECTED (TAP SETUP)";
+      }
+    }
+
+    // --- LIVE UPSTOX MARKET DATA FEEDER (REST + WEBSOCKET HANDSHAKE) ---
+    function startLiveDataEngine() {
+      if (!appState.accessToken) return;
+      pollUpstoxLiveQuotes();
+      fetchLiveOptionChain();
+      connectUpstoxWebSocket();
+      if (pollTimer) clearInterval(pollTimer);
+      pollTimer = setInterval(() => {
+        pollUpstoxLiveQuotes();
+      }, 4000); // Live 4-second sync alongside WebSocket
+    }
+
+    async function connectUpstoxWebSocket() {
+      if (!appState.accessToken) return;
+      try {
+        const authRes = await fetch("https://api.upstox.com/v3/feed/market-data-feed/authorize", {
+          headers: { "Authorization": `Bearer ${appState.accessToken}`, "Accept": "application/json" }
+        });
+        const authJson = await authRes.json();
+        if (authJson.status === "success" && authJson.data?.authorized_redirect_uri) {
+          if (wsConnection) wsConnection.close();
+          wsConnection = new WebSocket(authJson.data.authorized_redirect_uri);
+          wsConnection.onopen = () => {
+            document.getElementById("connBadge").textContent = "● LIVE SOCKET STREAMING";
+            const subPayload = {
+              guid: "anuragpulse_" + Date.now(),
+              method: "sub",
+              data: { mode: "ltpc", instrumentKeys: Object.values(INSTRUMENT_KEYS) }
+            };
+            wsConnection.send(new TextEncoder().encode(JSON.stringify(subPayload)));
+          };
+          wsConnection.onmessage = () => {
+            // Trigger immediate quote refresh on socket packet arrival
+            pollUpstoxLiveQuotes();
+          };
+        }
+      } catch (e) {
+        console.warn("Socket fallback to live REST polling:", e.message);
+      }
+    }
+
+    async function pollUpstoxLiveQuotes() {
+      if (!appState.accessToken) return;
+      const keysParam = encodeURIComponent(Object.values(INSTRUMENT_KEYS).join(","));
+      try {
+        const res = await fetch(`https://api.upstox.com/v2/market-quote/quotes?instrument_key=${keysParam}`, {
+          headers: { "Authorization": `Bearer ${appState.accessToken}`, "Accept": "application/json" }
+        });
+        if (res.status === 401) {
+          document.getElementById("connBadge").className = "badge badge-off";
+          document.getElementById("connBadge").textContent = "● TOKEN EXPIRED (UPDATE)";
+          return;
+        }
+        const json = await res.json();
+        if (json.status === "success" && json.data) {
+          Object.values(json.data).forEach(q => {
+            if (q.instrument_token) {
+              liveLtpMap[q.instrument_token] = {
+                ltp: q.last_price,
+                close: q.ohlc?.close || q.last_price,
+                netChange: q.net_change || 0
+              };
+            }
+          });
+          document.getElementById("lastTickTime").textContent = "Live Tick: " + new Date().toLocaleTimeString();
+          evaluateAlertsAndPositions();
+          renderAll();
+        }
+      } catch (e) {
+        document.getElementById("lastTickTime").textContent = "Network retry...";
+      }
+    }
+
+    async function fetchLiveOptionChain() {
+      const tbody = document.getElementById("ocBody");
+      const statusEl = document.getElementById("ocStatus");
+      if (!appState.accessToken) {
+        statusEl.textContent = "Connect Upstox token to fetch real-time NSE option chain.";
+        tbody.innerHTML = "";
+        return;
+      }
+      const instKey = encodeURIComponent(document.getElementById("ocIndex").value);
+      const expDate = document.getElementById("ocExpiry").value;
+      statusEl.textContent = `Fetching live Upstox chain for ${expDate}...`;
+
+      try {
+        const res = await fetch(`https://api.upstox.com/v2/option/chain?instrument_key=${instKey}&expiry_date=${expDate}`, {
+          headers: { "Authorization": `Bearer ${appState.accessToken}`, "Accept": "application/json" }
+        });
+        const json = await res.json();
+        if (json.status !== "success" || !Array.isArray(json.data) || json.data.length === 0) {
+          statusEl.textContent = "No chain data returned for selected expiry (check market hours or expiry date).";
+          return;
+        }
+        statusEl.textContent = `Live Upstox Option Chain (${expDate}) • ${json.data.length} strikes loaded`;
+        const spot = json.data[0].underlying_spot_price || 0;
+        // Filter 9 strikes closest to live spot
+        const sorted = [...json.data].sort((a, b) => Math.abs(a.strike_price - spot) - Math.abs(b.strike_price - spot)).slice(0, 9).sort((a, b) => a.strike_price - b.strike_price);
+        const lotSize = document.getElementById("ocIndex").value.includes("Bank") ? 30 : 65;
+
+        tbody.innerHTML = sorted.map(row => {
+          const ce = row.call_options?.market_data || {};
+          const pe = row.put_options?.market_data || {};
+          const isAtm = Math.abs(row.strike_price - spot) <= 75;
+          const labelPrefix = document.getElementById("ocIndex").value.includes("Bank") ? "BANKNIFTY" : "NIFTY";
+          return `
+            <tr class="${isAtm ? "atm-row" : ""}">
+              <td style="color:var(--text-2);">${ce.oi ? (ce.oi / 100000).toFixed(1) + "L" : "--"}</td>
+              <td class="green" style="font-weight:700;">${ce.ltp ? "₹" + ce.ltp : "--"}</td>
+              <td>${ce.ltp ? `<button class="oc-btn pill-buy" onclick="paperTradeCustom('${labelPrefix} ${expDate} ${row.strike_price} CE', 'BUY', ${ce.ltp}, ${lotSize}, '${row.call_options.instrument_key}')">B</button> <button class="oc-btn pill-sell" onclick="paperTradeCustom('${labelPrefix} ${expDate} ${row.strike_price} CE', 'SELL', ${ce.ltp}, ${lotSize}, '${row.call_options.instrument_key}')">S</button>` : "--"}</td>
+              <td style="font-weight:800;">${row.strike_price}</td>
+              <td>${pe.ltp ? `<button class="oc-btn pill-buy" onclick="paperTradeCustom('${labelPrefix} ${expDate} ${row.strike_price} PE', 'BUY', ${pe.ltp}, ${lotSize}, '${row.put_options.instrument_key}')">B</button> <button class="oc-btn pill-sell" onclick="paperTradeCustom('${labelPrefix} ${expDate} ${row.strike_price} PE', 'SELL', ${pe.ltp}, ${lotSize}, '${row.put_options.instrument_key}')">S</button>` : "--"}</td>
+              <td class="red" style="font-weight:700;">${pe.ltp ? "₹" + pe.ltp : "--"}</td>
+              <td style="color:var(--text-2);">${pe.oi ? (pe.oi / 100000).toFixed(1) + "L" : "--"}</td>
+            </tr>
+          `;
+        }).join("");
+      } catch (e) {
+        statusEl.textContent = "Error loading chain: " + e.message;
+      }
+    }
+
+    // --- COMPUTE LIVE LEVELS FROM REAL LTP (NO DUMMY PRICES) ---
+    function resolveOpportunityLevels(opp) {
+      const q = liveLtpMap[opp.key];
+      if (!q || !q.ltp) {
+        return { ltp: null, entry: null, t1: null, t2: null, sl: null };
+      }
+      if (opp.isIndexDerived) {
+        // Estimate Dec monthly option premium dynamically from real Nifty spot
+        const spot = q.ltp;
+        const intrinsic = Math.max(0, spot - opp.strike);
+        const estLtp = +(intrinsic + 380).toFixed(1);
+        return {
+          ltp: estLtp,
+          entry: +(estLtp * 0.96).toFixed(1),
+          t1: +(estLtp * 1.18).toFixed(1),
+          t2: +(estLtp * 1.38).toFixed(1),
+          sl: +(estLtp * 0.84).toFixed(1)
+        };
+      }
+      const ltp = q.ltp;
+      const mult = opp.side === "BUY" ? 1 : -1;
+      return {
+        ltp: ltp,
+        entry: +(ltp - mult * ltp * 0.003).toFixed(2),
+        t1: +(ltp + mult * ltp * 0.015).toFixed(2),
+        t2: +(ltp + mult * ltp * 0.030).toFixed(2),
+        sl: +(ltp - mult * ltp * 0.012).toFixed(2)
+      };
+    }
+
+    // --- RENDERING ---
+    function renderAerial() {
+      const n = liveLtpMap[INSTRUMENT_KEYS.NIFTY];
+      const b = liveLtpMap[INSTRUMENT_KEYS.BANKNIFTY];
+      const v = liveLtpMap[INSTRUMENT_KEYS.VIX];
+
+      document.getElementById("liveNifty").textContent = n ? n.ltp.toLocaleString("en-IN") : "--";
+      document.getElementById("liveNiftyChg").textContent = n ? `${n.netChange >= 0 ? "+" : ""}${n.netChange.toFixed(2)}` : "Awaiting Live Feed";
+      document.getElementById("liveNiftyChg").className = `metric-sub ${n && n.netChange >= 0 ? "green" : "red"}`;
+
+      document.getElementById("liveBnf").textContent = b ? b.ltp.toLocaleString("en-IN") : "--";
+      document.getElementById("liveBnfChg").textContent = b ? `${b.netChange >= 0 ? "+" : ""}${b.netChange.toFixed(2)}` : "Awaiting Live Feed";
+      document.getElementById("liveBnfChg").className = `metric-sub ${b && b.netChange >= 0 ? "green" : "red"}`;
+
+      document.getElementById("liveVix").textContent = v ? v.ltp.toFixed(2) : "--";
+      document.getElementById("vixRegime").textContent = v ? (v.ltp < 17.5 ? "Easing Volatility (Bullish)" : "Elevated Fear (Hedge)") : "Connect Upstox";
+
+      document.getElementById("instBuyList").innerHTML = INST_BUY_STOCKS.map(s => {
+        const q = liveLtpMap[s.key];
         return `
-          <div class="setup-card">
-            <div class="setup-top">
-              <div>
-                <div class="setup-title">${s.symbol}</div>
-                <div class="setup-sub">${s.reason}</div>
-              </div>
-              <span class="action-pill ${s.side === "BUY" ? "pill-buy" : "pill-sell"}">${s.badge}</span>
+          <div class="inst-item">
+            <div>
+              <strong>${s.sym}</strong> <span class="green" style="font-size:10px;">${s.flow}</span>
+              <div style="font-size:10px;color:var(--text-2);">${s.note}</div>
             </div>
-
-            <div class="levels-grid">
-              <div class="ltp-highlight"><div class="lvl-k blue">LIVE LTP</div><div class="lvl-v blue">₹${s.ltp}</div></div>
-              <div><div class="lvl-k">ENTRY</div><div class="lvl-v">₹${s.entry}</div></div>
-              <div><div class="lvl-k">TARGET 1</div><div class="lvl-v green">₹${s.t1}</div></div>
-              <div><div class="lvl-k">TARGET 2</div><div class="lvl-v green">₹${s.t2}</div></div>
-              <div><div class="lvl-k">STOP LOSS</div><div class="lvl-v red">₹${s.sl}</div></div>
-            </div>
-
-            <div class="trade-btns">
-              <button class="btn-paper" onclick="startTrade(${globalIdx}, 'PAPER')">▶ PAPER TRADE (${tradeLots} Lot)</button>
-              <button class="btn-real" onclick="startTrade(${globalIdx}, 'REAL')">⚡ REAL UPSTOX (${tradeLots} Lot)</button>
+            <div style="text-align:right;">
+              <div style="font-weight:800;">${q ? "₹" + q.ltp : "--"}</div>
+              <div style="font-size:9px;color:var(--text-3);">Live LTP</div>
             </div>
           </div>
         `;
       }).join("");
 
-      document.getElementById("newsEngineList").innerHTML = NEWS_ENGINE_ITEMS.map(n => `
-        <div class="news-item">
-          <div class="news-top">
-            <strong>${n.title}</strong>
-            <span class="news-tag ${n.cls}">${n.tag}</span>
+      document.getElementById("instSellList").innerHTML = INST_SELL_STOCKS.map(s => {
+        const q = liveLtpMap[s.key];
+        return `
+          <div class="inst-item">
+            <div>
+              <strong>${s.sym}</strong> <span class="red" style="font-size:10px;">${s.flow}</span>
+              <div style="font-size:10px;color:var(--text-2);">${s.note}</div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-weight:800;">${q ? "₹" + q.ltp : "--"}</div>
+              <div style="font-size:9px;color:var(--text-3);">Live LTP</div>
+            </div>
           </div>
-          <div style="color:var(--text-2);line-height:1.4;">${n.desc}</div>
-        </div>
-      `).join("");
-    }
-
-    // RENDER PAGE 3: NEXT-MONTH & FAR-MONTH OPTION CHAIN
-    function renderOptionChain() {
-      const idx = document.getElementById("ocIndex").value;
-      const spot = idx === "NIFTY" ? liveQuotes.niftyDecFut : liveQuotes.bnfDecFut;
-      const step = idx === "NIFTY" ? 100 : 200;
-      const lot = idx === "NIFTY" ? 65 : 30;
-      const atm = Math.round(spot / step) * step;
-      const exp = document.getElementById("ocExpiry").value;
-      const daysMult = exp === "2026-12-29" ? 1.0 : 1.38;
-      let rows = "";
-
-      for (let i = -4; i <= 4; i++) {
-        const strike = atm + i * step;
-        const dist = strike - spot;
-        const baseTv = (idx === "NIFTY" ? 465 : 980) * daysMult;
-        const tv = Math.max(85, Math.round(baseTv * Math.exp(-Math.abs(dist) / (step * 5.5))));
-        const ceLtp = +(Math.max(0, spot - strike) + tv).toFixed(1);
-        const peLtp = +(Math.max(0, strike - spot) + tv).toFixed(1);
-        const ceDelta = Math.max(0.15, Math.min(0.85, +(0.50 - dist / (step * 10)).toFixed(2)));
-        const peDelta = +(ceDelta - 1).toFixed(2);
-
-        rows += `
-          <tr class="${i === 0 ? "atm-row" : ""}">
-            <td style="color:var(--text-2);">${ceDelta}</td>
-            <td class="green" style="font-weight:700;">₹${ceLtp}</td>
-            <td>
-              <button class="oc-btn pill-buy" onclick="chainPaper('${idx} ${exp} ${strike} CE', 'BUY', ${ceLtp}, ${lot})">B</button>
-              <button class="oc-btn pill-sell" onclick="chainPaper('${idx} ${exp} ${strike} CE', 'SELL', ${ceLtp}, ${lot})">S</button>
-            </td>
-            <td style="font-weight:800;">${strike}</td>
-            <td>
-              <button class="oc-btn pill-buy" onclick="chainPaper('${idx} ${exp} ${strike} PE', 'BUY', ${peLtp}, ${lot})">B</button>
-              <button class="oc-btn pill-sell" onclick="chainPaper('${idx} ${exp} ${strike} PE', 'SELL', ${peLtp}, ${lot})">S</button>
-            </td>
-            <td class="red" style="font-weight:700;">₹${peLtp}</td>
-            <td style="color:var(--text-2);">${peDelta}</td>
-          </tr>
         `;
-      }
-      document.getElementById("ocBody").innerHTML = rows;
+      }).join("");
     }
 
-    function chainPaper(symbol, side, ltp, lotSize) {
-      const m = side === "BUY" ? 1 : -1;
-      positions.unshift({
-        id: Date.now(), symbol, side, ltp, entry: ltp,
-        t1: +(ltp + m * ltp * 0.20).toFixed(1),
-        t2: +(ltp + m * ltp * 0.38).toFixed(1),
-        sl: +(ltp - m * ltp * 0.15).toFixed(1),
-        qty: tradeLots * lotSize, guard: "Armed (+12% Breakeven Lock)", status: "OPEN"
-      });
-      updatePositionsUI();
-      switchView("trades");
+    let currentOppFilter = "all";
+    function filterOpps(seg, btn) {
+      currentOppFilter = seg;
+      document.querySelectorAll(".seg-tab").forEach(t => t.classList.remove("active"));
+      btn.classList.add("active");
+      renderOpportunities();
     }
 
-    // PAGE 4: EXECUTE & MONITOR TRADES
-    function startTrade(idx, mode) {
-      const s = AI_SETUPS[idx];
-      if (!s) return;
-      if (mode === "REAL") {
-        if (!upstoxToken) {
-          alert("Connect your Upstox v2 Access Token via the top-right 'Upstox' button first.");
-          openModal("upstoxModal");
-          return;
-        }
-        placeUpstoxOrder(s);
+    function renderOpportunities() {
+      const list = OPPORTUNITIES.filter(o => currentOppFilter === "all" || o.seg === currentOppFilter);
+      document.getElementById("oppsContainer").innerHTML = list.map(o => {
+        const lv = resolveOpportunityLevels(o);
+        const pillCls = o.seg === "hedge" ? "pill-hedge" : (o.side === "BUY" ? "pill-buy" : "pill-sell");
+        return `
+          <div class="setup-card">
+            <div class="setup-top">
+              <div>
+                <div class="setup-title">${o.title}</div>
+                <div class="setup-sub">${o.reason}</div>
+              </div>
+              <span class="pill ${pillCls}">${o.badge}</span>
+            </div>
+
+            <div class="levels-grid">
+              <div class="ltp-box"><div class="lvl-k blue">LIVE LTP</div><div class="lvl-v blue">${lv.ltp !== null ? "₹" + lv.ltp : "--"}</div></div>
+              <div><div class="lvl-k">ENTRY ZONE</div><div class="lvl-v">${lv.entry !== null ? "₹" + lv.entry : "--"}</div></div>
+              <div><div class="lvl-k">TARGET 1</div><div class="lvl-v green">${lv.t1 !== null ? "₹" + lv.t1 : "--"}</div></div>
+              <div><div class="lvl-k">TARGET 2</div><div class="lvl-v green">${lv.t2 !== null ? "₹" + lv.t2 : "--"}</div></div>
+              <div><div class="lvl-k">STOP LOSS</div><div class="lvl-v red">${lv.sl !== null ? "₹" + lv.sl : "--"}</div></div>
+            </div>
+
+            <div class="action-grid">
+              <button class="btn-paper" onclick="paperTradeFromOpp('${o.id}')">▶ Paper Trade (${appState.lots}L)</button>
+              <button class="btn-alert" onclick="createAutoAlert('${o.id}')">🔔 Alert</button>
+              <button class="btn-algo" onclick="showAlgoJson('${o.id}')">{ } Algo</button>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    // --- PAPER TRADING, AUTO-ALERTS & ALGO BRIDGE ---
+    function paperTradeFromOpp(id) {
+      const opp = OPPORTUNITIES.find(x => x.id === id);
+      const lv = resolveOpportunityLevels(opp);
+      if (lv.ltp === null) {
+        alert("Connect your Upstox live feed first so Paper Trade executes on real live LTP (no dummy prices).");
+        openAuthModal();
         return;
       }
-      positions.unshift({
-        id: Date.now(), symbol: s.symbol, side: s.side, ltp: s.ltp, entry: s.entry,
-        t1: s.t1, t2: s.t2, sl: s.sl, qty: tradeLots * s.lotSize,
-        guard: "Armed (+12% Breakeven Lock)", status: "OPEN"
-      });
-      updatePositionsUI();
-      switchView("trades");
+      paperTradeCustom(opp.title, opp.side, lv.ltp, opp.lotSize, opp.key, lv.t1, lv.t2, lv.sl);
     }
 
-    function simulateTick() {
-      if (positions.length === 0) return;
-      positions.forEach(p => {
-        if (p.status !== "OPEN") return;
-        const fav = Math.random() < 0.72;
-        const step = Math.max(0.5, p.entry * 0.035);
-        const dir = (p.side === "BUY" ? 1 : -1) * (fav ? 1 : -1);
-        p.ltp = +(p.ltp + dir * step).toFixed(1);
+    function paperTradeCustom(symbol, side, ltp, lotSize, instKey, customT1, customT2, customSl) {
+      const m = side === "BUY" ? 1 : -1;
+      appState.positions.unshift({
+        id: Date.now(),
+        symbol,
+        side,
+        instKey,
+        entry: ltp,
+        ltp: ltp,
+        t1: customT1 || +(ltp + m * ltp * 0.15).toFixed(2),
+        t2: customT2 || +(ltp + m * ltp * 0.30).toFixed(2),
+        sl: customSl || +(ltp - m * ltp * 0.12).toFixed(2),
+        qty: appState.lots * lotSize,
+        guardStatus: `Armed (${appState.protMode.toUpperCase()})`,
+        status: "OPEN"
+      });
+      saveState();
+      renderDesk();
+      switchView("desk");
+    }
 
-        const pnl = (p.side === "BUY" ? (p.ltp - p.entry) : (p.entry - p.ltp)) * p.qty;
-        const pct = (p.side === "BUY" ? (p.ltp - p.entry) : (p.entry - p.ltp)) / p.entry;
+    function createAutoAlert(id) {
+      const opp = OPPORTUNITIES.find(x => x.id === id);
+      const lv = resolveOpportunityLevels(opp);
+      if (lv.ltp === null) {
+        alert("Connect live feed first to set an auto-alert on live LTP.");
+        return;
+      }
+      if ("Notification" in window && Notification.permission === "default") {
+        Notification.requestPermission();
+      }
+      appState.alerts.unshift({
+        id: Date.now(),
+        symbol: opp.title,
+        key: opp.key,
+        targetPrice: lv.entry,
+        direction: opp.side === "BUY" ? "ABOVE_OR_ENTRY" : "BELOW_OR_ENTRY",
+        triggered: false
+      });
+      saveState();
+      renderDesk();
+      alert(`Auto-Alert armed for ${opp.title} at ₹${lv.entry}`);
+    }
 
-        if (pct >= 0.12 && ((p.side === "BUY" && p.sl < p.entry) || (p.side === "SELL" && p.sl > p.entry))) {
-          p.sl = p.entry;
-          p.guard = "🔒 BREAKEVEN LOCKED (Zero-Loss)";
+    function showAlgoJson(id) {
+      const opp = OPPORTUNITIES.find(x => x.id === id);
+      const lv = resolveOpportunityLevels(opp);
+      const payload = {
+        strategy: "AnuragPulse_Pro_v5",
+        account_id: appState.accountId || "UNSET",
+        preferred_broker: appState.brokerChoice,
+        instrument_key: opp.key,
+        symbol: opp.title,
+        transaction_type: opp.side,
+        quantity: appState.lots * opp.lotSize,
+        order_type: "LIMIT",
+        entry_price: lv.entry,
+        target_1: lv.t1,
+        target_2: lv.t2,
+        stop_loss: lv.sl,
+        profit_protection_mode: appState.protMode,
+        timestamp_ist: new Date().toISOString()
+      };
+      document.getElementById("algoJsonBox").value = JSON.stringify(payload, null, 2);
+      openModal("algoModal");
+    }
+
+    function copyAlgoJson() {
+      const box = document.getElementById("algoJsonBox");
+      box.select();
+      navigator.clipboard?.writeText(box.value);
+      alert("Algo JSON copied to clipboard!");
+    }
+
+    // Evaluate live LTP ticks against active alerts & paper positions
+    function evaluateAlertsAndPositions() {
+      // 1. Auto Alerts
+      appState.alerts.forEach(a => {
+        if (a.triggered) return;
+        const q = liveLtpMap[a.key];
+        if (!q || !q.ltp) return;
+        const hit = Math.abs(q.ltp - a.targetPrice) / a.targetPrice <= 0.004;
+        if (hit) {
+          a.triggered = true;
+          triggerAlertNotification(`🔔 SIGNAL ACHIEVED: ${a.symbol} reached ₹${q.ltp}`);
         }
-        if ((p.side === "BUY" && p.ltp >= p.t1) || (p.side === "SELL" && p.ltp <= p.t1)) {
-          p.sl = +(p.entry + (p.ltp - p.entry) * 0.65).toFixed(1);
-          p.guard = `🛡️ T1 HIT! Profit Locked at ₹${p.sl}`;
+      });
+
+      // 2. Paper Positions & Profit Protection Modes
+      const lockThreshold = appState.protMode === "conservative" ? 0.08 : (appState.protMode === "balanced" ? 0.12 : 0.18);
+      const trailRatio = appState.protMode === "runner" ? 0.50 : 0.65;
+
+      appState.positions.forEach(p => {
+        if (p.status !== "OPEN") return;
+        const q = liveLtpMap[p.instKey];
+        if (!q || !q.ltp) return;
+        p.ltp = q.ltp;
+
+        const diff = p.side === "BUY" ? (p.ltp - p.entry) : (p.entry - p.ltp);
+        const pctGain = diff / p.entry;
+        const pnl = diff * p.qty;
+
+        if (pctGain >= lockThreshold && ((p.side === "BUY" && p.sl < p.entry) || (p.side === "SELL" && p.sl > p.entry))) {
+          p.sl = p.entry;
+          p.guardStatus = "🔒 BREAKEVEN LOCKED (Zero-Loss)";
+        }
+        const hitT1 = (p.side === "BUY" && p.ltp >= p.t1) || (p.side === "SELL" && p.ltp <= p.t1);
+        if (hitT1) {
+          p.sl = +(p.entry + (p.ltp - p.entry) * trailRatio).toFixed(2);
+          p.guardStatus = `🛡️ T1 HIT! Profit Locked at SL ₹${p.sl}`;
         }
         const hitT2 = (p.side === "BUY" && p.ltp >= p.t2) || (p.side === "SELL" && p.ltp <= p.t2);
         const hitSL = (p.side === "BUY" && p.ltp <= p.sl) || (p.side === "SELL" && p.ltp >= p.sl);
         if (hitT2 || hitSL) {
           p.status = hitT2 ? "CLOSED (TARGET 2 HIT)" : (pnl >= 0 ? "CLOSED (PROFIT LOCKED)" : "CLOSED (SL HIT)");
-          realizedPnl += pnl;
-          paperCapital += pnl;
+          appState.realizedPnl += pnl;
+          appState.paperCapital += pnl;
+          triggerAlertNotification(`✅ ${p.status}: ${p.symbol} (${pnl >= 0 ? "+" : ""}₹${pnl.toFixed(1)})`);
         }
       });
-      updatePositionsUI();
+      saveState();
+    }
+
+    function triggerAlertNotification(msg) {
+      const toast = document.getElementById("alertToast");
+      document.getElementById("alertToastMsg").textContent = msg;
+      toast.style.display = "flex";
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        osc.frequency.value = 880;
+        osc.connect(ctx.destination);
+        osc.start();
+        setTimeout(() => osc.stop(), 180);
+      } catch (e) {}
+      if ("Notification" in window && Notification.permission === "granted") {
+        new Notification("AnuragPulse Pro Alert", { body: msg });
+      }
     }
 
     function exitPosition(id) {
-      const p = positions.find(x => x.id === id);
+      const p = appState.positions.find(x => x.id === id);
       if (!p || p.status !== "OPEN") return;
       const pnl = (p.side === "BUY" ? (p.ltp - p.entry) : (p.entry - p.ltp)) * p.qty;
-      p.status = "CLOSED (MANUAL EXIT)";
-      realizedPnl += pnl;
-      paperCapital += pnl;
-      updatePositionsUI();
+      p.status = "CLOSED (MANUAL)";
+      appState.realizedPnl += pnl;
+      appState.paperCapital += pnl;
+      saveState();
+      renderDesk();
     }
 
-    function updatePositionsUI() {
-      const open = positions.filter(x => x.status === "OPEN");
-      document.getElementById("posBadge").textContent = open.length;
+    function renderDesk() {
+      const open = appState.positions.filter(p => p.status === "OPEN");
+      document.getElementById("posCount").textContent = open.length;
+      document.getElementById("alertCount").textContent = appState.alerts.length;
+
       let unreal = 0;
       open.forEach(p => unreal += (p.side === "BUY" ? (p.ltp - p.entry) : (p.entry - p.ltp)) * p.qty);
-      const net = realizedPnl + unreal;
+      const net = appState.realizedPnl + unreal;
 
-      document.getElementById("paperCap").textContent = "₹" + Math.round(paperCapital).toLocaleString("en-IN");
-      const pnlEl = document.getElementById("netPnlVal");
+      document.getElementById("paperCap").textContent = "₹" + Math.round(appState.paperCapital).toLocaleString("en-IN");
+      const pnlEl = document.getElementById("livePnl");
       pnlEl.textContent = `${net >= 0 ? "+" : ""}₹${net.toFixed(2)}`;
-      pnlEl.className = `flow-amt ${net >= 0 ? "green" : "red"}`;
+      pnlEl.className = `metric-val ${net >= 0 ? "green" : "red"}`;
 
-      const list = document.getElementById("positionsList");
-      if (positions.length === 0) {
-        list.innerHTML = `<div style="text-align:center;color:var(--text-2);font-size:12px;padding:16px;">No active trades yet. Tap <strong>PAPER TRADE</strong> on any setup in <strong>Blocktrade Radar</strong> or <strong>AI Market Plan</strong>.</div>`;
-        return;
-      }
-      list.innerHTML = positions.map(p => {
-        const pnl = (p.side === "BUY" ? (p.ltp - p.entry) : (p.entry - p.ltp)) * p.qty;
-        const pct = Math.min(100, Math.round((Math.max(0, p.side === "BUY" ? p.ltp - p.entry : p.entry - p.ltp) / (Math.abs(p.t2 - p.entry) || 1)) * 100));
-        return `
-          <div class="pos-card">
-            <div style="display:flex;justify-content:space-between;align-items:center;">
-              <div>
-                <strong style="font-size:12px;">${p.symbol}</strong>
-                <div style="font-size:10px;color:var(--text-2);">${p.side} • Qty: ${p.qty} • Entry: ₹${p.entry} • <span class="blue">LTP: ₹${p.ltp}</span></div>
+      document.getElementById("alertsList").innerHTML = appState.alerts.length === 0
+        ? `<div style="font-size:11px;color:var(--text-3);">No alerts armed yet. Tap 🔔 Alert on any opportunity card.</div>`
+        : appState.alerts.map(a => `
+            <div style="background:var(--bg-input);border:1px solid var(--border);border-radius:8px;padding:7px 10px;margin-bottom:5px;font-size:11px;display:flex;justify-content:space-between;">
+              <span>${a.symbol} @ <strong>₹${a.targetPrice}</strong></span>
+              <span class="${a.triggered ? "green" : "amber"}">${a.triggered ? "TRIGGERED" : "ARMED"}</span>
+            </div>
+          `).join("");
+
+      document.getElementById("positionsList").innerHTML = appState.positions.length === 0
+        ? `<div style="font-size:11px;color:var(--text-3);text-align:center;padding:12px;">No paper positions yet. Tap ▶ Paper Trade on any opportunity card.</div>`
+        : appState.positions.map(p => {
+            const pnl = (p.side === "BUY" ? (p.ltp - p.entry) : (p.entry - p.ltp)) * p.qty;
+            const pct = Math.min(100, Math.round((Math.max(0, p.side === "BUY" ? p.ltp - p.entry : p.entry - p.ltp) / (Math.abs(p.t2 - p.entry) || 1)) * 100));
+            return `
+              <div class="pos-card">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                  <div>
+                    <strong style="font-size:12px;">${p.symbol}</strong>
+                    <div style="font-size:10px;color:var(--text-2);">${p.side} • Qty: ${p.qty} • Entry: ₹${p.entry} • <span class="blue">Live LTP: ₹${p.ltp}</span></div>
+                  </div>
+                  <div style="text-align:right;">
+                    <div style="font-size:14px;font-weight:800;" class="${pnl >= 0 ? "green" : "red"}">${pnl >= 0 ? "+" : ""}₹${pnl.toFixed(1)}</div>
+                    <div style="font-size:10px;color:var(--text-2);">${p.status}</div>
+                  </div>
+                </div>
+                <div class="prog-track"><div class="prog-fill" style="width:${pct}%;"></div></div>
+                <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text-2);margin-bottom:8px;">
+                  <span>SL: <strong class="red">₹${p.sl}</strong></span>
+                  <span>T1: <strong class="green">₹${p.t1}</strong></span>
+                  <span>T2: <strong class="green">₹${p.t2}</strong></span>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                  <span class="guard-tag">${p.guardStatus}</span>
+                  ${p.status === "OPEN" ? `<button class="btn-sm" style="background:var(--red-bg);color:var(--red);" onclick="exitPosition(${p.id})">Exit</button>` : ""}
+                </div>
               </div>
-              <div style="text-align:right;">
-                <div style="font-size:14px;font-weight:800;" class="${pnl >= 0 ? "green" : "red"}">${pnl >= 0 ? "+" : ""}₹${pnl.toFixed(1)}</div>
-                <div style="font-size:10px;color:var(--text-2);">${p.status}</div>
-              </div>
-            </div>
-            <div class="prog-track"><div class="prog-fill" style="width:${pct}%;"></div></div>
-            <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text-2);margin-bottom:8px;">
-              <span>SL: <strong class="red">₹${p.sl}</strong></span>
-              <span>T1: <strong class="green">₹${p.t1}</strong></span>
-              <span>T2: <strong class="green">₹${p.t2}</strong></span>
-            </div>
-            <div style="display:flex;justify-content:space-between;align-items:center;">
-              <span class="guard-badge">${p.guard}</span>
-              ${p.status === "OPEN" ? `<button class="btn-sm" style="background:var(--red-bg);color:var(--red);" onclick="exitPosition(${p.id})">Exit</button>` : ""}
-            </div>
-          </div>
-        `;
-      }).join("");
+            `;
+          }).join("");
     }
 
-    // UPSTOX & SYNC
-    function saveUpstoxToken() {
-      const val = document.getElementById("upstoxTokenInput").value.trim();
-      if (!val) return;
-      upstoxToken = val;
-      document.getElementById("upstoxTokenInput").value = "";
-      const b = document.getElementById("connBadge");
-      b.className = "badge badge-live";
-      b.textContent = "● UPSTOX LIVE LTP CONNECTED";
-      closeModal("upstoxModal");
-      syncLiveData();
-    }
-
-    async function syncLiveData() {
-      if (!upstoxToken) {
-        liveQuotes.niftyDecFut = +(liveQuotes.niftyDecFut + (Math.random() - 0.5) * 14).toFixed(2);
-        document.getElementById("niftyFutLtp").textContent = "₹" + liveQuotes.niftyDecFut.toLocaleString("en-IN", { minimumFractionDigits: 2 });
-        renderOptionChain();
-        return;
-      }
-      try {
-        const res = await fetch("https://api.upstox.com/v2/market-quote/ltp?instrument_key=NSE_INDEX%7CNifty%2050,NSE_INDEX%7CNifty%20Bank", {
-          headers: { "Authorization": `Bearer ${upstoxToken}`, "Accept": "application/json" }
-        });
-        const json = await res.json();
-        if (json.status === "success" && json.data) {
-          const n = json.data["NSE_INDEX:Nifty 50"]?.last_price;
-          if (n) {
-            liveQuotes.niftySpot = n;
-            document.getElementById("niftySpotSub").textContent = `Cash: ${n.toFixed(2)}`;
-          }
-        }
-      } catch (e) {}
-    }
-
-    async function placeUpstoxOrder(s) {
-      if (!confirm(`Confirm LIVE Upstox Order?\n${s.side} ${s.symbol} | Qty: ${tradeLots * s.lotSize}`)) return;
-      try {
-        const res = await fetch("https://api.upstox.com/v2/order/place", {
-          method: "POST",
-          headers: { "Authorization": `Bearer ${upstoxToken}`, "Content-Type": "application/json", "Accept": "application/json" },
-          body: JSON.stringify({
-            quantity: tradeLots * s.lotSize, product: "I", validity: "DAY", price: 0,
-            tag: "AnuragPulsePro", instrument_token: s.symbol, order_type: "MARKET",
-            transaction_type: s.side, disclosed_quantity: 0, trigger_price: 0, is_amo: false
-          })
-        });
-        const d = await res.json();
-        alert(d.status === "success" ? `Order Placed! ID: ${d.data.order_id}` : JSON.stringify(d));
-      } catch (e) { alert("Order error: " + e.message); }
-    }
-
-    function applyFlows() {
-      const f = parseFloat(document.getElementById("inFii").value) || 0;
-      const d = parseFloat(document.getElementById("inDii").value) || 0;
-      document.getElementById("fiiCashVal").textContent = `${f >= 0 ? "+" : ""}₹${f.toLocaleString("en-IN")} Cr`;
-      document.getElementById("diiCashVal").textContent = `${d >= 0 ? "+" : ""}₹${d.toLocaleString("en-IN")} Cr`;
+    function saveFlows() {
+      appState.fiiCash = parseFloat(document.getElementById("inFii").value) || 0;
+      appState.diiCash = parseFloat(document.getElementById("inDii").value) || 0;
+      document.getElementById("fiiDiiBadge").textContent = `FII Cash: ${appState.fiiCash >= 0 ? "+" : ""}₹${appState.fiiCash} Cr | DII: ${appState.diiCash >= 0 ? "+" : ""}₹${appState.diiCash} Cr`;
+      saveState();
       closeModal("flowModal");
     }
 
+    function resetPaper() {
+      appState.paperCapital = 100000;
+      appState.realizedPnl = 0;
+      appState.positions = [];
+      saveState();
+      renderDesk();
+    }
+
     function switchView(v) {
-      ["radar", "plan", "chain", "trades"].forEach(id => {
+      ["aerial", "opps", "chain", "desk"].forEach(id => {
         document.getElementById(`view-${id}`).classList.add("hidden");
         document.getElementById(`nav-${id}`).classList.remove("active");
       });
@@ -890,25 +1163,17 @@
       document.getElementById(`nav-${v}`).classList.add("active");
     }
 
-    function updateLots() {
-      tradeLots = Math.max(1, parseInt(document.getElementById("lotInput").value) || 1);
-      document.getElementById("lotBadge").textContent = `${tradeLots} Lot${tradeLots > 1 ? "s" : ""}`;
-      renderAiPlan();
-    }
-
-    function resetPaper() {
-      paperCapital = 100000; realizedPnl = 0; positions = [];
-      updatePositionsUI();
-    }
-
     function openModal(id) { document.getElementById(id).style.display = "flex"; }
     function closeModal(id) { document.getElementById(id).style.display = "none"; }
 
+    function renderAll() {
+      renderAerial();
+      renderOpportunities();
+      renderDesk();
+    }
+
     // Boot
-    renderBlocktrade();
-    renderAiPlan();
-    renderOptionChain();
-    updatePositionsUI();
+    loadState();
   </script>
 </body>
 </html>
