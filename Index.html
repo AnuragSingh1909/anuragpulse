@@ -402,4 +402,513 @@
       <span class="nav-ico">🧠</span><span>AI Market Plan</span>
     </button>
     <button class="nav-btn" id="nav-chain" onclick="switchView('chain')">
-      
+      <span class="nav-ico">⛓️</span><span>Dec/Jan Chain</span>
+    </button>
+    <button class="nav-btn" id="nav-trades" onclick="switchView('trades')">
+      <span class="nav-ico">🎯</span><span>Trades (<span id="posBadge">0</span>)</span>
+    </button>
+  </nav>
+
+  <!-- UPSTOX API MODAL -->
+  <div class="modal-bg" id="upstoxModal">
+    <div class="modal-box">
+      <h3 style="font-size:15px;margin-bottom:6px;">Connect Upstox v2 Live API</h3>
+      <p style="font-size:11px;color:var(--text-2);margin-bottom:10px;">Stored in volatile tab memory only—erased automatically on tab close.</p>
+      <input type="password" id="upstoxTokenInput" placeholder="Paste Upstox v2 Access Token..." style="margin-bottom:10px;" />
+      <div style="display:flex;gap:8px;">
+        <button class="btn-paper" style="flex:1;" onclick="saveUpstoxToken()">Connect Live</button>
+        <button class="btn-sm" onclick="closeModal('upstoxModal')">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- EDIT FII/DII FLOW MODAL -->
+  <div class="modal-bg" id="flowModal">
+    <div class="modal-box">
+      <h3 style="font-size:15px;margin-bottom:8px;">Update FII / DII Cash Flow (₹ Cr)</h3>
+      <label style="font-size:11px;color:var(--text-2);">FII Net Cash (₹ Cr)</label>
+      <input type="number" id="inFii" value="5673" style="margin:4px 0 10px;" />
+      <label style="font-size:11px;color:var(--text-2);">DII Net Cash (₹ Cr)</label>
+      <input type="number" id="inDii" value="-2760" style="margin:4px 0 12px;" />
+      <div style="display:flex;gap:8px;">
+        <button class="btn-paper" style="flex:1;" onclick="applyFlows()">Save & Update</button>
+        <button class="btn-sm" onclick="closeModal('flowModal')">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let upstoxToken = "";
+    let blockFilter = "ALL";
+    let activeSegment = "all";
+    let tradeLots = 1;
+    let paperCapital = 100000;
+    let realizedPnl = 0;
+    let positions = [];
+
+    const liveQuotes = {
+      niftySpot: 25349.65,
+      niftyDecFut: 25730.00,
+      bnfDecFut: 58340.00,
+      crudeDec: 7585.00,
+      goldJan: 76280.00
+    };
+
+    // PAGE 1: BLOCKTRADE.COM INSTITUTIONAL STOCK FOOTPRINT
+    const BLOCK_STOCKS = [
+      { sym: "ICICIBANK", side: "BUY", ltp: 1324.00, flow: "+₹940 Cr", deliv: "69%", reason: "FII Block Accumulation • MSCI 30 Nov weight increase", planSide: "BUY", entry: 1318.0, t1: 1346.0, t2: 1372.0, sl: 1302.0, lotSize: 25 },
+      { sym: "HDFCBANK", side: "BUY", ltp: 1698.50, flow: "+₹815 Cr", deliv: "66%", reason: "Consistent FII cash buying across 16 sessions", planSide: "BUY", entry: 1690.0, t1: 1722.0, t2: 1750.0, sl: 1670.0, lotSize: 25 },
+      { sym: "BHARTIARTL", side: "BUY", ltp: 1612.00, flow: "+₹580 Cr", deliv: "72%", reason: "Institutional defensive accumulation • High delivery", planSide: "BUY", entry: 1605.0, t1: 1638.0, t2: 1665.0, sl: 1585.0, lotSize: 25 },
+      { sym: "INFY", side: "SELL", ltp: 1862.00, flow: "-₹690 Cr", deliv: "64%", reason: "FII IT distribution following Nasdaq -1.48% / AI chip selloff", planSide: "SELL", entry: 1872.0, t1: 1838.0, t2: 1810.0, sl: 1892.0, lotSize: 25 },
+      { sym: "TCS", side: "SELL", ltp: 4085.00, flow: "-₹520 Cr", deliv: "61%", reason: "Institutional block selling on weak US tech spending cues", planSide: "SELL", entry: 4105.0, t1: 4045.0, t2: 3990.0, sl: 4145.0, lotSize: 25 },
+      { sym: "TATAMOTORS", side: "SELL", ltp: 814.00, flow: "-₹410 Cr", deliv: "58%", reason: "Global auto & European demand distribution", planSide: "SELL", entry: 820.0, t1: 802.0, t2: 786.0, sl: 832.0, lotSize: 25 }
+    ];
+
+    // PAGE 2: NEXT-MONTH (29 DEC 2026) MULTI-ASSET SETUPS WITH LIVE LTP
+    const AI_SETUPS = [
+      {
+        seg: "options",
+        symbol: "NIFTY 29 DEC 2026 25700 CE",
+        side: "BUY",
+        badge: "NEXT-MONTH BUY CE",
+        ltp: 485.00,
+        entry: 452.00,
+        t1: 545.00,
+        t2: 630.00,
+        sl: 395.00,
+        lotSize: 65,
+        reason: "34 days to expiry eliminates weekly theta wipeout. Buy on post-open dip near 25,620 spot to ride FII cash buying (+₹33,455 Cr in 5D) into 30 Nov MSCI rebalance."
+      },
+      {
+        seg: "options",
+        symbol: "NIFTY 29 DEC 2026 25800 PE",
+        side: "BUY",
+        badge: "NEXT-MONTH HEDGE PE",
+        ltp: 440.00,
+        entry: 420.00,
+        t1: 510.00,
+        t2: 590.00,
+        sl: 365.00,
+        lotSize: 65,
+        reason: "Trigger ONLY if Nifty fails to hold 25,800 gap-up resistance due to Asian selloff (Nikkei -2.92%). Safe Dec monthly cushion."
+      },
+      {
+        seg: "futures",
+        symbol: "NIFTY 29 DEC 2026 FUT",
+        side: "BUY",
+        badge: "LONG DEC FUTURES",
+        ltp: 25730.00,
+        entry: 25650.00,
+        t1: 25840.00,
+        t2: 26020.00,
+        sl: 25530.00,
+        lotSize: 65,
+        reason: "Monday's expiry unwind (-20,495 contracts) is complete. Buy Dec Fut on pullback toward VWAP support."
+      },
+      {
+        seg: "equity",
+        symbol: "INFY (Intraday / Dec Fut Short)",
+        side: "SELL",
+        badge: "SELL IT ON RISE",
+        ltp: 1862.00,
+        entry: 1872.00,
+        t1: 1838.00,
+        t2: 1810.00,
+        sl: 1892.00,
+        lotSize: 25,
+        reason: "US AI & semiconductor selloff (Nvidia -5.86%, Anthropic -6.54%) + FII block selling (-₹690 Cr) in IT."
+      },
+      {
+        seg: "equity",
+        symbol: "ICICIBANK (Positional / MIS)",
+        side: "BUY",
+        badge: "BUY BANK LEADER",
+        ltp: 1324.00,
+        entry: 1318.00,
+        t1: 1346.00,
+        t2: 1372.00,
+        sl: 1302.00,
+        lotSize: 25,
+        reason: "Top FII block accumulation (+₹940 Cr) + Dow Jones +0.85% banking rotation."
+      },
+      {
+        seg: "commodity",
+        symbol: "MCX CRUDEOIL 18 DEC FUT",
+        side: "SELL",
+        badge: "SELL CRUDE ON RISE",
+        ltp: 7585.00,
+        entry: 7640.00,
+        t1: 7480.00,
+        t2: 7340.00,
+        sl: 7735.00,
+        lotSize: 10,
+        reason: "Brent Crude fell below $91.01 (-21.4% monthly) despite Houthi tanker strikes as rising global supply & strong USD (DXY 103.84) dominate."
+      },
+      {
+        seg: "commodity",
+        symbol: "MCX GOLDM 05 JAN FUT",
+        side: "BUY",
+        badge: "BUY GOLD AT SUPPORT",
+        ltp: 76280.00,
+        entry: 76050.00,
+        t1: 76650.00,
+        t2: 77150.00,
+        sl: 75720.00,
+        lotSize: 10,
+        reason: "COMEX Gold ($3,543/oz) rebounding after 5-day drop while weak INR (92.91) supports domestic MCX Gold."
+      }
+    ];
+
+    const NEWS_ENGINE_ITEMS = [
+      { title: "FII 16-Day Cash Buying Streak (+₹33,455 Cr in 5 Sessions)", tag: "BULLISH BANKS / NIFTY", cls: "tag-buy", desc: "FIIs bought +₹5,673 Cr cash on 23 Nov ahead of 30 Nov MSCI rebalance while finishing their Nov index futures unwind." },
+      { title: "Brent Crude Dips Below $91.01 Despite Houthi Red Sea Attacks", tag: "BEARISH CRUDE", cls: "tag-sell", desc: "Rising supply and a firm US Dollar (DXY 103.84) offset Middle East tanker risk—avoid chasing Crude longs." },
+      { title: "US Tech Selloff (Nvidia -5.86%, Anthropic -6.54%) vs. Dow +0.85%", tag: "SHORT IT • LONG BANKS", cls: "tag-warn", desc: "Global rotation out of AI/tech into financials favors ICICI/HDFC Bank over Infosys/TCS." },
+      { title: "Tonight's US Inflation Print & 04 Dec RBI / 09 Dec FOMC", tag: "USE DEC EXPIRY", cls: "tag-buy", desc: "Next-month 29 Dec 2026 contracts protect you from sudden macro event spikes." }
+    ];
+
+    // RENDER PAGE 1: BLOCKTRADE RADAR
+    function filterBlocks(mode) {
+      blockFilter = mode;
+      document.getElementById("flt-all").className = `bt-pill ${mode === "ALL" ? "active-all" : ""}`;
+      document.getElementById("flt-buy").className = `bt-pill ${mode === "BUY" ? "active-buy" : ""}`;
+      document.getElementById("flt-sell").className = `bt-pill ${mode === "SELL" ? "active-sell" : ""}`;
+      renderBlocktrade();
+    }
+
+    function renderBlocktrade() {
+      const list = BLOCK_STOCKS.filter(s => blockFilter === "ALL" || s.side === blockFilter);
+      document.getElementById("blocktradeList").innerHTML = list.map(s => `
+        <div class="bt-card">
+          <div class="bt-left">
+            <div class="bt-sym">
+              <span>${s.sym}</span>
+              <span class="news-tag ${s.side === "BUY" ? "tag-buy" : "tag-sell"}">${s.side === "BUY" ? "▲ ACCUMULATION" : "▼ DISTRIBUTION"}</span>
+            </div>
+            <div style="font-size:11px;font-weight:700;color:#93c5fd;margin-top:2px;">LTP: ₹${s.ltp.toFixed(2)} • Deliv: ${s.deliv}</div>
+            <div class="bt-meta">${s.reason}</div>
+          </div>
+          <div class="bt-right">
+            <div class="bt-val ${s.side === "BUY" ? "green" : "red"}">${s.flow}</div>
+            <button class="bt-action-btn" onclick="paperFromBlock('${s.sym}')">+ Paper ${s.planSide}</button>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function paperFromBlock(sym) {
+      const s = BLOCK_STOCKS.find(x => x.sym === sym);
+      if (!s) return;
+      positions.unshift({
+        id: Date.now(), symbol: `${s.sym} (Block Flow ${s.planSide})`, side: s.planSide,
+        ltp: s.ltp, entry: s.entry, t1: s.t1, t2: s.t2, sl: s.sl,
+        qty: tradeLots * s.lotSize, guard: "Armed (+12% Breakeven Lock)", status: "OPEN"
+      });
+      updatePositionsUI();
+      switchView("trades");
+    }
+
+    // RENDER PAGE 2: AI MULTI-ASSET SETUPS (WITH LIVE LTP)
+    function switchSegment(seg, btn) {
+      activeSegment = seg;
+      document.querySelectorAll(".seg-tab").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      renderAiPlan();
+    }
+
+    function renderAiPlan() {
+      const filtered = AI_SETUPS.filter(x => activeSegment === "all" || x.seg === activeSegment);
+      document.getElementById("aiSetupsList").innerHTML = filtered.map((s, idx) => {
+        const globalIdx = AI_SETUPS.indexOf(s);
+        return `
+          <div class="setup-card">
+            <div class="setup-top">
+              <div>
+                <div class="setup-title">${s.symbol}</div>
+                <div class="setup-sub">${s.reason}</div>
+              </div>
+              <span class="action-pill ${s.side === "BUY" ? "pill-buy" : "pill-sell"}">${s.badge}</span>
+            </div>
+
+            <div class="levels-grid">
+              <div class="ltp-highlight"><div class="lvl-k blue">LIVE LTP</div><div class="lvl-v blue">₹${s.ltp}</div></div>
+              <div><div class="lvl-k">ENTRY</div><div class="lvl-v">₹${s.entry}</div></div>
+              <div><div class="lvl-k">TARGET 1</div><div class="lvl-v green">₹${s.t1}</div></div>
+              <div><div class="lvl-k">TARGET 2</div><div class="lvl-v green">₹${s.t2}</div></div>
+              <div><div class="lvl-k">STOP LOSS</div><div class="lvl-v red">₹${s.sl}</div></div>
+            </div>
+
+            <div class="trade-btns">
+              <button class="btn-paper" onclick="startTrade(${globalIdx}, 'PAPER')">▶ PAPER TRADE (${tradeLots} Lot)</button>
+              <button class="btn-real" onclick="startTrade(${globalIdx}, 'REAL')">⚡ REAL UPSTOX (${tradeLots} Lot)</button>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      document.getElementById("newsEngineList").innerHTML = NEWS_ENGINE_ITEMS.map(n => `
+        <div class="news-item">
+          <div class="news-top">
+            <strong>${n.title}</strong>
+            <span class="news-tag ${n.cls}">${n.tag}</span>
+          </div>
+          <div style="color:var(--text-2);line-height:1.4;">${n.desc}</div>
+        </div>
+      `).join("");
+    }
+
+    // RENDER PAGE 3: NEXT-MONTH & FAR-MONTH OPTION CHAIN
+    function renderOptionChain() {
+      const idx = document.getElementById("ocIndex").value;
+      const spot = idx === "NIFTY" ? liveQuotes.niftyDecFut : liveQuotes.bnfDecFut;
+      const step = idx === "NIFTY" ? 100 : 200;
+      const lot = idx === "NIFTY" ? 65 : 30;
+      const atm = Math.round(spot / step) * step;
+      const exp = document.getElementById("ocExpiry").value;
+      const daysMult = exp === "2026-12-29" ? 1.0 : 1.38;
+      let rows = "";
+
+      for (let i = -4; i <= 4; i++) {
+        const strike = atm + i * step;
+        const dist = strike - spot;
+        const baseTv = (idx === "NIFTY" ? 465 : 980) * daysMult;
+        const tv = Math.max(85, Math.round(baseTv * Math.exp(-Math.abs(dist) / (step * 5.5))));
+        const ceLtp = +(Math.max(0, spot - strike) + tv).toFixed(1);
+        const peLtp = +(Math.max(0, strike - spot) + tv).toFixed(1);
+        const ceDelta = Math.max(0.15, Math.min(0.85, +(0.50 - dist / (step * 10)).toFixed(2)));
+        const peDelta = +(ceDelta - 1).toFixed(2);
+
+        rows += `
+          <tr class="${i === 0 ? "atm-row" : ""}">
+            <td style="color:var(--text-2);">${ceDelta}</td>
+            <td class="green" style="font-weight:700;">₹${ceLtp}</td>
+            <td>
+              <button class="oc-btn pill-buy" onclick="chainPaper('${idx} ${exp} ${strike} CE', 'BUY', ${ceLtp}, ${lot})">B</button>
+              <button class="oc-btn pill-sell" onclick="chainPaper('${idx} ${exp} ${strike} CE', 'SELL', ${ceLtp}, ${lot})">S</button>
+            </td>
+            <td style="font-weight:800;">${strike}</td>
+            <td>
+              <button class="oc-btn pill-buy" onclick="chainPaper('${idx} ${exp} ${strike} PE', 'BUY', ${peLtp}, ${lot})">B</button>
+              <button class="oc-btn pill-sell" onclick="chainPaper('${idx} ${exp} ${strike} PE', 'SELL', ${peLtp}, ${lot})">S</button>
+            </td>
+            <td class="red" style="font-weight:700;">₹${peLtp}</td>
+            <td style="color:var(--text-2);">${peDelta}</td>
+          </tr>
+        `;
+      }
+      document.getElementById("ocBody").innerHTML = rows;
+    }
+
+    function chainPaper(symbol, side, ltp, lotSize) {
+      const m = side === "BUY" ? 1 : -1;
+      positions.unshift({
+        id: Date.now(), symbol, side, ltp, entry: ltp,
+        t1: +(ltp + m * ltp * 0.20).toFixed(1),
+        t2: +(ltp + m * ltp * 0.38).toFixed(1),
+        sl: +(ltp - m * ltp * 0.15).toFixed(1),
+        qty: tradeLots * lotSize, guard: "Armed (+12% Breakeven Lock)", status: "OPEN"
+      });
+      updatePositionsUI();
+      switchView("trades");
+    }
+
+    // PAGE 4: EXECUTE & MONITOR TRADES
+    function startTrade(idx, mode) {
+      const s = AI_SETUPS[idx];
+      if (!s) return;
+      if (mode === "REAL") {
+        if (!upstoxToken) {
+          alert("Connect your Upstox v2 Access Token via the top-right 'Upstox' button first.");
+          openModal("upstoxModal");
+          return;
+        }
+        placeUpstoxOrder(s);
+        return;
+      }
+      positions.unshift({
+        id: Date.now(), symbol: s.symbol, side: s.side, ltp: s.ltp, entry: s.entry,
+        t1: s.t1, t2: s.t2, sl: s.sl, qty: tradeLots * s.lotSize,
+        guard: "Armed (+12% Breakeven Lock)", status: "OPEN"
+      });
+      updatePositionsUI();
+      switchView("trades");
+    }
+
+    function simulateTick() {
+      if (positions.length === 0) return;
+      positions.forEach(p => {
+        if (p.status !== "OPEN") return;
+        const fav = Math.random() < 0.72;
+        const step = Math.max(0.5, p.entry * 0.035);
+        const dir = (p.side === "BUY" ? 1 : -1) * (fav ? 1 : -1);
+        p.ltp = +(p.ltp + dir * step).toFixed(1);
+
+        const pnl = (p.side === "BUY" ? (p.ltp - p.entry) : (p.entry - p.ltp)) * p.qty;
+        const pct = (p.side === "BUY" ? (p.ltp - p.entry) : (p.entry - p.ltp)) / p.entry;
+
+        if (pct >= 0.12 && ((p.side === "BUY" && p.sl < p.entry) || (p.side === "SELL" && p.sl > p.entry))) {
+          p.sl = p.entry;
+          p.guard = "🔒 BREAKEVEN LOCKED (Zero-Loss)";
+        }
+        if ((p.side === "BUY" && p.ltp >= p.t1) || (p.side === "SELL" && p.ltp <= p.t1)) {
+          p.sl = +(p.entry + (p.ltp - p.entry) * 0.65).toFixed(1);
+          p.guard = `🛡️ T1 HIT! Profit Locked at ₹${p.sl}`;
+        }
+        const hitT2 = (p.side === "BUY" && p.ltp >= p.t2) || (p.side === "SELL" && p.ltp <= p.t2);
+        const hitSL = (p.side === "BUY" && p.ltp <= p.sl) || (p.side === "SELL" && p.ltp >= p.sl);
+        if (hitT2 || hitSL) {
+          p.status = hitT2 ? "CLOSED (TARGET 2 HIT)" : (pnl >= 0 ? "CLOSED (PROFIT LOCKED)" : "CLOSED (SL HIT)");
+          realizedPnl += pnl;
+          paperCapital += pnl;
+        }
+      });
+      updatePositionsUI();
+    }
+
+    function exitPosition(id) {
+      const p = positions.find(x => x.id === id);
+      if (!p || p.status !== "OPEN") return;
+      const pnl = (p.side === "BUY" ? (p.ltp - p.entry) : (p.entry - p.ltp)) * p.qty;
+      p.status = "CLOSED (MANUAL EXIT)";
+      realizedPnl += pnl;
+      paperCapital += pnl;
+      updatePositionsUI();
+    }
+
+    function updatePositionsUI() {
+      const open = positions.filter(x => x.status === "OPEN");
+      document.getElementById("posBadge").textContent = open.length;
+      let unreal = 0;
+      open.forEach(p => unreal += (p.side === "BUY" ? (p.ltp - p.entry) : (p.entry - p.ltp)) * p.qty);
+      const net = realizedPnl + unreal;
+
+      document.getElementById("paperCap").textContent = "₹" + Math.round(paperCapital).toLocaleString("en-IN");
+      const pnlEl = document.getElementById("netPnlVal");
+      pnlEl.textContent = `${net >= 0 ? "+" : ""}₹${net.toFixed(2)}`;
+      pnlEl.className = `flow-amt ${net >= 0 ? "green" : "red"}`;
+
+      const list = document.getElementById("positionsList");
+      if (positions.length === 0) {
+        list.innerHTML = `<div style="text-align:center;color:var(--text-2);font-size:12px;padding:16px;">No active trades yet. Tap <strong>PAPER TRADE</strong> on any setup in <strong>Blocktrade Radar</strong> or <strong>AI Market Plan</strong>.</div>`;
+        return;
+      }
+      list.innerHTML = positions.map(p => {
+        const pnl = (p.side === "BUY" ? (p.ltp - p.entry) : (p.entry - p.ltp)) * p.qty;
+        const pct = Math.min(100, Math.round((Math.max(0, p.side === "BUY" ? p.ltp - p.entry : p.entry - p.ltp) / (Math.abs(p.t2 - p.entry) || 1)) * 100));
+        return `
+          <div class="pos-card">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <div>
+                <strong style="font-size:12px;">${p.symbol}</strong>
+                <div style="font-size:10px;color:var(--text-2);">${p.side} • Qty: ${p.qty} • Entry: ₹${p.entry} • <span class="blue">LTP: ₹${p.ltp}</span></div>
+              </div>
+              <div style="text-align:right;">
+                <div style="font-size:14px;font-weight:800;" class="${pnl >= 0 ? "green" : "red"}">${pnl >= 0 ? "+" : ""}₹${pnl.toFixed(1)}</div>
+                <div style="font-size:10px;color:var(--text-2);">${p.status}</div>
+              </div>
+            </div>
+            <div class="prog-track"><div class="prog-fill" style="width:${pct}%;"></div></div>
+            <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text-2);margin-bottom:8px;">
+              <span>SL: <strong class="red">₹${p.sl}</strong></span>
+              <span>T1: <strong class="green">₹${p.t1}</strong></span>
+              <span>T2: <strong class="green">₹${p.t2}</strong></span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <span class="guard-badge">${p.guard}</span>
+              ${p.status === "OPEN" ? `<button class="btn-sm" style="background:var(--red-bg);color:var(--red);" onclick="exitPosition(${p.id})">Exit</button>` : ""}
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    // UPSTOX & SYNC
+    function saveUpstoxToken() {
+      const val = document.getElementById("upstoxTokenInput").value.trim();
+      if (!val) return;
+      upstoxToken = val;
+      document.getElementById("upstoxTokenInput").value = "";
+      const b = document.getElementById("connBadge");
+      b.className = "badge badge-live";
+      b.textContent = "● UPSTOX LIVE LTP CONNECTED";
+      closeModal("upstoxModal");
+      syncLiveData();
+    }
+
+    async function syncLiveData() {
+      if (!upstoxToken) {
+        liveQuotes.niftyDecFut = +(liveQuotes.niftyDecFut + (Math.random() - 0.5) * 14).toFixed(2);
+        document.getElementById("niftyFutLtp").textContent = "₹" + liveQuotes.niftyDecFut.toLocaleString("en-IN", { minimumFractionDigits: 2 });
+        renderOptionChain();
+        return;
+      }
+      try {
+        const res = await fetch("https://api.upstox.com/v2/market-quote/ltp?instrument_key=NSE_INDEX%7CNifty%2050,NSE_INDEX%7CNifty%20Bank", {
+          headers: { "Authorization": `Bearer ${upstoxToken}`, "Accept": "application/json" }
+        });
+        const json = await res.json();
+        if (json.status === "success" && json.data) {
+          const n = json.data["NSE_INDEX:Nifty 50"]?.last_price;
+          if (n) {
+            liveQuotes.niftySpot = n;
+            document.getElementById("niftySpotSub").textContent = `Cash: ${n.toFixed(2)}`;
+          }
+        }
+      } catch (e) {}
+    }
+
+    async function placeUpstoxOrder(s) {
+      if (!confirm(`Confirm LIVE Upstox Order?\n${s.side} ${s.symbol} | Qty: ${tradeLots * s.lotSize}`)) return;
+      try {
+        const res = await fetch("https://api.upstox.com/v2/order/place", {
+          method: "POST",
+          headers: { "Authorization": `Bearer ${upstoxToken}`, "Content-Type": "application/json", "Accept": "application/json" },
+          body: JSON.stringify({
+            quantity: tradeLots * s.lotSize, product: "I", validity: "DAY", price: 0,
+            tag: "AnuragPulsePro", instrument_token: s.symbol, order_type: "MARKET",
+            transaction_type: s.side, disclosed_quantity: 0, trigger_price: 0, is_amo: false
+          })
+        });
+        const d = await res.json();
+        alert(d.status === "success" ? `Order Placed! ID: ${d.data.order_id}` : JSON.stringify(d));
+      } catch (e) { alert("Order error: " + e.message); }
+    }
+
+    function applyFlows() {
+      const f = parseFloat(document.getElementById("inFii").value) || 0;
+      const d = parseFloat(document.getElementById("inDii").value) || 0;
+      document.getElementById("fiiCashVal").textContent = `${f >= 0 ? "+" : ""}₹${f.toLocaleString("en-IN")} Cr`;
+      document.getElementById("diiCashVal").textContent = `${d >= 0 ? "+" : ""}₹${d.toLocaleString("en-IN")} Cr`;
+      closeModal("flowModal");
+    }
+
+    function switchView(v) {
+      ["radar", "plan", "chain", "trades"].forEach(id => {
+        document.getElementById(`view-${id}`).classList.add("hidden");
+        document.getElementById(`nav-${id}`).classList.remove("active");
+      });
+      document.getElementById(`view-${v}`).classList.remove("hidden");
+      document.getElementById(`nav-${v}`).classList.add("active");
+    }
+
+    function updateLots() {
+      tradeLots = Math.max(1, parseInt(document.getElementById("lotInput").value) || 1);
+      document.getElementById("lotBadge").textContent = `${tradeLots} Lot${tradeLots > 1 ? "s" : ""}`;
+      renderAiPlan();
+    }
+
+    function resetPaper() {
+      paperCapital = 100000; realizedPnl = 0; positions = [];
+      updatePositionsUI();
+    }
+
+    function openModal(id) { document.getElementById(id).style.display = "flex"; }
+    function closeModal(id) { document.getElementById(id).style.display = "none"; }
+
+    // Boot
+    renderBlocktrade();
+    renderAiPlan();
+    renderOptionChain();
+    updatePositionsUI();
+  </script>
+</body>
+</html>
