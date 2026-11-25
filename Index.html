@@ -8,11 +8,11 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="application-name" content="AnuragPulse Pro" />
-  <title>AnuragPulse Pro v5.0 — Live Market Aerial & Multi-Asset Terminal</title>
+  <title>AnuragPulse Pro v6.0 — Live Aerial & Multi-Asset Terminal</title>
   <link rel="manifest" href="manifest.json" />
   <script>
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js').catch(() => {});
+      navigator.serviceWorker.register('sw.js?v=6').catch(() => {});
     }
   </script>
   <style>
@@ -37,10 +37,9 @@
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     body { background: var(--bg-base); color: var(--text-1); padding-bottom: 84px; -webkit-tap-highlight-color: transparent; }
 
-    /* Top Bar */
     .topbar {
       position: sticky; top: 0; z-index: 50;
-      background: rgba(6, 10, 18, 0.95); backdrop-filter: blur(12px);
+      background: rgba(6, 10, 18, 0.96); backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border); padding: 10px 14px;
       display: flex; justify-content: space-between; align-items: center;
     }
@@ -51,7 +50,7 @@
       display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px;
     }
     .brand h1 { font-size: 14px; font-weight: 700; }
-    .badge { font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 99px; display: inline-flex; align-items: center; gap: 4px; }
+    .badge { font-size: 9px; font-weight: 700; padding: 2px 7px; border-radius: 99px; display: inline-flex; align-items: center; gap: 4px; }
     .badge-off { background: var(--red-bg); color: var(--red); border: 1px solid rgba(244,63,94,0.3); }
     .badge-live { background: var(--green-bg); color: var(--green); border: 1px solid rgba(16,185,129,0.3); }
     .top-actions { display: flex; gap: 6px; }
@@ -61,7 +60,6 @@
     }
     .btn-connect { background: linear-gradient(135deg, #2563eb, #4f46e5); border: none; }
 
-    /* Alert Toast Banner */
     #alertToast {
       display: none; position: sticky; top: 53px; z-index: 49;
       background: linear-gradient(90deg, #059669, #2563eb); color: #fff;
@@ -74,14 +72,17 @@
     .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; gap: 8px; }
     .step-pill { background: rgba(59,130,246,0.18); color: #60a5fa; font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.4px; }
 
-    /* Aerial Market Strip */
     .aerial-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 10px; }
     .metric-box { background: var(--bg-input); border: 1px solid var(--border); border-radius: 10px; padding: 9px; }
     .metric-lbl { font-size: 9px; color: var(--text-2); font-weight: 700; text-transform: uppercase; }
     .metric-val { font-size: 14px; font-weight: 800; margin-top: 2px; }
     .metric-sub { font-size: 10px; font-weight: 600; margin-top: 2px; color: var(--text-2); }
 
-    /* Direction & Event Summary Box */
+    .diag-bar {
+      font-size: 10px; color: var(--text-2); background: var(--bg-input); border: 1px solid var(--border);
+      border-radius: 8px; padding: 6px 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;
+    }
+
     .summary-box {
       background: var(--bg-input); border: 1px solid rgba(59,130,246,0.3); border-radius: 10px;
       padding: 10px 12px; font-size: 11px; line-height: 1.45; margin-bottom: 10px;
@@ -89,7 +90,6 @@
     .event-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 8px; }
     .event-chip { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 7px; font-size: 10px; }
 
-    /* Institutional Stock Lists */
     .inst-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     @media (max-width: 440px) { .inst-cols { grid-template-columns: 1fr; } }
     .inst-panel { background: var(--bg-input); border: 1px solid var(--border); border-radius: 10px; padding: 10px; }
@@ -99,7 +99,6 @@
     }
     .inst-item:last-child { border-bottom: none; }
 
-    /* Segment Tabs */
     .seg-tabs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-bottom: 12px; }
     .seg-tab {
       padding: 7px 2px; text-align: center; border-radius: 8px; font-size: 10px; font-weight: 700;
@@ -107,7 +106,6 @@
     }
     .seg-tab.active { background: var(--blue); color: #fff; border-color: var(--blue); }
 
-    /* Opportunity Cards */
     .setup-card { background: var(--bg-input); border: 1px solid var(--border); border-radius: 12px; padding: 12px; margin-bottom: 10px; }
     .setup-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 8px; }
     .setup-title { font-size: 13px; font-weight: 800; }
@@ -139,7 +137,6 @@
       padding: 9px 4px; border-radius: 8px; font-size: 10px; font-weight: 800; cursor: pointer;
     }
 
-    /* Option Chain */
     .oc-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
     select, input[type="number"], input[type="text"], input[type="password"] {
       width: 100%; background: var(--bg-input); color: var(--text-1); border: 1px solid var(--border);
@@ -151,7 +148,6 @@
     .atm-row { background: rgba(59, 130, 246, 0.16); font-weight: 800; }
     .oc-btn { padding: 3px 6px; border-radius: 5px; font-size: 10px; font-weight: 700; border: none; cursor: pointer; }
 
-    /* Positions & Profit Protection */
     .pos-card { background: var(--bg-input); border: 1px solid rgba(59,130,246,0.35); border-radius: 12px; padding: 12px; margin-bottom: 10px; }
     .prog-track { height: 7px; background: var(--bg-elevated); border-radius: 99px; overflow: hidden; margin: 8px 0; }
     .prog-fill { height: 100%; background: linear-gradient(90deg, #3b82f6, #10b981); transition: width 0.3s; }
@@ -160,7 +156,6 @@
       background: rgba(139,92,246,0.18); color: #c4b5fd; border: 1px solid rgba(139,92,246,0.35);
     }
 
-    /* Bottom Navigation */
     .bottom-nav {
       position: fixed; bottom: 0; left: 0; right: 0; z-index: 50;
       background: rgba(14, 22, 40, 0.96); backdrop-filter: blur(12px);
@@ -174,7 +169,6 @@
     .nav-btn.active { color: #60a5fa; }
     .nav-ico { font-size: 16px; }
 
-    /* Modal */
     .modal-bg {
       display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.82); z-index: 100;
       align-items: center; justify-content: center; padding: 16px;
@@ -189,7 +183,6 @@
 </head>
 <body>
 
-  <!-- TOP BAR -->
   <header class="topbar">
     <div class="brand">
       <div class="brand-icon">AP</div>
@@ -199,12 +192,11 @@
       </div>
     </div>
     <div class="top-actions">
-      <button class="btn-sm" onclick="pollUpstoxLiveQuotes()">↻ Live Poll</button>
+      <button class="btn-sm" onclick="syncAllFeeds(true)">↻ Sync</button>
       <button class="btn-sm btn-connect" onclick="openAuthModal()">🔑 Setup Feed</button>
     </div>
   </header>
 
-  <!-- AUTO-ALERT BANNER -->
   <div id="alertToast">
     <span id="alertToastMsg">🔔 Signal Alert Triggered!</span>
     <button class="btn-sm" style="padding:2px 8px;" onclick="document.getElementById('alertToast').style.display='none'">Dismiss</button>
@@ -212,15 +204,14 @@
 
   <main class="container">
 
-    <!-- PAGE 1: AERIAL MARKET VIEW & INSTITUTIONAL RADAR -->
+    <!-- PAGE 1: AERIAL MARKET VIEW & DYNAMIC INSTITUTIONAL RADAR -->
     <div id="view-aerial">
       <section class="card">
         <div class="card-header">
-          <span class="step-pill">Page 1 • Aerial Market View & Volatility</span>
+          <span class="step-pill">Page 1 • Aerial Market Glimpse & Volatility</span>
           <span style="font-size:10px;color:var(--text-2);" id="lastTickTime">Waiting for Upstox Feed</span>
         </div>
 
-        <!-- LIVE BENCHMARKS + INDIA VIX -->
         <div class="aerial-grid">
           <div class="metric-box">
             <div class="metric-lbl">NIFTY 50 LIVE</div>
@@ -239,17 +230,22 @@
           </div>
         </div>
 
-        <!-- AI MARKET SYNTHESIS: WHAT HAPPENED -> NEXT POTENTIAL MOVE -->
+        <div class="diag-bar">
+          <span id="diagStatus">Feed Health: Idle</span>
+          <span id="tokenAgeInfo" style="color:var(--amber);">Daily Token</span>
+        </div>
+
+        <!-- DYNAMIC AI TRAJECTORY ENGINE -->
         <div class="summary-box">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-            <strong class="blue">🧠 AI Market Trajectory & Institutional Footprint</strong>
+            <strong class="blue">🧠 Dynamic AI Market Trajectory & Institutional Plan</strong>
             <button class="btn-sm" style="padding:2px 7px;font-size:10px;" onclick="openModal('flowModal')">✎ Edit FII/DII</button>
           </div>
-          <p style="color:var(--text-2);">
-            <strong>What Happened:</strong> After Friday's FII surge and Monday's expiry unwind (-451 pts to 25,350), that selling cycle completed. Sustained FII cash inflows (Nov MTD net buyers) + easing India VIX (~16.6) sparked a gap-up recovery above <strong>25,750–25,800</strong>.
+          <p style="color:var(--text-2);" id="aiWhatHappened">
+            <strong>Cycle Context:</strong> Monday's expiry unwind (-451 pts to 25,350) cleared weak longs. Sustained FII cash inflows + cooling VIX triggered a gap-up breakout.
           </p>
-          <p style="color:var(--text-1);margin-top:5px;">
-            <strong>Next Potential Move:</strong> Holding above <strong>25,680</strong> keeps upside open toward <strong>26,050–26,350</strong> ahead of the 30 Nov MSCI Rebalance. Avoid near-expiry options; use <strong>Dec 2026 / Jan 2027</strong> contracts with protective hedges.
+          <p style="color:var(--text-1);margin-top:5px;" id="aiNextMove">
+            Connect live Upstox feed to compute real-time intraday trend vs. Open & VIX regime.
           </p>
 
           <div class="event-row">
@@ -268,26 +264,26 @@
           </div>
         </div>
 
-        <!-- INSTITUTIONAL BUYING VS SELLING STOCK RADAR -->
+        <!-- LIVE INSTITUTIONAL ACCUMULATION VS DISTRIBUTION SCANNER -->
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-          <span style="font-size:11px;font-weight:800;color:var(--text-2);">INSTITUTIONAL STOCK FLOWS (LIVE LTP SYNCED):</span>
-          <span style="font-size:10px;color:var(--green);" id="fiiDiiBadge">FII Cash: +₹5,673 Cr | DII: -₹2,760 Cr</span>
+          <span style="font-size:11px;font-weight:800;color:var(--text-2);">LIVE INSTITUTIONAL STOCK FLOWS (RANKED BY REAL % CHG & VOL):</span>
+          <span style="font-size:10px;color:var(--green);" id="fiiDiiBadge">FII: +₹5,673 Cr | DII: -₹2,760 Cr</span>
         </div>
 
         <div class="inst-cols">
           <div class="inst-panel">
-            <div style="font-size:11px;font-weight:800;color:var(--green);margin-bottom:6px;">▲ INSTITUTIONS BUYING</div>
-            <div id="instBuyList"></div>
+            <div style="font-size:11px;font-weight:800;color:var(--green);margin-bottom:6px;">▲ ACCUMULATING (BUYING)</div>
+            <div id="instBuyList"><div style="font-size:10px;color:var(--text-3);">Awaiting live quotes...</div></div>
           </div>
           <div class="inst-panel">
-            <div style="font-size:11px;font-weight:800;color:var(--red);margin-bottom:6px;">▼ INSTITUTIONS SELLING</div>
-            <div id="instSellList"></div>
+            <div style="font-size:11px;font-weight:800;color:var(--red);margin-bottom:6px;">▼ DISTRIBUTING (SELLING)</div>
+            <div id="instSellList"><div style="font-size:10px;color:var(--text-3);">Awaiting live quotes...</div></div>
           </div>
         </div>
       </section>
     </div>
 
-    <!-- PAGE 2: MULTI-ASSET OPPORTUNITIES (NEXT-MONTH OPTIONS, SURGING EQUITIES, COMMODITIES, HEDGES) -->
+    <!-- PAGE 2: WHOLE-MARKET OPPORTUNITIES (NEXT-MONTH DEC/JAN OPTIONS, SURGING EQUITIES, COMMODITY, HEDGES) -->
     <div id="view-opps" class="hidden">
       <section class="card">
         <div class="card-header">
@@ -300,7 +296,7 @@
           <button class="seg-tab" onclick="filterOpps('options', this)">Dec/Jan Opt</button>
           <button class="seg-tab" onclick="filterOpps('equity', this)">Surging Eq</button>
           <button class="seg-tab" onclick="filterOpps('commodity', this)">Commodity</button>
-          <button class="seg-tab" onclick="filterOpps('hedge', this)">Hedge/Swing</button>
+          <button class="seg-tab" onclick="filterOpps('hedge', this)">2-Leg Hedge</button>
         </div>
 
         <div id="oppsContainer"></div>
@@ -355,12 +351,12 @@
       </section>
     </div>
 
-    <!-- PAGE 4: PAPER TRADING, PROFIT PROTECTION, ALERTS & ALGO BRIDGE -->
+    <!-- PAGE 4: PAPER TRADING, MULTI-LEG HEDGES, PROFIT PROTECTION & ALGO -->
     <div id="view-desk" class="hidden">
       <section class="card">
         <div class="card-header">
           <span class="step-pill">Paper Desk • Profit Protection & Algo</span>
-          <span style="font-size:10px;color:var(--text-2);" id="brokerFutureTag">Execution: Paper Mode</span>
+          <span style="font-size:10px;color:var(--text-2);" id="brokerFutureTag">Broker: Decide Later</span>
         </div>
 
         <div class="aerial-grid" style="grid-template-columns:1fr 1fr;">
@@ -374,7 +370,6 @@
           </div>
         </div>
 
-        <!-- PROFIT PROTECTION MODE & LOT CONTROLS -->
         <div style="background:var(--bg-input);border:1px solid var(--border);border-radius:10px;padding:10px;margin-bottom:12px;">
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
             <div>
@@ -391,24 +386,21 @@
             </div>
           </div>
           <div style="display:flex;justify-content:space-between;align-items:center;font-size:10px;color:var(--text-2);">
-            <span>Broker Choice: <strong>Decide Later (Upstox / Sahi)</strong></span>
+            <span>Demat Execution: <strong>Decide Later (Upstox / Sahi)</strong></span>
             <button class="btn-sm" onclick="resetPaper()">Reset ₹1L</button>
           </div>
         </div>
 
-        <!-- ACTIVE ALERTS LIST -->
         <div style="font-size:11px;font-weight:800;color:var(--amber);margin-bottom:6px;">🔔 ACTIVE AUTO-ALERTS (<span id="alertCount">0</span>)</div>
         <div id="alertsList" style="margin-bottom:12px;"></div>
 
-        <!-- ACTIVE PAPER POSITIONS -->
-        <div style="font-size:11px;font-weight:800;color:#60a5fa;margin-bottom:6px;">📊 PAPER POSITIONS (UPDATED BY LIVE FEED)</div>
+        <div style="font-size:11px;font-weight:800;color:#60a5fa;margin-bottom:6px;">📊 PAPER POSITIONS (LIVE LTP TRACKED)</div>
         <div id="positionsList"></div>
       </section>
     </div>
 
   </main>
 
-  <!-- BOTTOM NAVIGATION -->
   <nav class="bottom-nav">
     <button class="nav-btn active" id="nav-aerial" onclick="switchView('aerial')">
       <span class="nav-ico">🛰️</span><span>Aerial View</span>
@@ -424,15 +416,15 @@
     </button>
   </nav>
 
-  <!-- PERSISTENT LOCAL DEVICE SETUP MODAL (ACCOUNT ID + UPSTOX DATA TOKEN) -->
+  <!-- PERSISTENT LOCAL DEVICE SETUP MODAL -->
   <div class="modal-bg" id="authModal">
     <div class="modal-box">
       <h3 style="font-size:15px;margin-bottom:6px;">🔑 Live Data Feed Setup (Saved on Device)</h3>
       <p style="font-size:11px;color:var(--text-2);margin-bottom:10px;line-height:1.4;">
-        Saved locally in your phone's browser storage so refreshing never logs you out. Used strictly for <strong>live market quotes & socket data</strong>.
+        Saved locally on your phone so refreshing never logs you out. Upstox tokens expire daily at 3:30 AM IST—your Account ID stays pre-filled.
       </p>
       <label style="font-size:11px;color:var(--text-2);">Account ID / Profile Name</label>
-      <input type="text" id="inAccountId" placeholder="e.g. Anurag_Main or Upstox_ID" style="margin:4px 0 10px;" />
+      <input type="text" id="inAccountId" placeholder="e.g. 84BKKN" style="margin:4px 0 10px;" />
 
       <label style="font-size:11px;color:var(--text-2);">Upstox Live Data Access Token</label>
       <input type="password" id="inAccessToken" placeholder="Paste Upstox v2 Access Token..." style="margin:4px 0 10px;" />
@@ -471,8 +463,8 @@
   <div class="modal-bg" id="algoModal">
     <div class="modal-box">
       <h3 style="font-size:14px;margin-bottom:6px;">🤖 Algo-Compatible Signal Payload</h3>
-      <p style="font-size:11px;color:var(--text-2);margin-bottom:8px;">Standard JSON structure ready for Upstox, Sahi, or webhook execution:</p>
-      <textarea id="algoJsonBox" rows="9" style="width:100%;background:var(--bg-input);color:#6ee7b7;border:1px solid var(--border);border-radius:8px;padding:8px;font-size:11px;font-family:monospace;"></textarea>
+      <p style="font-size:11px;color:var(--text-2);margin-bottom:8px;">Multi-leg compatible JSON ready for Upstox, Sahi, or custom webhooks:</p>
+      <textarea id="algoJsonBox" rows="10" style="width:100%;background:var(--bg-input);color:#6ee7b7;border:1px solid var(--border);border-radius:8px;padding:8px;font-size:11px;font-family:monospace;"></textarea>
       <div style="display:flex;gap:8px;margin-top:10px;">
         <button class="btn-paper" style="flex:1;" onclick="copyAlgoJson()">Copy JSON</button>
         <button class="btn-sm" onclick="closeModal('algoModal')">Close</button>
@@ -481,11 +473,13 @@
   </div>
 
   <script>
-    // --- PERSISTENT LOCAL STORAGE STATE (NO DUMMY TICKS) ---
-    const STORE_KEY = "anuragpulse_v5_state";
+    const STORE_KEY = "anuragpulse_v6_state";
+    const QUOTE_CACHE_KEY = "anuragpulse_v6_quotes";
+
     let appState = {
       accountId: "",
       accessToken: "",
+      tokenSavedAt: 0,
       brokerChoice: "Decide Later (Paper Only)",
       lots: 1,
       protMode: "balanced",
@@ -497,257 +491,168 @@
       alerts: []
     };
 
-    // Live quotes dictionary populated ONLY from Upstox API / WebSocket
-    const liveLtpMap = {};
+    let liveQuotes = {};
+    let liveDecChain = []; // Real Upstox 29 Dec 2026 chain rows
     let pollTimer = null;
     let wsConnection = null;
+    let isSyncing = false;
+    let lastSyncMs = 0;
 
-    // Instrument keys for Upstox v2 Live Quotes
-    const INSTRUMENT_KEYS = {
-      NIFTY: "NSE_INDEX|Nifty 50",
-      BANKNIFTY: "NSE_INDEX|Nifty Bank",
-      VIX: "NSE_INDEX|India VIX",
-      ICICIBANK: "NSE_EQ|INE090A01021",
-      HDFCBANK: "NSE_EQ|INE040A01034",
-      INFY: "NSE_EQ|INE009A01021",
-      BAJFINANCE: "NSE_EQ|INE296A01024",
-      TATASTEEL: "NSE_EQ|INE081A01020",
-      SUNPHARMA: "NSE_EQ|INE044A01036",
-      M_M: "NSE_EQ|INE101A01026"
-    };
-
-    const INST_BUY_STOCKS = [
-      { sym: "ICICIBANK", key: INSTRUMENT_KEYS.ICICIBANK, flow: "+₹940 Cr", note: "FII Block Accumulation • Banking Leader" },
-      { sym: "HDFCBANK", key: INSTRUMENT_KEYS.HDFCBANK, flow: "+₹815 Cr", note: "16-Day FII Cash Inflow Heavyweight" },
-      { sym: "INFY", key: INSTRUMENT_KEYS.INFY, flow: "+₹620 Cr", note: "Institutional Rebound Buying (+3.3%)" },
-      { sym: "BAJFINANCE", key: INSTRUMENT_KEYS.BAJFINANCE, flow: "+₹480 Cr", note: "NBFC Institutional Accumulation" }
+    // Batch 1: Core Indices (isolated so equity ISINs can never block index ticks)
+    const INDEX_KEYS = [
+      "NSE_INDEX|Nifty 50",
+      "NSE_INDEX|Nifty Bank",
+      "NSE_INDEX|India VIX"
     ];
 
-    const INST_SELL_STOCKS = [
-      { sym: "TATASTEEL", key: INSTRUMENT_KEYS.TATASTEEL, flow: "-₹540 Cr", note: "Metal Sector Distribution" },
-      { sym: "SUNPHARMA", key: INSTRUMENT_KEYS.SUNPHARMA, flow: "-₹390 Cr", note: "Defensive Rotation Outflow" },
-      { sym: "M&M", key: INSTRUMENT_KEYS.M_M, flow: "-₹310 Cr", note: "Auto Profit Booking" }
+    // Batch 2: Liquid Nifty Institutional Watchlist
+    const STOCK_UNIVERSE = [
+      { sym: "ICICIBANK", key: "NSE_EQ|INE090A01021", sector: "Banking" },
+      { sym: "HDFCBANK", key: "NSE_EQ|INE040A01034", sector: "Banking" },
+      { sym: "INFY", key: "NSE_EQ|INE009A01021", sector: "IT" },
+      { sym: "TCS", key: "NSE_EQ|INE467B01029", sector: "IT" },
+      { sym: "RELIANCE", key: "NSE_EQ|INE002A01018", sector: "Energy" },
+      { sym: "BAJFINANCE", key: "NSE_EQ|INE296A01024", sector: "NBFC" },
+      { sym: "SBIN", key: "NSE_EQ|INE062A01020", sector: "PSU Bank" },
+      { sym: "BHARTIARTL", key: "NSE_EQ|INE397D01024", sector: "Telecom" },
+      { sym: "TATASTEEL", key: "NSE_EQ|INE081A01020", sector: "Metals" },
+      { sym: "SUNPHARMA", key: "NSE_EQ|INE044A01036", sector: "Pharma" },
+      { sym: "M&M", key: "NSE_EQ|INE101A01026", sector: "Auto" },
+      { sym: "LT", key: "NSE_EQ|INE018A01030", sector: "Infra" }
     ];
 
-    // Strategic Multi-Asset Opportunities (Long/Next-Month Only — Levels auto-calibrate to live LTP)
-    const OPPORTUNITIES = [
-      {
-        id: "opt_dec_ce",
-        seg: "options",
-        title: "NIFTY 29 DEC 2026 25800 CE",
-        key: INSTRUMENT_KEYS.NIFTY,
-        isIndexDerived: true,
-        strike: 25800,
-        optType: "CE",
-        side: "BUY",
-        badge: "NEXT-MONTH CALL",
-        lotSize: 65,
-        reason: "34 days to expiry eliminates weekly decay. Captures post-expiry gap-up momentum & 30 Nov MSCI inflows above 25,750 support."
-      },
-      {
-        id: "hedge_collar",
-        seg: "hedge",
-        title: "BULL CALL SPREAD (BUY 25800 CE + SELL 26200 CE • 29 DEC)",
-        key: INSTRUMENT_KEYS.NIFTY,
-        isIndexDerived: true,
-        strike: 25800,
-        optType: "SPREAD",
-        side: "BUY",
-        badge: "LOW-RISK HEDGE",
-        lotSize: 65,
-        reason: "Caps maximum capital risk while riding upside toward Nifty's 26,373 lifetime high zone."
-      },
-      {
-        id: "eq_icici",
-        seg: "equity",
-        title: "ICICIBANK (Surging Momentum Swing)",
-        key: INSTRUMENT_KEYS.ICICIBANK,
-        side: "BUY",
-        badge: "SURGING EQUITY",
-        lotSize: 25,
-        reason: "Leading Sensex/Nifty rebound (+3.38%) on strong FII cash inflows and cooling India VIX."
-      },
-      {
-        id: "eq_infy",
-        seg: "equity",
-        title: "INFY (Institutional Reversal Swing)",
-        key: INSTRUMENT_KEYS.INFY,
-        side: "BUY",
-        badge: "SURGING EQUITY",
-        lotSize: 25,
-        reason: "Strong institutional cash buying (+3.31%) breaking above short-term resistance."
-      },
-      {
-        id: "comm_crude",
-        seg: "commodity",
-        title: "MCX CRUDEOIL 18 DEC FUT (Trend Short)",
-        key: "MCX_FO|CRUDEOIL",
-        side: "SELL",
-        badge: "COMMODITY SWING",
-        lotSize: 10,
-        reason: "Declining global crude prices are supporting Indian equities & INR; sell rallies below resistance."
-      }
-    ];
+    function normKey(k) {
+      return (k || "").replace(":", "|").trim();
+    }
 
-    // --- LOAD & SAVE LOCAL STORAGE ---
+    function getQ(key) {
+      return liveQuotes[normKey(key)] || liveQuotes[key] || null;
+    }
+
+    // --- PERSISTENCE ---
     function loadState() {
       try {
         const raw = localStorage.getItem(STORE_KEY);
         if (raw) appState = { ...appState, ...JSON.parse(raw) };
+        const qRaw = localStorage.getItem(QUOTE_CACHE_KEY);
+        if (qRaw) liveQuotes = JSON.parse(qRaw);
       } catch (e) {}
+
       document.getElementById("lotInput").value = appState.lots;
       document.getElementById("lotTag").textContent = appState.lots;
       document.getElementById("protMode").value = appState.protMode;
-      document.getElementById("brokerFutureTag").textContent = `Broker: ${appState.brokerChoice}`;
-      document.getElementById("fiiDiiBadge").textContent = `FII Cash: ${appState.fiiCash >= 0 ? "+" : ""}₹${appState.fiiCash} Cr | DII: ${appState.diiCash >= 0 ? "+" : ""}₹${appState.diiCash} Cr`;
-
-      if (appState.accountId) {
-        document.getElementById("acctLabel").textContent = `(${appState.accountId})`;
+      document.getElementById("brokerFutureTag").textContent = `Broker: ${appState.brokerChoice}`; document.getElementById("fiiDiiBadge").textContent = `FII: ${appState.fiiCash >= 0 ? "+" : ""}₹${appState.fiiCash} Cr \vert{} DII:${appState.diiCash >= 0 ? "+" : ""}₹${appState.diiCash} Cr`;  if (appState.accountId) { document.getElementById("acctLabel").textContent = `(${appState.accountId})`;
       }
-
-      if (appState.accessToken) {
-        setConnectedUI(true);
-        startLiveDataEngine();
-      } else {
-        setConnectedUI(false);
-        openAuthModal();
-      }
-      renderAll();
-    }
-
-    function saveState() {
-      try {
-        localStorage.setItem(STORE_KEY, JSON.stringify(appState));
+      if (appState.tokenSavedAt) {
+        const hrs = Math.round((Date.now() - appState.tokenSavedAt) / 3600000);
+        document.getElementById("tokenAgeInfo").textContent = `Token age: ${hrs}h (Expires 3:30 AM)`; }  renderAll();  if (appState.accessToken) { setConnectedUI(true); startLiveEngine(); } else { setConnectedUI(false); openAuthModal(); } }  function saveState() { try { localStorage.setItem(STORE_KEY, JSON.stringify(appState)); } catch (e) {} }  function savePrefs() { appState.lots = Math.max(1, parseInt(document.getElementById("lotInput").value) \vert{}\vert{} 1); appState.protMode = document.getElementById("protMode").value; document.getElementById("lotTag").textContent = appState.lots; saveState(); renderOpportunities(); }  function openAuthModal() { document.getElementById("inAccountId").value = appState.accountId \vert{}\vert{} ""; document.getElementById("inAccessToken").value = appState.accessToken \vert{}\vert{} ""; document.getElementById("inBrokerChoice").value = appState.brokerChoice \vert{}\vert{} "Decide Later (Paper Only)"; openModal("authModal"); }  function saveDeviceCredentials() { const acct = document.getElementById("inAccountId").value.trim(); const tok = document.getElementById("inAccessToken").value.trim(); const broker = document.getElementById("inBrokerChoice").value; if (!acct \vert{}\vert{} !tok) { alert("Please enter both Account ID and Upstox Access Token."); return; } appState.accountId = acct; appState.accessToken = tok; appState.tokenSavedAt = Date.now(); appState.brokerChoice = broker; saveState(); document.getElementById("acctLabel").textContent = `(${acct})`;
+      document.getElementById("brokerFutureTag").textContent = `Broker: ${broker}`; document.getElementById("tokenAgeInfo").textContent = "Token age: 0h (Valid till 3:30 AM)"; closeModal("authModal"); setConnectedUI(true); startLiveEngine(); }  function clearDeviceCredentials() { appState.accountId = ""; appState.accessToken = ""; appState.tokenSavedAt = 0; liveQuotes = {}; liveDecChain = []; localStorage.removeItem(QUOTE_CACHE_KEY); saveState(); if (pollTimer) clearInterval(pollTimer); if (wsConnection) wsConnection.close(); setConnectedUI(false); closeModal("authModal"); renderAll(); }  function setConnectedUI(ok) { const b = document.getElementById("connBadge"); b.className = ok ? "badge badge-live" : "badge badge-off"; b.textContent = ok ? "● LIVE FEED ACTIVE" : "● DISCONNECTED (TAP SETUP)"; }  // --- SPLIT-BATCH LIVE ENGINE + ANDROID VISIBILITY RESUME --- function startLiveEngine() { if (!appState.accessToken) return; syncAllFeeds(true); connectUpstoxSocket();  if (pollTimer) clearInterval(pollTimer); pollTimer = setInterval(() => { if (!document.hidden) syncAllFeeds(false); }, 4000); }  document.addEventListener("visibilitychange", () => { if (!document.hidden && appState.accessToken) { syncAllFeeds(true); if (!wsConnection \vert{}\vert{} wsConnection.readyState !== WebSocket.OPEN) { connectUpstoxSocket(); } } });  async function connectUpstoxSocket() { if (!appState.accessToken) return; try { const res = await fetch("https://api.upstox.com/v3/feed/market-data-feed/authorize", { headers: { "Authorization": `Bearer ${appState.accessToken}`, "Accept": "application/json" }
+        });
+        const json = await res.json();
+        if (json.status === "success" && json.data?.authorized_redirect_uri) {
+          if (wsConnection) wsConnection.close();
+          wsConnection = new WebSocket(json.data.authorized_redirect_uri);
+          wsConnection.onopen = () => {
+            document.getElementById("connBadge").textContent = "● LIVE SOCKET + REST SYNC";
+            const keys = [...INDEX_KEYS, ...STOCK_UNIVERSE.map(s => s.key)];
+            wsConnection.send(new TextEncoder().encode(JSON.stringify({
+              guid: "ap_" + Date.now(),
+              method: "sub",
+              data: { mode: "ltpc", instrumentKeys: keys }
+            })));
+          };
+          wsConnection.onmessage = () => {
+            if (Date.now() - lastSyncMs > 2800) syncAllFeeds(false);
+          };
+        }
       } catch (e) {}
     }
 
-    function savePrefs() {
-      appState.lots = Math.max(1, parseInt(document.getElementById("lotInput").value) || 1);
-      appState.protMode = document.getElementById("protMode").value;
-      document.getElementById("lotTag").textContent = appState.lots;
-      saveState();
-      renderOpportunities();
-    }
-
-    function openAuthModal() {
-      document.getElementById("inAccountId").value = appState.accountId || "";
-      document.getElementById("inAccessToken").value = appState.accessToken || "";
-      document.getElementById("inBrokerChoice").value = appState.brokerChoice || "Decide Later (Paper Only)";
-      openModal("authModal");
-    }
-
-    function saveDeviceCredentials() {
-      const acct = document.getElementById("inAccountId").value.trim();
-      const tok = document.getElementById("inAccessToken").value.trim();
-      const broker = document.getElementById("inBrokerChoice").value;
-      if (!acct || !tok) {
-        alert("Please enter both your Account ID and Upstox Live Data Token.");
-        return;
-      }
-      appState.accountId = acct;
-      appState.accessToken = tok;
-      appState.brokerChoice = broker;
-      saveState();
-      document.getElementById("acctLabel").textContent = `(${acct})`;
-      document.getElementById("brokerFutureTag").textContent = `Broker: ${broker}`;
-      closeModal("authModal");
-      setConnectedUI(true);
-      startLiveDataEngine();
-    }
-
-    function clearDeviceCredentials() {
-      appState.accountId = "";
-      appState.accessToken = "";
-      saveState();
-      if (pollTimer) clearInterval(pollTimer);
-      if (wsConnection) wsConnection.close();
-      setConnectedUI(false);
-      closeModal("authModal");
-      renderAll();
-    }
-
-    function setConnectedUI(isConn) {
-      const b = document.getElementById("connBadge");
-      if (isConn) {
-        b.className = "badge badge-live";
-        b.textContent = "● UPSTOX LIVE SOCKET / POLLING";
-      } else {
-        b.className = "badge badge-off";
-        b.textContent = "● DISCONNECTED (TAP SETUP)";
-      }
-    }
-
-    // --- LIVE UPSTOX MARKET DATA FEEDER (REST + WEBSOCKET HANDSHAKE) ---
-    function startLiveDataEngine() {
-      if (!appState.accessToken) return;
-      pollUpstoxLiveQuotes();
-      fetchLiveOptionChain();
-      connectUpstoxWebSocket();
-      if (pollTimer) clearInterval(pollTimer);
-      pollTimer = setInterval(() => {
-        pollUpstoxLiveQuotes();
-      }, 4000); // Live 4-second sync alongside WebSocket
-    }
-
-    async function connectUpstoxWebSocket() {
-      if (!appState.accessToken) return;
-      try {
-        const authRes = await fetch("https://api.upstox.com/v3/feed/market-data-feed/authorize", {
-          headers: { "Authorization": `Bearer ${appState.accessToken}`, "Accept": "application/json" }
-        });
-        const authJson = await authRes.json();
-        if (authJson.status === "success" && authJson.data?.authorized_redirect_uri) {
-          if (wsConnection) wsConnection.close();
-          wsConnection = new WebSocket(authJson.data.authorized_redirect_uri);
-          wsConnection.onopen = () => {
-            document.getElementById("connBadge").textContent = "● LIVE SOCKET STREAMING";
-            const subPayload = {
-              guid: "anuragpulse_" + Date.now(),
-              method: "sub",
-              data: { mode: "ltpc", instrumentKeys: Object.values(INSTRUMENT_KEYS) }
+    async function fetchQuoteBatch(keysArray) {
+      const param = encodeURIComponent(keysArray.join(","));
+      const res = await fetch(`https://api.upstox.com/v2/market-quote/quotes?instrument_key=${param}`, { headers: { "Authorization": `Bearer ${appState.accessToken}`, "Accept": "application/json" }
+      });
+      if (res.status === 401) throw new Error("TOKEN_EXPIRED");
+      const json = await res.json();
+      let count = 0;
+      if (json.status === "success" && json.data) {
+        Object.entries(json.data).forEach(([respKey, q]) => {
+          const nk = normKey(q.instrument_token || respKey);
+          const ltp = q.last_price;
+          if (nk && typeof ltp === "number" && ltp > 0) {
+            const open = q.ohlc?.open || ltp;
+            const prevClose = q.ohlc?.close || ltp;
+            const chg = q.net_change !== undefined ? q.net_change : +(ltp - prevClose).toFixed(2);
+            const pct = prevClose ? +((chg / prevClose) * 100).toFixed(2) : 0;
+            liveQuotes[nk] = {
+              ltp,
+              open,
+              close: prevClose,
+              netChange: chg,
+              pctChange: pct,
+              volume: q.volume || 0
             };
-            wsConnection.send(new TextEncoder().encode(JSON.stringify(subPayload)));
-          };
-          wsConnection.onmessage = () => {
-            // Trigger immediate quote refresh on socket packet arrival
-            pollUpstoxLiveQuotes();
-          };
-        }
-      } catch (e) {
-        console.warn("Socket fallback to live REST polling:", e.message);
+            count++;
+          }
+        });
       }
+      return count;
     }
 
-    async function pollUpstoxLiveQuotes() {
+    async function syncAllFeeds(force = false) {
       if (!appState.accessToken) return;
-      const keysParam = encodeURIComponent(Object.values(INSTRUMENT_KEYS).join(","));
+      if (isSyncing && !force) return;
+      if (!force && Date.now() - lastSyncMs < 2200) return;
+
+      isSyncing = true;
+      lastSyncMs = Date.now();
+
       try {
-        const res = await fetch(`https://api.upstox.com/v2/market-quote/quotes?instrument_key=${keysParam}`, {
-          headers: { "Authorization": `Bearer ${appState.accessToken}`, "Accept": "application/json" }
-        });
-        if (res.status === 401) {
+        const idxCount = await fetchQuoteBatch(INDEX_KEYS);
+        const stkCount = await fetchQuoteBatch(STOCK_UNIVERSE.map(s => s.key));
+
+        // Also sync Next-Month (29 Dec 2026) Option Chain LTPs so option cards use REAL premiums
+        await syncDecOptionChainSilent();
+
+        try { localStorage.setItem(QUOTE_CACHE_KEY, JSON.stringify(liveQuotes)); } catch (e) {}
+        document.getElementById("lastTickTime").textContent = "Live: " + new Date().toLocaleTimeString();
+        document.getElementById("diagStatus").textContent = `Feed Health: ${idxCount}/3 Indices • ${stkCount}/${STOCK_UNIVERSE.length} Stocks • ${liveDecChain.length} Dec Strikes`;
+
+        evaluateAlertsAndPositions();
+        renderAll();
+      } catch (err) {
+        if (err.message === "TOKEN_EXPIRED") {
           document.getElementById("connBadge").className = "badge badge-off";
           document.getElementById("connBadge").textContent = "● TOKEN EXPIRED (UPDATE)";
-          return;
+          document.getElementById("diagStatus").textContent = "HTTP 401: Daily Upstox token expired — tap Setup Feed";
+          openAuthModal();
+        } else {
+          document.getElementById("diagStatus").textContent = "Sync retry: " + err.message;
         }
+      } finally {
+        isSyncing = false;
+      }
+    }
+
+    async function syncDecOptionChainSilent() {
+      try {
+        const instKey = encodeURIComponent("NSE_INDEX|Nifty 50");
+        const res = await fetch(`https://api.upstox.com/v2/option/chain?instrument_key=${instKey}&expiry_date=2026-12-29`, { headers: { "Authorization": `Bearer ${appState.accessToken}`, "Accept": "application/json" }
+        });
         const json = await res.json();
-        if (json.status === "success" && json.data) {
-          Object.values(json.data).forEach(q => {
-            if (q.instrument_token) {
-              liveLtpMap[q.instrument_token] = {
-                ltp: q.last_price,
-                close: q.ohlc?.close || q.last_price,
-                netChange: q.net_change || 0
-              };
+        if (json.status === "success" && Array.isArray(json.data) && json.data.length > 0) {
+          liveDecChain = json.data;
+          // Store every option strike's live LTP in liveQuotes so open option positions update live!
+          json.data.forEach(row => {
+            if (row.call_options?.instrument_key && row.call_options?.market_data?.ltp) {
+              liveQuotes[normKey(row.call_options.instrument_key)] = { ltp: row.call_options.market_data.ltp };
+            }
+            if (row.put_options?.instrument_key && row.put_options?.market_data?.ltp) {
+              liveQuotes[normKey(row.put_options.instrument_key)] = { ltp: row.put_options.market_data.ltp };
             }
           });
-          document.getElementById("lastTickTime").textContent = "Live Tick: " + new Date().toLocaleTimeString();
-          evaluateAlertsAndPositions();
-          renderAll();
         }
-      } catch (e) {
-        document.getElementById("lastTickTime").textContent = "Network retry...";
-      }
+      } catch (e) {}
     }
 
     async function fetchLiveOptionChain() {
@@ -758,37 +663,35 @@
         tbody.innerHTML = "";
         return;
       }
-      const instKey = encodeURIComponent(document.getElementById("ocIndex").value);
+      const instRaw = document.getElementById("ocIndex").value;
       const expDate = document.getElementById("ocExpiry").value;
-      statusEl.textContent = `Fetching live Upstox chain for ${expDate}...`;
-
-      try {
-        const res = await fetch(`https://api.upstox.com/v2/option/chain?instrument_key=${instKey}&expiry_date=${expDate}`, {
-          headers: { "Authorization": `Bearer ${appState.accessToken}`, "Accept": "application/json" }
+      statusEl.textContent = `Fetching live Upstox chain for ${expDate}...`;  try { const res = await fetch(`https://api.upstox.com/v2/option/chain?instrument_key=${encodeURIComponent(instRaw)}&expiry_date=${expDate}`, { headers: { "Authorization": `Bearer ${appState.accessToken}`, "Accept": "application/json" }
         });
         const json = await res.json();
         if (json.status !== "success" || !Array.isArray(json.data) || json.data.length === 0) {
-          statusEl.textContent = "No chain data returned for selected expiry (check market hours or expiry date).";
+          statusEl.textContent = "No chain data returned for selected expiry.";
           return;
         }
-        statusEl.textContent = `Live Upstox Option Chain (${expDate}) • ${json.data.length} strikes loaded`;
+        statusEl.textContent = `Live Upstox Chain (${expDate}) •${json.data.length} strikes loaded`;
         const spot = json.data[0].underlying_spot_price || 0;
-        // Filter 9 strikes closest to live spot
-        const sorted = [...json.data].sort((a, b) => Math.abs(a.strike_price - spot) - Math.abs(b.strike_price - spot)).slice(0, 9).sort((a, b) => a.strike_price - b.strike_price);
-        const lotSize = document.getElementById("ocIndex").value.includes("Bank") ? 30 : 65;
+        const sorted = [...json.data]
+          .sort((a, b) => Math.abs(a.strike_price - spot) - Math.abs(b.strike_price - spot))
+          .slice(0, 9)
+          .sort((a, b) => a.strike_price - b.strike_price);
+        const lotSize = instRaw.includes("Bank") ? 30 : 65;
+        const prefix = instRaw.includes("Bank") ? "BANKNIFTY" : "NIFTY";
 
         tbody.innerHTML = sorted.map(row => {
           const ce = row.call_options?.market_data || {};
           const pe = row.put_options?.market_data || {};
           const isAtm = Math.abs(row.strike_price - spot) <= 75;
-          const labelPrefix = document.getElementById("ocIndex").value.includes("Bank") ? "BANKNIFTY" : "NIFTY";
           return `
             <tr class="${isAtm ? "atm-row" : ""}">
               <td style="color:var(--text-2);">${ce.oi ? (ce.oi / 100000).toFixed(1) + "L" : "--"}</td>
               <td class="green" style="font-weight:700;">${ce.ltp ? "₹" + ce.ltp : "--"}</td>
-              <td>${ce.ltp ? `<button class="oc-btn pill-buy" onclick="paperTradeCustom('${labelPrefix} ${expDate} ${row.strike_price} CE', 'BUY', ${ce.ltp}, ${lotSize}, '${row.call_options.instrument_key}')">B</button> <button class="oc-btn pill-sell" onclick="paperTradeCustom('${labelPrefix} ${expDate} ${row.strike_price} CE', 'SELL', ${ce.ltp}, ${lotSize}, '${row.call_options.instrument_key}')">S</button>` : "--"}</td>
+              <td>${ce.ltp ? `<button class="oc-btn pill-buy" onclick="paperTradeSingle('${prefix} ${expDate} ${row.strike_price} CE', 'BUY', ${ce.ltp}, ${lotSize}, '${row.call_options.instrument_key}')">B</button> <button class="oc-btn pill-sell" onclick="paperTradeSingle('${prefix} ${expDate} ${row.strike_price} CE', 'SELL', ${ce.ltp}, ${lotSize}, '${row.call_options.instrument_key}')">S</button>` : "--"}</td>
               <td style="font-weight:800;">${row.strike_price}</td>
-              <td>${pe.ltp ? `<button class="oc-btn pill-buy" onclick="paperTradeCustom('${labelPrefix} ${expDate} ${row.strike_price} PE', 'BUY', ${pe.ltp}, ${lotSize}, '${row.put_options.instrument_key}')">B</button> <button class="oc-btn pill-sell" onclick="paperTradeCustom('${labelPrefix} ${expDate} ${row.strike_price} PE', 'SELL', ${pe.ltp}, ${lotSize}, '${row.put_options.instrument_key}')">S</button>` : "--"}</td>
+              <td>${pe.ltp ? `<button class="oc-btn pill-buy" onclick="paperTradeSingle('${prefix} ${expDate} ${row.strike_price} PE', 'BUY', ${pe.ltp}, ${lotSize}, '${row.put_options.instrument_key}')">B</button> <button class="oc-btn pill-sell" onclick="paperTradeSingle('${prefix} ${expDate} ${row.strike_price} PE', 'SELL', ${pe.ltp}, ${lotSize}, '${row.put_options.instrument_key}')">S</button>` : "--"}</td>
               <td class="red" style="font-weight:700;">${pe.ltp ? "₹" + pe.ltp : "--"}</td>
               <td style="color:var(--text-2);">${pe.oi ? (pe.oi / 100000).toFixed(1) + "L" : "--"}</td>
             </tr>
@@ -799,381 +702,11 @@
       }
     }
 
-    // --- COMPUTE LIVE LEVELS FROM REAL LTP (NO DUMMY PRICES) ---
-    function resolveOpportunityLevels(opp) {
-      const q = liveLtpMap[opp.key];
-      if (!q || !q.ltp) {
-        return { ltp: null, entry: null, t1: null, t2: null, sl: null };
-      }
-      if (opp.isIndexDerived) {
-        // Estimate Dec monthly option premium dynamically from real Nifty spot
-        const spot = q.ltp;
-        const intrinsic = Math.max(0, spot - opp.strike);
-        const estLtp = +(intrinsic + 380).toFixed(1);
-        return {
-          ltp: estLtp,
-          entry: +(estLtp * 0.96).toFixed(1),
-          t1: +(estLtp * 1.18).toFixed(1),
-          t2: +(estLtp * 1.38).toFixed(1),
-          sl: +(estLtp * 0.84).toFixed(1)
-        };
-      }
-      const ltp = q.ltp;
-      const mult = opp.side === "BUY" ? 1 : -1;
-      return {
-        ltp: ltp,
-        entry: +(ltp - mult * ltp * 0.003).toFixed(2),
-        t1: +(ltp + mult * ltp * 0.015).toFixed(2),
-        t2: +(ltp + mult * ltp * 0.030).toFixed(2),
-        sl: +(ltp - mult * ltp * 0.012).toFixed(2)
-      };
-    }
-
-    // --- RENDERING ---
+    // --- PAGE 1: DYNAMIC AERIAL & INSTITUTIONAL SCANNER ---
     function renderAerial() {
-      const n = liveLtpMap[INSTRUMENT_KEYS.NIFTY];
-      const b = liveLtpMap[INSTRUMENT_KEYS.BANKNIFTY];
-      const v = liveLtpMap[INSTRUMENT_KEYS.VIX];
+      const n = getQ("NSE_INDEX|Nifty 50");
+      const b = getQ("NSE_INDEX|Nifty Bank");
+      const v = getQ("NSE_INDEX|India VIX");
 
       document.getElementById("liveNifty").textContent = n ? n.ltp.toLocaleString("en-IN") : "--";
-      document.getElementById("liveNiftyChg").textContent = n ? `${n.netChange >= 0 ? "+" : ""}${n.netChange.toFixed(2)}` : "Awaiting Live Feed";
-      document.getElementById("liveNiftyChg").className = `metric-sub ${n && n.netChange >= 0 ? "green" : "red"}`;
-
-      document.getElementById("liveBnf").textContent = b ? b.ltp.toLocaleString("en-IN") : "--";
-      document.getElementById("liveBnfChg").textContent = b ? `${b.netChange >= 0 ? "+" : ""}${b.netChange.toFixed(2)}` : "Awaiting Live Feed";
-      document.getElementById("liveBnfChg").className = `metric-sub ${b && b.netChange >= 0 ? "green" : "red"}`;
-
-      document.getElementById("liveVix").textContent = v ? v.ltp.toFixed(2) : "--";
-      document.getElementById("vixRegime").textContent = v ? (v.ltp < 17.5 ? "Easing Volatility (Bullish)" : "Elevated Fear (Hedge)") : "Connect Upstox";
-
-      document.getElementById("instBuyList").innerHTML = INST_BUY_STOCKS.map(s => {
-        const q = liveLtpMap[s.key];
-        return `
-          <div class="inst-item">
-            <div>
-              <strong>${s.sym}</strong> <span class="green" style="font-size:10px;">${s.flow}</span>
-              <div style="font-size:10px;color:var(--text-2);">${s.note}</div>
-            </div>
-            <div style="text-align:right;">
-              <div style="font-weight:800;">${q ? "₹" + q.ltp : "--"}</div>
-              <div style="font-size:9px;color:var(--text-3);">Live LTP</div>
-            </div>
-          </div>
-        `;
-      }).join("");
-
-      document.getElementById("instSellList").innerHTML = INST_SELL_STOCKS.map(s => {
-        const q = liveLtpMap[s.key];
-        return `
-          <div class="inst-item">
-            <div>
-              <strong>${s.sym}</strong> <span class="red" style="font-size:10px;">${s.flow}</span>
-              <div style="font-size:10px;color:var(--text-2);">${s.note}</div>
-            </div>
-            <div style="text-align:right;">
-              <div style="font-weight:800;">${q ? "₹" + q.ltp : "--"}</div>
-              <div style="font-size:9px;color:var(--text-3);">Live LTP</div>
-            </div>
-          </div>
-        `;
-      }).join("");
-    }
-
-    let currentOppFilter = "all";
-    function filterOpps(seg, btn) {
-      currentOppFilter = seg;
-      document.querySelectorAll(".seg-tab").forEach(t => t.classList.remove("active"));
-      btn.classList.add("active");
-      renderOpportunities();
-    }
-
-    function renderOpportunities() {
-      const list = OPPORTUNITIES.filter(o => currentOppFilter === "all" || o.seg === currentOppFilter);
-      document.getElementById("oppsContainer").innerHTML = list.map(o => {
-        const lv = resolveOpportunityLevels(o);
-        const pillCls = o.seg === "hedge" ? "pill-hedge" : (o.side === "BUY" ? "pill-buy" : "pill-sell");
-        return `
-          <div class="setup-card">
-            <div class="setup-top">
-              <div>
-                <div class="setup-title">${o.title}</div>
-                <div class="setup-sub">${o.reason}</div>
-              </div>
-              <span class="pill ${pillCls}">${o.badge}</span>
-            </div>
-
-            <div class="levels-grid">
-              <div class="ltp-box"><div class="lvl-k blue">LIVE LTP</div><div class="lvl-v blue">${lv.ltp !== null ? "₹" + lv.ltp : "--"}</div></div>
-              <div><div class="lvl-k">ENTRY ZONE</div><div class="lvl-v">${lv.entry !== null ? "₹" + lv.entry : "--"}</div></div>
-              <div><div class="lvl-k">TARGET 1</div><div class="lvl-v green">${lv.t1 !== null ? "₹" + lv.t1 : "--"}</div></div>
-              <div><div class="lvl-k">TARGET 2</div><div class="lvl-v green">${lv.t2 !== null ? "₹" + lv.t2 : "--"}</div></div>
-              <div><div class="lvl-k">STOP LOSS</div><div class="lvl-v red">${lv.sl !== null ? "₹" + lv.sl : "--"}</div></div>
-            </div>
-
-            <div class="action-grid">
-              <button class="btn-paper" onclick="paperTradeFromOpp('${o.id}')">▶ Paper Trade (${appState.lots}L)</button>
-              <button class="btn-alert" onclick="createAutoAlert('${o.id}')">🔔 Alert</button>
-              <button class="btn-algo" onclick="showAlgoJson('${o.id}')">{ } Algo</button>
-            </div>
-          </div>
-        `;
-      }).join("");
-    }
-
-    // --- PAPER TRADING, AUTO-ALERTS & ALGO BRIDGE ---
-    function paperTradeFromOpp(id) {
-      const opp = OPPORTUNITIES.find(x => x.id === id);
-      const lv = resolveOpportunityLevels(opp);
-      if (lv.ltp === null) {
-        alert("Connect your Upstox live feed first so Paper Trade executes on real live LTP (no dummy prices).");
-        openAuthModal();
-        return;
-      }
-      paperTradeCustom(opp.title, opp.side, lv.ltp, opp.lotSize, opp.key, lv.t1, lv.t2, lv.sl);
-    }
-
-    function paperTradeCustom(symbol, side, ltp, lotSize, instKey, customT1, customT2, customSl) {
-      const m = side === "BUY" ? 1 : -1;
-      appState.positions.unshift({
-        id: Date.now(),
-        symbol,
-        side,
-        instKey,
-        entry: ltp,
-        ltp: ltp,
-        t1: customT1 || +(ltp + m * ltp * 0.15).toFixed(2),
-        t2: customT2 || +(ltp + m * ltp * 0.30).toFixed(2),
-        sl: customSl || +(ltp - m * ltp * 0.12).toFixed(2),
-        qty: appState.lots * lotSize,
-        guardStatus: `Armed (${appState.protMode.toUpperCase()})`,
-        status: "OPEN"
-      });
-      saveState();
-      renderDesk();
-      switchView("desk");
-    }
-
-    function createAutoAlert(id) {
-      const opp = OPPORTUNITIES.find(x => x.id === id);
-      const lv = resolveOpportunityLevels(opp);
-      if (lv.ltp === null) {
-        alert("Connect live feed first to set an auto-alert on live LTP.");
-        return;
-      }
-      if ("Notification" in window && Notification.permission === "default") {
-        Notification.requestPermission();
-      }
-      appState.alerts.unshift({
-        id: Date.now(),
-        symbol: opp.title,
-        key: opp.key,
-        targetPrice: lv.entry,
-        direction: opp.side === "BUY" ? "ABOVE_OR_ENTRY" : "BELOW_OR_ENTRY",
-        triggered: false
-      });
-      saveState();
-      renderDesk();
-      alert(`Auto-Alert armed for ${opp.title} at ₹${lv.entry}`);
-    }
-
-    function showAlgoJson(id) {
-      const opp = OPPORTUNITIES.find(x => x.id === id);
-      const lv = resolveOpportunityLevels(opp);
-      const payload = {
-        strategy: "AnuragPulse_Pro_v5",
-        account_id: appState.accountId || "UNSET",
-        preferred_broker: appState.brokerChoice,
-        instrument_key: opp.key,
-        symbol: opp.title,
-        transaction_type: opp.side,
-        quantity: appState.lots * opp.lotSize,
-        order_type: "LIMIT",
-        entry_price: lv.entry,
-        target_1: lv.t1,
-        target_2: lv.t2,
-        stop_loss: lv.sl,
-        profit_protection_mode: appState.protMode,
-        timestamp_ist: new Date().toISOString()
-      };
-      document.getElementById("algoJsonBox").value = JSON.stringify(payload, null, 2);
-      openModal("algoModal");
-    }
-
-    function copyAlgoJson() {
-      const box = document.getElementById("algoJsonBox");
-      box.select();
-      navigator.clipboard?.writeText(box.value);
-      alert("Algo JSON copied to clipboard!");
-    }
-
-    // Evaluate live LTP ticks against active alerts & paper positions
-    function evaluateAlertsAndPositions() {
-      // 1. Auto Alerts
-      appState.alerts.forEach(a => {
-        if (a.triggered) return;
-        const q = liveLtpMap[a.key];
-        if (!q || !q.ltp) return;
-        const hit = Math.abs(q.ltp - a.targetPrice) / a.targetPrice <= 0.004;
-        if (hit) {
-          a.triggered = true;
-          triggerAlertNotification(`🔔 SIGNAL ACHIEVED: ${a.symbol} reached ₹${q.ltp}`);
-        }
-      });
-
-      // 2. Paper Positions & Profit Protection Modes
-      const lockThreshold = appState.protMode === "conservative" ? 0.08 : (appState.protMode === "balanced" ? 0.12 : 0.18);
-      const trailRatio = appState.protMode === "runner" ? 0.50 : 0.65;
-
-      appState.positions.forEach(p => {
-        if (p.status !== "OPEN") return;
-        const q = liveLtpMap[p.instKey];
-        if (!q || !q.ltp) return;
-        p.ltp = q.ltp;
-
-        const diff = p.side === "BUY" ? (p.ltp - p.entry) : (p.entry - p.ltp);
-        const pctGain = diff / p.entry;
-        const pnl = diff * p.qty;
-
-        if (pctGain >= lockThreshold && ((p.side === "BUY" && p.sl < p.entry) || (p.side === "SELL" && p.sl > p.entry))) {
-          p.sl = p.entry;
-          p.guardStatus = "🔒 BREAKEVEN LOCKED (Zero-Loss)";
-        }
-        const hitT1 = (p.side === "BUY" && p.ltp >= p.t1) || (p.side === "SELL" && p.ltp <= p.t1);
-        if (hitT1) {
-          p.sl = +(p.entry + (p.ltp - p.entry) * trailRatio).toFixed(2);
-          p.guardStatus = `🛡️ T1 HIT! Profit Locked at SL ₹${p.sl}`;
-        }
-        const hitT2 = (p.side === "BUY" && p.ltp >= p.t2) || (p.side === "SELL" && p.ltp <= p.t2);
-        const hitSL = (p.side === "BUY" && p.ltp <= p.sl) || (p.side === "SELL" && p.ltp >= p.sl);
-        if (hitT2 || hitSL) {
-          p.status = hitT2 ? "CLOSED (TARGET 2 HIT)" : (pnl >= 0 ? "CLOSED (PROFIT LOCKED)" : "CLOSED (SL HIT)");
-          appState.realizedPnl += pnl;
-          appState.paperCapital += pnl;
-          triggerAlertNotification(`✅ ${p.status}: ${p.symbol} (${pnl >= 0 ? "+" : ""}₹${pnl.toFixed(1)})`);
-        }
-      });
-      saveState();
-    }
-
-    function triggerAlertNotification(msg) {
-      const toast = document.getElementById("alertToast");
-      document.getElementById("alertToastMsg").textContent = msg;
-      toast.style.display = "flex";
-      try {
-        const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        const osc = ctx.createOscillator();
-        osc.frequency.value = 880;
-        osc.connect(ctx.destination);
-        osc.start();
-        setTimeout(() => osc.stop(), 180);
-      } catch (e) {}
-      if ("Notification" in window && Notification.permission === "granted") {
-        new Notification("AnuragPulse Pro Alert", { body: msg });
-      }
-    }
-
-    function exitPosition(id) {
-      const p = appState.positions.find(x => x.id === id);
-      if (!p || p.status !== "OPEN") return;
-      const pnl = (p.side === "BUY" ? (p.ltp - p.entry) : (p.entry - p.ltp)) * p.qty;
-      p.status = "CLOSED (MANUAL)";
-      appState.realizedPnl += pnl;
-      appState.paperCapital += pnl;
-      saveState();
-      renderDesk();
-    }
-
-    function renderDesk() {
-      const open = appState.positions.filter(p => p.status === "OPEN");
-      document.getElementById("posCount").textContent = open.length;
-      document.getElementById("alertCount").textContent = appState.alerts.length;
-
-      let unreal = 0;
-      open.forEach(p => unreal += (p.side === "BUY" ? (p.ltp - p.entry) : (p.entry - p.ltp)) * p.qty);
-      const net = appState.realizedPnl + unreal;
-
-      document.getElementById("paperCap").textContent = "₹" + Math.round(appState.paperCapital).toLocaleString("en-IN");
-      const pnlEl = document.getElementById("livePnl");
-      pnlEl.textContent = `${net >= 0 ? "+" : ""}₹${net.toFixed(2)}`;
-      pnlEl.className = `metric-val ${net >= 0 ? "green" : "red"}`;
-
-      document.getElementById("alertsList").innerHTML = appState.alerts.length === 0
-        ? `<div style="font-size:11px;color:var(--text-3);">No alerts armed yet. Tap 🔔 Alert on any opportunity card.</div>`
-        : appState.alerts.map(a => `
-            <div style="background:var(--bg-input);border:1px solid var(--border);border-radius:8px;padding:7px 10px;margin-bottom:5px;font-size:11px;display:flex;justify-content:space-between;">
-              <span>${a.symbol} @ <strong>₹${a.targetPrice}</strong></span>
-              <span class="${a.triggered ? "green" : "amber"}">${a.triggered ? "TRIGGERED" : "ARMED"}</span>
-            </div>
-          `).join("");
-
-      document.getElementById("positionsList").innerHTML = appState.positions.length === 0
-        ? `<div style="font-size:11px;color:var(--text-3);text-align:center;padding:12px;">No paper positions yet. Tap ▶ Paper Trade on any opportunity card.</div>`
-        : appState.positions.map(p => {
-            const pnl = (p.side === "BUY" ? (p.ltp - p.entry) : (p.entry - p.ltp)) * p.qty;
-            const pct = Math.min(100, Math.round((Math.max(0, p.side === "BUY" ? p.ltp - p.entry : p.entry - p.ltp) / (Math.abs(p.t2 - p.entry) || 1)) * 100));
-            return `
-              <div class="pos-card">
-                <div style="display:flex;justify-content:space-between;align-items:center;">
-                  <div>
-                    <strong style="font-size:12px;">${p.symbol}</strong>
-                    <div style="font-size:10px;color:var(--text-2);">${p.side} • Qty: ${p.qty} • Entry: ₹${p.entry} • <span class="blue">Live LTP: ₹${p.ltp}</span></div>
-                  </div>
-                  <div style="text-align:right;">
-                    <div style="font-size:14px;font-weight:800;" class="${pnl >= 0 ? "green" : "red"}">${pnl >= 0 ? "+" : ""}₹${pnl.toFixed(1)}</div>
-                    <div style="font-size:10px;color:var(--text-2);">${p.status}</div>
-                  </div>
-                </div>
-                <div class="prog-track"><div class="prog-fill" style="width:${pct}%;"></div></div>
-                <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text-2);margin-bottom:8px;">
-                  <span>SL: <strong class="red">₹${p.sl}</strong></span>
-                  <span>T1: <strong class="green">₹${p.t1}</strong></span>
-                  <span>T2: <strong class="green">₹${p.t2}</strong></span>
-                </div>
-                <div style="display:flex;justify-content:space-between;align-items:center;">
-                  <span class="guard-tag">${p.guardStatus}</span>
-                  ${p.status === "OPEN" ? `<button class="btn-sm" style="background:var(--red-bg);color:var(--red);" onclick="exitPosition(${p.id})">Exit</button>` : ""}
-                </div>
-              </div>
-            `;
-          }).join("");
-    }
-
-    function saveFlows() {
-      appState.fiiCash = parseFloat(document.getElementById("inFii").value) || 0;
-      appState.diiCash = parseFloat(document.getElementById("inDii").value) || 0;
-      document.getElementById("fiiDiiBadge").textContent = `FII Cash: ${appState.fiiCash >= 0 ? "+" : ""}₹${appState.fiiCash} Cr | DII: ${appState.diiCash >= 0 ? "+" : ""}₹${appState.diiCash} Cr`;
-      saveState();
-      closeModal("flowModal");
-    }
-
-    function resetPaper() {
-      appState.paperCapital = 100000;
-      appState.realizedPnl = 0;
-      appState.positions = [];
-      saveState();
-      renderDesk();
-    }
-
-    function switchView(v) {
-      ["aerial", "opps", "chain", "desk"].forEach(id => {
-        document.getElementById(`view-${id}`).classList.add("hidden");
-        document.getElementById(`nav-${id}`).classList.remove("active");
-      });
-      document.getElementById(`view-${v}`).classList.remove("hidden");
-      document.getElementById(`nav-${v}`).classList.add("active");
-    }
-
-    function openModal(id) { document.getElementById(id).style.display = "flex"; }
-    function closeModal(id) { document.getElementById(id).style.display = "none"; }
-
-    function renderAll() {
-      renderAerial();
-      renderOpportunities();
-      renderDesk();
-    }
-
-    // Boot
-    loadState();
-  </script>
-</body>
-</html>
+      document.getElementById("liveNiftyChg").textContent = n ? `${n.netChange >= 0 ? "+" : ""}${n.netChange} (${n.pctChange}\%)` : "Awaiting Live Feed"; document.getElementById("liveNiftyChg").className = `metric-sub ${n && n.netChange >= 0 ? "green" :
