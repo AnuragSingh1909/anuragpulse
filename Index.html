@@ -1,1897 +1,922 @@
-```html
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta name="theme-color" content="#090d16" />
+  <meta name="theme-color" content="#070b14" />
+  <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <title>AnuragPulse Pro v5.0 • Multi-Asset Greeks & Block Flow</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <meta name="application-name" content="AnuragPulse Pro" />
+  <title>AnuragPulse Pro v3.0 — AI News Pulse & Institutional Flow Terminal</title>
+  <link rel="manifest" href="manifest.json" />
   <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['Inter', 'sans-serif'],
-            mono: ['JetBrains Mono', 'monospace'],
-          },
-          colors: {
-            bgBase: '#090d16',
-            cardBase: '#111827',
-            cardSub: '#0d1320',
-            emeraldPro: '#10b981',
-            crimsonPro: '#ef4444',
-            indigoPro: '#6366f1',
-          }
-        }
-      }
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').catch(() => {});
     }
   </script>
   <style>
-    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    html, body {
-      background-color: #090d16;
-      color: #f3f4f6;
-      font-family: 'Inter', sans-serif;
-      overflow-x: hidden;
-      width: 100%;
+    :root {
+      --bg-base: #070b14;
+      --bg-card: #0f172a;
+      --bg-elevated: #1e293b;
+      --bg-input: #090e1a;
+      --border: rgba(148, 163, 184, 0.16);
+      --text-1: #f8fafc;
+      --text-2: #94a3b8;
+      --text-3: #64748b;
+      --green: #10b981;
+      --green-bg: rgba(16, 185, 129, 0.14);
+      --red: #f43f5e;
+      --red-bg: rgba(244, 63, 94, 0.14);
+      --amber: #f59e0b;
+      --amber-bg: rgba(245, 158, 11, 0.14);
+      --blue: #3b82f6;
+      --purple: #8b5cf6;
     }
-    .tabular-nums { font-variant-numeric: tabular-nums; }
-    .no-scrollbar::-webkit-scrollbar { display: none; }
-    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background: var(--bg-base); color: var(--text-1); padding-bottom: 84px; -webkit-tap-highlight-color: transparent; }
 
-    .terminal-card {
-      background: linear-gradient(180deg, rgba(17, 24, 39, 0.96) 0%, rgba(12, 18, 30, 0.99) 100%);
-      border: 1px solid rgba(55, 65, 81, 0.45);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    .topbar {
+      position: sticky; top: 0; z-index: 50;
+      background: rgba(7, 11, 20, 0.94); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border); padding: 10px 14px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .brand { display: flex; align-items: center; gap: 8px; }
+    .brand-icon {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: linear-gradient(135deg, #2563eb, #10b981);
+      display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 15px;
+    }
+    .brand h1 { font-size: 14px; font-weight: 700; }
+    .badge { font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 99px; display: inline-flex; align-items: center; gap: 4px; }
+    .badge-demo { background: var(--amber-bg); color: var(--amber); border: 1px solid rgba(245,158,11,0.3); }
+    .badge-live { background: var(--green-bg); color: var(--green); border: 1px solid rgba(16,185,129,0.3); }
+    .top-actions { display: flex; gap: 6px; }
+    .btn-sm {
+      border: 1px solid var(--border); background: var(--bg-elevated); color: var(--text-1);
+      padding: 6px 9px; border-radius: 8px; font-size: 11px; font-weight: 600; cursor: pointer;
+    }
+    .btn-upstox { background: linear-gradient(135deg, #6d28d9, #4f46e5); border: none; }
+
+    .container { max-width: 600px; margin: 0 auto; padding: 12px; display: flex; flex-direction: column; gap: 12px; }
+    .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 14px; }
+    .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; gap: 8px; }
+    .step-pill { background: rgba(59,130,246,0.18); color: #60a5fa; font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.4px; }
+
+    .ticker-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .ticker-box { background: var(--bg-input); border: 1px solid var(--border); border-radius: 10px; padding: 8px 10px; }
+    .ticker-lbl { font-size: 10px; color: var(--text-2); font-weight: 600; }
+    .ticker-val { font-size: 13px; font-weight: 800; margin-top: 2px; }
+    .ticker-chg { font-size: 10px; font-weight: 700; margin-top: 1px; }
+
+    .regime-bar {
+      display: flex; justify-content: space-between; align-items: center; gap: 8px;
+      padding: 10px 12px; border-radius: 10px; margin-bottom: 10px; font-weight: 700; font-size: 12px;
+    }
+    .regime-bear { background: var(--red-bg); border: 1px solid rgba(244,63,94,0.35); color: #fda4af; }
+    .regime-bull { background: var(--green-bg); border: 1px solid rgba(16,185,129,0.35); color: #6ee7b7; }
+    .regime-trap { background: var(--amber-bg); border: 1px solid rgba(245,158,11,0.35); color: #fcd34d; }
+
+    .flow-two { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+    .flow-box { background: var(--bg-input); border: 1px solid var(--border); border-radius: 10px; padding: 10px; }
+    .flow-amt { font-size: 16px; font-weight: 800; margin-top: 3px; }
+
+    .preset-row { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; margin-bottom: 10px; }
+    .preset-btn {
+      white-space: nowrap; font-size: 11px; font-weight: 600; padding: 5px 10px; border-radius: 99px;
+      background: var(--bg-elevated); border: 1px solid var(--border); color: var(--text-2); cursor: pointer;
+    }
+    .preset-btn.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+
+    /* AI News Pulse Cards */
+    .news-item {
+      background: var(--bg-input); border: 1px solid var(--border); border-radius: 10px;
+      padding: 9px 11px; margin-bottom: 7px; font-size: 11px;
+    }
+    .news-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+    .news-tag { font-size: 9px; font-weight: 800; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; }
+    .tag-buy { color: var(--green); background: var(--green-bg); }
+    .tag-sell { color: var(--red); background: var(--red-bg); }
+    .tag-warn { color: var(--amber); background: var(--amber-bg); }
+
+    /* Event Strip */
+    .event-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 8px; }
+    .event-box { background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; padding: 7px; font-size: 10px; }
+
+    /* Segment Tabs */
+    .seg-tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 12px; }
+    .seg-tab {
+      padding: 8px 4px; text-align: center; border-radius: 9px; font-size: 11px; font-weight: 700;
+      background: var(--bg-input); border: 1px solid var(--border); color: var(--text-2); cursor: pointer;
+    }
+    .seg-tab.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+
+    /* Setup Cards */
+    .setup-card { background: var(--bg-input); border: 1px solid var(--border); border-radius: 12px; padding: 12px; margin-bottom: 10px; }
+    .setup-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 8px; }
+    .setup-title { font-size: 13px; font-weight: 800; }
+    .setup-sub { font-size: 11px; color: var(--text-2); margin-top: 2px; line-height: 1.35; }
+    .action-pill { font-size: 10px; font-weight: 800; padding: 4px 8px; border-radius: 6px; white-space: nowrap; }
+    .pill-buy { background: var(--green-bg); color: var(--green); border: 1px solid rgba(16,185,129,0.4); }
+    .pill-sell { background: var(--red-bg); color: var(--red); border: 1px solid rgba(244,63,94,0.4); }
+
+    .levels-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px;
+      background: var(--bg-card); border-radius: 8px; padding: 8px; margin-bottom: 10px; text-align: center;
+    }
+    .lvl-k { font-size: 9px; color: var(--text-3); font-weight: 700; }
+    .lvl-v { font-size: 12px; font-weight: 800; margin-top: 2px; }
+
+    .trade-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .btn-paper {
+      background: linear-gradient(135deg, #059669, #10b981); color: #fff; border: none;
+      padding: 10px; border-radius: 9px; font-size: 12px; font-weight: 800; cursor: pointer;
+    }
+    .btn-real {
+      background: linear-gradient(135deg, #4f46e5, #7c3aed); color: #fff; border: none;
+      padding: 10px; border-radius: 9px; font-size: 12px; font-weight: 800; cursor: pointer;
     }
 
-    @keyframes pulseDot {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.4; transform: scale(0.92); }
+    /* Option Chain */
+    .oc-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+    select, input[type="number"], input[type="text"], input[type="password"] {
+      width: 100%; background: var(--bg-input); color: var(--text-1); border: 1px solid var(--border);
+      border-radius: 8px; padding: 8px 10px; font-size: 12px; font-weight: 600;
     }
-    .pulse-live { animation: pulseDot 1.5s infinite; }
-    .btn-tap:active { transform: scale(0.97); }
+    table.oc-table { width: 100%; border-collapse: collapse; font-size: 11px; text-align: center; }
+    table.oc-table th { background: var(--bg-elevated); color: var(--text-2); padding: 6px 3px; font-weight: 700; }
+    table.oc-table td { padding: 7px 3px; border-bottom: 1px solid var(--border); }
+    .atm-row { background: rgba(59, 130, 246, 0.16); font-weight: 800; }
+    .oc-btn { padding: 3px 6px; border-radius: 5px; font-size: 10px; font-weight: 700; border: none; cursor: pointer; }
+
+    /* Active Trades */
+    .pos-card { background: var(--bg-input); border: 1px solid rgba(59,130,246,0.35); border-radius: 12px; padding: 12px; margin-bottom: 10px; }
+    .prog-track { height: 8px; background: var(--bg-elevated); border-radius: 99px; overflow: hidden; margin: 8px 0; }
+    .prog-fill { height: 100%; background: linear-gradient(90deg, #3b82f6, #10b981); transition: width 0.3s; }
+    .guard-badge {
+      display: inline-block; font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 6px;
+      background: rgba(139,92,246,0.18); color: #c4b5fd; border: 1px solid rgba(139,92,246,0.35);
+    }
+
+    .bottom-nav {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 50;
+      background: rgba(15, 23, 42, 0.96); backdrop-filter: blur(12px);
+      border-top: 1px solid var(--border); display: grid; grid-template-columns: repeat(4, 1fr);
+      padding: 6px 4px;
+    }
+    .nav-btn {
+      background: none; border: none; color: var(--text-2); font-size: 10px; font-weight: 700;
+      display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 4px; cursor: pointer;
+    }
+    .nav-btn.active { color: #60a5fa; }
+    .nav-ico { font-size: 16px; }
+
+    .modal-bg {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 100;
+      align-items: center; justify-content: center; padding: 16px;
+    }
+    .modal-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 16px; width: 100%; max-width: 420px; }
+    .green { color: var(--green); }
+    .red { color: var(--red); }
+    .amber { color: var(--amber); }
+    .hidden { display: none !important; }
   </style>
 </head>
-<body class="min-h-screen pb-24 selection:bg-indigoPro selection:text-white">
+<body>
 
-  <!-- Toast Banner Container (Zero alert() usage) -->
-  <div id="toast-stack" class="fixed top-3 left-1/2 -translate-x-1/2 z-[100] w-[93%] max-w-md pointer-events-none flex flex-col gap-2"></div>
-
-  <!-- ========================================================= -->
-  <!-- STICKY COMPACT HEADER (MOBILE-OPTIMIZED 360px+ FIT)       -->
-  <!-- ========================================================= -->
-  <header class="sticky top-0 z-40 bg-[#090d16]/95 backdrop-blur-md border-b border-gray-800/80 px-3 py-2.5">
-    <div class="max-w-3xl mx-auto flex items-center justify-between gap-2">
-      <!-- Left Brand & Connection Status -->
-      <div class="flex items-center gap-2 min-w-0 flex-1">
-        <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-emeraldPro via-cyan-500 to-indigoPro p-[1.5px] shrink-0">
-          <div class="w-full h-full bg-[#090d16] rounded-[10px] flex items-center justify-center font-extrabold text-xs text-white">
-            AP
-          </div>
-        </div>
-        <div class="min-w-0 flex-1">
-          <div class="flex items-center gap-1.5">
-            <span class="font-extrabold text-sm text-white tracking-tight truncate">AnuragPulse</span>
-            <span class="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-indigoPro/20 text-indigo-300 border border-indigo-500/30 shrink-0">v5.0</span>
-          </div>
-          <button onclick="openUpstoxModal()" id="feed-status-pill" class="mt-0.5 inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-gray-800/90 text-gray-300 border border-gray-700 max-w-full">
-            <span id="feed-status-dot" class="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0"></span>
-            <span id="feed-status-text" class="truncate">BASELINE • Connect Upstox</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Right Action Controls -->
-      <div class="flex items-center gap-1.5 shrink-0">
-        <button onclick="openCalibrationModal()" class="btn-tap px-2 py-1.5 rounded-xl bg-gray-800/90 hover:bg-gray-700 border border-gray-700 text-gray-200 text-[10px] font-bold">
-          Spot
-        </button>
-        <button onclick="fetchLiveUpstoxSnapshot(true)" class="btn-tap p-1.5 rounded-xl bg-gray-800/90 hover:bg-gray-700 border border-gray-700 text-emeraldPro" title="Sync Live Feed">
-          <svg id="poll-spinner" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-        </button>
-        <button onclick="openUpstoxModal()" id="header-upstox-btn" class="btn-tap px-2.5 py-1.5 rounded-xl bg-gradient-to-r from-indigoPro to-violet-600 text-white text-[10px] font-extrabold shadow-lg shadow-indigo-950/50">
-          Upstox
-        </button>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-icon">AP</div>
+      <div>
+        <h1>AnuragPulse Pro <span style="font-size:11px;color:#60a5fa;">v3.0</span></h1>
+        <span id="connBadge" class="badge badge-demo">● AI MACRO + DEMO</span>
       </div>
     </div>
-
-    <!-- Clean Diagnostic Alert (Hidden unless token fails market-quote probe) -->
-    <div id="api-error-banner" class="hidden max-w-3xl mx-auto mt-2 px-3 py-1.5 rounded-xl bg-crimsonPro/15 border border-crimsonPro/40 flex items-center justify-between gap-2 text-[10px]">
-      <div class="text-rose-200 truncate">
-        <strong class="text-crimsonPro">Token Notice:</strong> <span id="api-error-msg">Invalid or expired token.</span>
-      </div>
-      <button onclick="openUpstoxModal()" class="px-2 py-0.5 rounded bg-crimsonPro text-white font-bold shrink-0">Fix</button>
+    <div class="top-actions">
+      <button class="btn-sm" onclick="fetchLiveNewsPulse()">↻ AI News</button>
+      <button class="btn-sm btn-upstox" onclick="openModal('upstoxModal')">Upstox API</button>
     </div>
   </header>
 
-  <!-- ========================================================= -->
-  <!-- REAL-TIME INDEX & GREEKS TELEMETRY STRIP                  -->
-  <!-- ========================================================= -->
-  <section class="max-w-3xl mx-auto px-3 pt-2.5">
-    <div class="grid grid-cols-3 gap-2">
-      <div class="terminal-card rounded-xl p-2.5">
-        <div class="flex items-center justify-between">
-          <span class="text-[10px] font-bold text-gray-400">NIFTY 50</span>
-          <span class="text-[9px] font-mono text-gray-500">LOT 65</span>
-        </div>
-        <div id="ticker-nifty-ltp" class="font-mono tabular-nums font-extrabold text-[13px] text-white mt-0.5">25,419.85</div>
-        <div id="ticker-nifty-chg" class="font-mono tabular-nums text-[10px] font-semibold text-crimsonPro">-380.75 (-1.48%)</div>
+  <main class="container">
+
+    <!-- LIVE SPOT & GLOBAL CUES STRIP -->
+    <section class="ticker-grid">
+      <div class="ticker-box">
+        <div class="ticker-lbl">NIFTY SPOT / GIFT</div>
+        <div class="ticker-val" id="niftySpot">25,369.50</div>
+        <div class="ticker-chg green" id="niftyChg">GIFT: 25,742 (+372)</div>
       </div>
-
-      <div class="terminal-card rounded-xl p-2.5">
-        <div class="flex items-center justify-between">
-          <span class="text-[10px] font-bold text-gray-400">BANK NIFTY</span>
-          <span class="text-[9px] font-mono text-gray-500">LOT 30</span>
-        </div>
-        <div id="ticker-bnf-ltp" class="font-mono tabular-nums font-extrabold text-[13px] text-white mt-0.5">57,210.40</div>
-        <div id="ticker-bnf-chg" class="font-mono tabular-nums text-[10px] font-semibold text-crimsonPro">-610.20 (-1.06%)</div>
+      <div class="ticker-box">
+        <div class="ticker-lbl">NASDAQ / DOW</div>
+        <div class="ticker-val">23,733 <span class="red" style="font-size:10px;">-1.48%</span></div>
+        <div class="ticker-chg green">DOW: 50,018 (+0.85%)</div>
       </div>
-
-      <div class="terminal-card rounded-xl p-2.5">
-        <div class="flex items-center justify-between">
-          <span class="text-[10px] font-bold text-gray-400">INDIA VIX / IV</span>
-          <span id="latency-badge" class="text-[9px] font-mono text-emeraldPro">-- ms</span>
-        </div>
-        <div id="ticker-vix-val" class="font-mono tabular-nums font-extrabold text-[13px] text-amber-300 mt-0.5">16.45 <span class="text-[9px] text-emeraldPro">+8.2%</span></div>
-        <div id="ticker-last-sync" class="font-mono tabular-nums text-[10px] text-gray-400 truncate">PCR 0.76 BEAR</div>
+      <div class="ticker-box">
+        <div class="ticker-lbl">BRENT / COMEX GOLD</div>
+        <div class="ticker-val">$92.10 <span class="red" style="font-size:10px;">-0.3%</span></div>
+        <div class="ticker-chg red">GOLD: $3,568 (-2.3%)</div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- ========================================================= -->
-  <!-- MAIN MULTI-VIEW TERMINAL WORKSPACE                        -->
-  <!-- ========================================================= -->
-  <main class="max-w-3xl mx-auto px-3 pt-3 space-y-3.5">
+    <!-- VIEW 1: INSTITUTIONAL FLOW + AI NEWS PULSE + SETUPS -->
+    <div id="view-flow">
 
-    <!-- ========================================================= -->
-    <!-- VIEW 1: ALPHA PICKS (MULTI-ASSET GREEKS & SECTOR ENGINE)  -->
-    <!-- ========================================================= -->
-    <div id="view-alpha" class="space-y-3.5">
-
-      <!-- Top Quantitative Engine Summary Card -->
-      <div class="terminal-card rounded-2xl p-3.5">
-        <div class="flex items-center justify-between gap-2 mb-2">
-          <span class="px-2 py-0.5 rounded bg-emeraldPro/15 border border-emeraldPro/30 text-emeraldPro text-[10px] font-bold uppercase tracking-wider">
-            Quantitative Greeks & Sector Engine
-          </span>
-          <span class="text-[10px] font-mono text-indigo-300 bg-indigoPro/15 px-2 py-0.5 rounded border border-indigoPro/30">
-            NO NEAR EXPIRY
-          </span>
+      <!-- STEP 1: INSTITUTIONAL ROLLOVER & MONEY FLOW -->
+      <section class="card">
+        <div class="card-header">
+          <span class="step-pill">Step 1 • FII/DII Rollover & Exhaustion Guard</span>
+          <button class="btn-sm" onclick="openModal('flowModal')">✎ Edit Flows</button>
         </div>
 
-        <h2 class="text-sm font-extrabold text-white">Best Multi-Asset Opportunities (Low Theta Burn)</h2>
-        <p class="text-[11px] text-gray-400 mt-0.5">
-          Ranks trades using <strong class="text-gray-200">Delta (Δ 0.55–0.75)</strong>, <strong class="text-gray-200">Low Theta (Θ)</strong> via Next Week / Next Month / Far Expiries, <strong class="text-gray-200">IV Rank</strong>, and <strong class="text-gray-200">Institutional Sector Flow</strong>.
-        </p>
-
-        <!-- Best #1 Recommended Trade Callout -->
-        <div id="best-alpha-callout" class="mt-3 rounded-xl p-3 bg-gradient-to-r from-indigoPro/20 via-emeraldPro/10 to-transparent border border-indigoPro/40 space-y-2.5">
-          <!-- Populated dynamically -->
+        <div id="regimeBanner" class="regime-bar regime-trap">
+          <span id="regimeText">⚠ POST-EXPIRY GAP-UP TRAP — DO NOT CHASE PUTS AT BOTTOM</span>
+          <span id="regimeScore">Bias: 48/100</span>
         </div>
 
-        <!-- Asset Class Filter Tabs -->
-        <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pt-3">
-          <button onclick="setAlphaFilter('ALL')" id="aflt-ALL" class="alp-flt px-3 py-1.5 rounded-lg text-[11px] font-bold bg-indigoPro text-white shrink-0">All Assets (8)</button>
-          <button onclick="setAlphaFilter('OPTION')" id="aflt-OPTION" class="alp-flt px-3 py-1.5 rounded-lg text-[11px] font-semibold bg-gray-800 text-gray-300 border border-gray-700 shrink-0">Options (Next/Far Exp)</button>
-          <button onclick="setAlphaFilter('EQUITY')" id="aflt-EQUITY" class="alp-flt px-3 py-1.5 rounded-lg text-[11px] font-semibold bg-gray-800 text-gray-300 border border-gray-700 shrink-0">Equities</button>
-          <button onclick="setAlphaFilter('ETF')" id="aflt-ETF" class="alp-flt px-3 py-1.5 rounded-lg text-[11px] font-semibold bg-gray-800 text-gray-300 border border-gray-700 shrink-0">ETFs</button>
-          <button onclick="setAlphaFilter('FUTURE')" id="aflt-FUTURE" class="alp-flt px-3 py-1.5 rounded-lg text-[11px] font-semibold bg-gray-800 text-gray-300 border border-gray-700 shrink-0">Commodity & Index Fut</button>
-        </div>
-      </div>
-
-      <!-- Ranked Multi-Asset Opportunities List -->
-      <div id="alpha-picks-list" class="space-y-2.5">
-        <!-- Populated dynamically -->
-      </div>
-    </div>
-
-    <!-- ========================================================= -->
-    <!-- VIEW 2: BLOCKTRADE.COM INSTITUTIONAL FLOW & SECTOR SHIFT  -->
-    <!-- ========================================================= -->
-    <div id="view-flows" class="hidden space-y-3.5">
-
-      <!-- Institutional Money Flow Meter -->
-      <div class="terminal-card rounded-2xl p-3.5">
-        <div class="flex items-center justify-between gap-2 mb-2.5">
-          <span class="px-2 py-0.5 rounded bg-indigoPro/20 border border-indigoPro/30 text-indigo-300 text-[10px] font-bold uppercase tracking-wider">
-            FII / DII & Order Book Imbalance
-          </span>
-          <button onclick="openFiiModal()" class="btn-tap px-2.5 py-1 rounded-lg bg-gray-800 hover:bg-gray-700 border border-gray-700 text-[11px] font-semibold text-gray-200">
-            ✎ Edit FII/DII
-          </button>
+        <div class="preset-row">
+          <button class="preset-btn active" id="pre-gapfade" onclick="setFlowScenario('gapfade')">25 Nov Gap-Up Fade</button>
+          <button class="preset-btn" id="pre-bear" onclick="setFlowScenario('bear')">Fresh Bearish Breakdown</button>
+          <button class="preset-btn" id="pre-bull" onclick="setFlowScenario('bull')">Sustained FII Breakout</button>
         </div>
 
-        <div id="flow-signal-banner" class="rounded-xl p-3 bg-gradient-to-r from-crimsonPro/20 via-crimsonPro/10 to-transparent border border-crimsonPro/40 flex items-center justify-between gap-2 mb-3">
-          <div>
-            <div id="flow-signal-title" class="font-extrabold text-xs sm:text-sm text-rose-300">
-              ▼ INSTITUTIONAL DISTRIBUTION — HEDGE / SHORT
-            </div>
-            <div class="text-[11px] text-gray-300 mt-0.5">
-              Outflows in Banking & IT; defensive rotation into Pharma & Gold ETF
-            </div>
+        <div class="flow-two">
+          <div class="flow-box">
+            <div class="ticker-lbl">FII CASH vs INDEX FUTURES</div>
+            <div class="flow-amt green" id="fiiAmt">+₹5,673 Cr Cash</div>
+            <div style="font-size:10px;color:var(--red);margin-top:2px;" id="fiiNote">Index Fut: -₹3,630 Cr (Expiry Unwind Done)</div>
           </div>
-          <div class="text-right shrink-0 bg-[#090d16]/80 px-2.5 py-1.5 rounded-lg border border-gray-800">
-            <div class="text-[9px] uppercase text-gray-400 font-bold">Bid/Ask Ratio</div>
-            <div id="live-imbalance-ratio" class="font-mono tabular-nums font-extrabold text-sm text-crimsonPro">36% : 64%</div>
+          <div class="flow-box">
+            <div class="ticker-lbl">DII CASH + GIFT NIFTY GAP</div>
+            <div class="flow-amt red" id="diiAmt">-₹2,760 Cr DII</div>
+            <div style="font-size:10px;color:var(--green);margin-top:2px;" id="diiNote">GIFT Nifty +372 pts Gap-Up Open</div>
           </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-2.5">
-          <div class="bg-[#090d16] border border-gray-800 rounded-xl p-2.5 space-y-1.5">
-            <div class="flex items-center justify-between border-b border-gray-800 pb-1">
-              <span class="text-[11px] font-extrabold text-gray-200">FII / FPI FLOWS</span>
-              <span class="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-crimsonPro/20 text-crimsonPro">NET SELL</span>
-            </div>
-            <div class="flex justify-between text-[11px]">
-              <span class="text-gray-400">Cash Segment:</span>
-              <span id="val-fii-cash" class="font-mono tabular-nums font-bold text-crimsonPro">-₹3,120 Cr</span>
-            </div>
-            <div class="flex justify-between text-[11px]">
-              <span class="text-gray-400">Index Futures:</span>
-              <span id="val-fii-idx" class="font-mono tabular-nums font-bold text-crimsonPro">-₹1,450 Cr</span>
-            </div>
-            <div class="flex justify-between text-[11px]">
-              <span class="text-gray-400">Stock Futures:</span>
-              <span id="val-fii-stk" class="font-mono tabular-nums font-bold text-crimsonPro">-₹820 Cr</span>
-            </div>
+        <!-- UPCOMING INSTITUTIONAL CATALYST CALENDAR -->
+        <div style="font-size:10px;font-weight:800;color:var(--text-2);margin-top:4px;">NEXT INSTITUTIONAL EVENTS (WHAT MOVES THE MARKET NEXT):</div>
+        <div class="event-grid">
+          <div class="event-box">
+            <strong style="color:#60a5fa;">Tonight (25 Nov)</strong>
+            <div style="color:var(--text-2);margin-top:2px;">US Inflation Data (PCE/CPI)</div>
           </div>
-
-          <div class="bg-[#090d16] border border-gray-800 rounded-xl p-2.5 space-y-1.5">
-            <div class="flex items-center justify-between border-b border-gray-800 pb-1">
-              <span class="text-[11px] font-extrabold text-gray-200">DII / MF FLOWS</span>
-              <span class="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-emeraldPro/20 text-emeraldPro">NET BUY</span>
-            </div>
-            <div class="flex justify-between text-[11px]">
-              <span class="text-gray-400">Cash Segment:</span>
-              <span id="val-dii-cash" class="font-mono tabular-nums font-bold text-emeraldPro">+₹2,340 Cr</span>
-            </div>
-            <div class="flex justify-between text-[11px]">
-              <span class="text-gray-400">Index Hedges:</span>
-              <span id="val-dii-idx" class="font-mono tabular-nums font-bold text-emeraldPro">+₹490 Cr</span>
-            </div>
-            <div class="flex justify-between text-[11px]">
-              <span class="text-gray-400">Net Inst. Flow:</span>
-              <span id="val-net-inst" class="font-mono tabular-nums font-bold text-crimsonPro">-₹2,560 Cr</span>
-            </div>
+          <div class="event-box">
+            <strong style="color:var(--green);">30 Nov (3:00 PM)</strong>
+            <div style="color:var(--text-2);margin-top:2px;">MSCI Rebalance Passive FII Flow</div>
+          </div>
+          <div class="event-box">
+            <strong style="color:var(--amber);">04 Dec / 09 Dec</strong>
+            <div style="color:var(--text-2);margin-top:2px;">RBI MPC Policy & US FOMC</div>
           </div>
         </div>
-      </div>
+      </section>
 
-      <!-- Sector Rotation Heatmap -->
-      <div class="terminal-card rounded-2xl p-3.5">
-        <div class="flex items-center justify-between mb-2.5">
-          <div>
-            <h2 class="text-xs font-extrabold uppercase tracking-wider text-white">Sector Rotation Heatmap</h2>
-            <p class="text-[11px] text-gray-400">Real-time institutional capital shift across NSE sectors</p>
-          </div>
-          <span class="text-[10px] font-mono text-emeraldPro bg-emeraldPro/10 px-2 py-0.5 rounded border border-emeraldPro/30">LIVE SHIFT</span>
+      <!-- STEP 2: AI MACRO & GEOPOLITICAL NEWS PULSE -->
+      <section class="card">
+        <div class="card-header">
+          <span class="step-pill">Step 2 • AI Global & Geopolitical News Pulse</span>
+          <span style="font-size:10px;color:var(--green);" id="newsSyncTime">Synced: Today</span>
         </div>
-        <div id="sector-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-2"></div>
-      </div>
+        <div id="aiNewsContainer"></div>
+      </section>
 
-      <!-- Institutional Block & Imbalance Tape -->
-      <div class="terminal-card rounded-2xl p-3.5">
-        <div class="flex items-center justify-between gap-2 mb-2.5">
-          <div>
-            <h2 class="text-xs font-extrabold uppercase tracking-wider text-white">Heavyweight Institutional Tape</h2>
-            <p class="text-[11px] text-gray-400">Bid/Ask pressure, turnover & next-month option plays</p>
-          </div>
+      <!-- STEP 3: MULTI-ASSET EARNING OPPORTUNITIES -->
+      <section class="card">
+        <div class="card-header">
+          <span class="step-pill">Step 3 • High-Probability Trade Setups</span>
+          <span style="font-size:11px;color:var(--text-2);">Lots: <strong id="lotDisplay" style="color:#fff;">1 Lot</strong></span>
         </div>
-        <div id="block-tape-list" class="space-y-2.5"></div>
-      </div>
+
+        <div class="seg-tabs">
+          <button class="seg-tab active" onclick="switchSegment('options', this)">Options</button>
+          <button class="seg-tab" onclick="switchSegment('futures', this)">Futures</button>
+          <button class="seg-tab" onclick="switchSegment('equity', this)">Equity</button>
+          <button class="seg-tab" onclick="switchSegment('commodity', this)">Commodity</button>
+        </div>
+
+        <div id="setupsContainer"></div>
+      </section>
     </div>
 
-    <!-- ========================================================= -->
-    <!-- VIEW 3: OPTION CHAIN WITH FULL GREEKS & FAR EXPIRIES      -->
-    <!-- ========================================================= -->
-    <div id="view-chain" class="hidden space-y-3">
-      <div class="terminal-card rounded-2xl p-3.5">
-        <div class="flex flex-wrap items-center justify-between gap-2 mb-2.5">
+    <!-- VIEW 2: NSE OPTION CHAIN (TUESDAY WEEKLY EXPIRIES) -->
+    <div id="view-chain" class="hidden">
+      <section class="card">
+        <div class="card-header">
+          <span class="step-pill">NSE Option Chain (Live Tuesday Expiries)</span>
+          <span style="font-size:11px;color:var(--green);">Lot: Nifty 65 | BNF 30</span>
+        </div>
+
+        <div class="oc-controls">
           <div>
-            <h2 class="text-sm font-extrabold text-white">Greeks Option Chain (Next / Long Expiry)</h2>
-            <p class="text-[11px] text-gray-400">Near weekly expiry excluded to prevent rapid Theta decay</p>
-          </div>
-          <div class="flex items-center gap-1.5">
-            <select id="chain-underlying" onchange="handleChainConfigChange()" class="bg-[#090d16] border border-gray-700 text-white text-xs font-bold rounded-xl px-2.5 py-2 focus:outline-none">
-              <option value="NSE_INDEX|Nifty 50">NIFTY 50</option>
-              <option value="NSE_INDEX|Nifty Bank">BANK NIFTY</option>
-            </select>
-            <!-- Strictly Next Week, Next Month, and Far-Month Expiries -->
-            <select id="chain-expiry" onchange="handleChainConfigChange()" class="bg-[#090d16] border border-indigoPro/60 text-indigo-200 text-xs font-mono font-bold rounded-xl px-2.5 py-2 focus:outline-none">
-              <option value="2026-12-01">01 Dec 2026 (Next Wk • 8 DTE)</option>
-              <option value="2026-12-08">08 Dec 2026 (2nd Wk • 15 DTE)</option>
-              <option value="2026-12-29" selected>29 Dec 2026 (Monthly • 36 DTE)</option>
-              <option value="2027-01-28">28 Jan 2027 (Next Mo • 66 DTE)</option>
-              <option value="2027-03-25">25 Mar 2027 (Quarterly • 122 DTE)</option>
+            <label style="font-size:10px;color:var(--text-2);">Index</label>
+            <select id="ocIndex" onchange="renderOptionChain()">
+              <option value="NIFTY">NIFTY 50 (Lot: 65)</option>
+              <option value="BANKNIFTY">BANK NIFTY (Lot: 30)</option>
             </select>
           </div>
+          <div>
+            <label style="font-size:10px;color:var(--text-2);">NSE Expiry Date</label>
+            <select id="ocExpiry" onchange="renderOptionChain()"></select>
+          </div>
         </div>
 
-        <!-- Greeks Legend Strip -->
-        <div class="flex items-center justify-between bg-[#090d16] border border-gray-800 rounded-xl px-3 py-2 mb-2.5 text-[10px] font-mono text-gray-400">
-          <span>Spot: <strong id="chain-spot-label" class="text-white">25,419.85</strong></span>
-          <span>Selected: <strong id="chain-dte-label" class="text-emeraldPro">36 DTE (Low Theta)</strong></span>
-          <span>IV Avg: <strong class="text-amber-300">15.8%</strong></span>
-        </div>
-
-        <div class="overflow-x-auto rounded-xl border border-gray-800">
-          <table class="w-full text-left border-collapse min-w-[600px]">
+        <div style="overflow-x:auto;">
+          <table class="oc-table">
             <thead>
-              <tr class="bg-[#090d16] text-[10px] font-mono uppercase text-gray-400 border-b border-gray-800">
-                <th class="py-2 px-2">Call Greeks (Δ / Θ / IV)</th>
-                <th class="py-2 px-2 text-right">Call LTP / OI</th>
-                <th class="py-2 px-2 text-center bg-gray-900 text-white">STRIKE</th>
-                <th class="py-2 px-2">Put LTP / OI</th>
-                <th class="py-2 px-2 text-right">Put Greeks (Δ / Θ / IV)</th>
+              <tr>
+                <th>CE OI</th>
+                <th>CE LTP</th>
+                <th>Action</th>
+                <th>STRIKE</th>
+                <th>Action</th>
+                <th>PE LTP</th>
+                <th>PE OI</th>
               </tr>
             </thead>
-            <tbody id="option-chain-body" class="divide-y divide-gray-800/70 text-xs font-mono tabular-nums"></tbody>
+            <tbody id="ocBody"></tbody>
           </table>
         </div>
-      </div>
+      </section>
     </div>
 
-    <!-- ========================================================= -->
-    <!-- VIEW 4: ACTIVE TRADES & AUTO PROFIT-PROTECTION GUARD      -->
-    <!-- ========================================================= -->
-    <div id="view-trades" class="hidden space-y-3.5">
-      <div class="terminal-card rounded-2xl p-3.5">
-        <div class="flex items-center justify-between gap-2 mb-3">
-          <span class="px-2.5 py-1 rounded-lg bg-indigoPro/20 border border-indigoPro/30 text-indigo-300 text-[10px] font-bold uppercase tracking-wider">
-            Active Positions & Profit Guard
-          </span>
-          <button onclick="openOrderTicket('NIFTY 29DEC 25500 PE', 'OPTION', 248.50, 65, 'BUY PE', '')"
-            class="btn-tap px-2.5 py-1.5 rounded-lg bg-emeraldPro/20 border border-emeraldPro/40 text-emeraldPro text-[11px] font-bold">
-            + New Paper Order
-          </button>
+    <!-- VIEW 3: ACTIVE PAPER & REAL TRADES + AUTO PROFIT PROTECTION -->
+    <div id="view-trades" class="hidden">
+      <section class="card">
+        <div class="card-header">
+          <span class="step-pill">Step 4 • Live Trade Monitor & Auto Profit Lock</span>
+          <button class="btn-sm" onclick="simulateMarketTick()">⚡ Simulate +1 Tick</button>
         </div>
 
-        <div class="grid grid-cols-2 gap-2.5 mb-3">
-          <div class="bg-[#090d16] border border-gray-800 rounded-xl p-3">
-            <div class="flex items-center justify-between">
-              <span class="text-[10px] font-bold text-gray-400 uppercase">Paper Capital</span>
-              <button onclick="editPaperCapital()" class="text-[10px] text-indigo-400 underline">Edit</button>
-            </div>
-            <div id="ui-paper-capital" class="font-mono tabular-nums font-extrabold text-lg text-white mt-0.5">₹1,00,000</div>
+        <div class="flow-two" style="margin-bottom:12px;">
+          <div class="flow-box">
+            <div class="ticker-lbl">PAPER CAPITAL</div>
+            <div class="flow-amt" id="paperBal">₹1,00,000</div>
           </div>
-          <div class="bg-[#090d16] border border-gray-800 rounded-xl p-3">
-            <div class="text-[10px] font-bold text-gray-400 uppercase">Total Live P&L</div>
-            <div id="ui-total-pnl" class="font-mono tabular-nums font-extrabold text-lg text-emeraldPro mt-0.5">+₹0.00</div>
+          <div class="flow-box">
+            <div class="ticker-lbl">TOTAL P&L</div>
+            <div class="flow-amt green" id="totalPnl">₹0.00</div>
           </div>
         </div>
 
-        <div class="rounded-xl p-3 bg-indigoPro/10 border border-indigoPro/30 mb-3">
-          <div class="text-xs font-bold text-indigo-300 mb-1">🛡️ Auto Profit-Protection Guard:</div>
-          <ul class="text-[11px] text-gray-300 space-y-1 list-disc pl-4">
-            <li><strong class="text-white">Breakeven Lock (+12%):</strong> Moves Stop-Loss to Entry Price once LTP gains +12%.</li>
-            <li><strong class="text-white">Target 1 Trail:</strong> Locks <span class="text-emeraldPro font-mono">65%</span> of peak unrealized gain when T1 is crossed.</li>
-            <li><strong class="text-white">Auto-Exit:</strong> Closes position automatically when LTP hits T2 or Trailing SL.</li>
+        <div style="background:rgba(139,92,246,0.12);border:1px solid rgba(139,92,246,0.3);border-radius:10px;padding:10px;margin-bottom:12px;font-size:11px;">
+          <strong style="color:#c4b5fd;">🛡 Auto Profit-Protection Circuitry Active:</strong>
+          <ul style="margin:4px 0 0 16px;color:var(--text-2);line-height:1.45;">
+            <li><strong>Zero-Loss Lock:</strong> At +12% gain, SL automatically shifts to Entry Price.</li>
+            <li><strong>Target 1 Profit Lock:</strong> Once T1 hits, SL trails to lock 65% of peak profit.</li>
+            <li><strong>Auto-Squareoff:</strong> Exits automatically on T2 hit or Trailing SL trigger.</li>
           </ul>
         </div>
 
-        <div class="flex items-center justify-between mb-2">
-          <h3 class="text-xs font-bold uppercase text-gray-300">Open Positions (<span id="lbl-open-count">0</span>)</h3>
-          <span class="text-[10px] font-mono text-gray-400">Saved Automatically</span>
-        </div>
-        <div id="open-positions-list" class="space-y-2.5"></div>
-
-        <div class="mt-4 pt-3 border-t border-gray-800">
-          <div class="flex items-center justify-between mb-2">
-            <h3 class="text-xs font-bold uppercase text-gray-400">Closed Trades Log (<span id="lbl-closed-count">0</span>)</h3>
-            <button onclick="resetAllPaperTrades()" class="text-[10px] text-gray-400 hover:text-crimsonPro underline">Reset Account</button>
-          </div>
-          <div id="closed-positions-list" class="space-y-2"></div>
-        </div>
-      </div>
+        <div id="activePositionsList"></div>
+      </section>
     </div>
 
-    <!-- ========================================================= -->
-    <!-- VIEW 5: UPSTOX CREDENTIALS & RISK GUARD (CLEAN)           -->
-    <!-- ========================================================= -->
-    <div id="view-guard" class="hidden space-y-3.5">
-      <div class="terminal-card rounded-2xl p-3.5 space-y-3">
-        <div>
-          <h2 class="text-sm font-extrabold text-white">Upstox Credentials & Risk Guard</h2>
-          <p class="text-[11px] text-gray-400">Configure API token persistence and automated SL/Target rules</p>
-        </div>
-
-        <!-- Saved Upstox Profile Card -->
-        <div class="bg-[#090d16] p-3 rounded-xl border border-gray-800 flex items-center justify-between gap-2">
+    <!-- VIEW 4: SETTINGS -->
+    <div id="view-settings" class="hidden">
+      <section class="card">
+        <div class="card-header"><span class="step-pill">Risk & Lot Size Control</span></div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
           <div>
-            <div class="text-xs font-bold text-white">Upstox API v2 Session</div>
-            <div id="guard-profile-info" class="text-[11px] text-gray-400 mt-0.5">No Upstox token saved. Using calibrated market model.</div>
+            <label style="font-size:11px;color:var(--text-2);">Default Trading Lots (1 Lot = 65 Nifty / 30 BankNifty)</label>
+            <input type="number" id="lotInput" value="1" min="1" max="50" onchange="updateLots()" />
           </div>
-          <button onclick="openUpstoxModal()" class="btn-tap px-3 py-2 rounded-xl bg-indigoPro text-white text-xs font-bold shrink-0">
-            API Vault
-          </button>
+          <div>
+            <label style="font-size:11px;color:var(--text-2);">Breakeven Lock Trigger (% Profit)</label>
+            <input type="number" id="lockPctInput" value="12" min="5" max="50" />
+          </div>
+          <button class="btn-paper" onclick="resetPaperAccount()">↻ Reset Paper Capital to ₹1,00,000</button>
         </div>
-
-        <div class="grid grid-cols-2 gap-2.5">
-          <div class="bg-[#090d16] p-3 rounded-xl border border-gray-800">
-            <label class="text-[10px] font-bold text-gray-400 uppercase block mb-1">Default Stop-Loss %</label>
-            <input type="number" id="cfg-sl-pct" value="15" min="3" max="60" onchange="saveRiskConfig()" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-2.5 py-1.5 font-mono text-sm text-white font-bold">
-          </div>
-          <div class="bg-[#090d16] p-3 rounded-xl border border-gray-800">
-            <label class="text-[10px] font-bold text-gray-400 uppercase block mb-1">Target 1 % (Trail Lock)</label>
-            <input type="number" id="cfg-t1-pct" value="25" min="5" max="150" onchange="saveRiskConfig()" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-2.5 py-1.5 font-mono text-sm text-white font-bold">
-          </div>
-          <div class="bg-[#090d16] p-3 rounded-xl border border-gray-800">
-            <label class="text-[10px] font-bold text-gray-400 uppercase block mb-1">Target 2 % (Auto Exit)</label>
-            <input type="number" id="cfg-t2-pct" value="50" min="10" max="300" onchange="saveRiskConfig()" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-2.5 py-1.5 font-mono text-sm text-white font-bold">
-          </div>
-          <div class="bg-[#090d16] p-3 rounded-xl border border-gray-800">
-            <label class="text-[10px] font-bold text-gray-400 uppercase block mb-1">Live Poll Interval</label>
-            <select id="cfg-poll-sec" onchange="saveRiskConfig()" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-2.5 py-1.5 font-mono text-sm text-white font-bold">
-              <option value="2500">2.5 Seconds</option>
-              <option value="3000" selected>3.0 Seconds</option>
-              <option value="5000">5.0 Seconds</option>
-            </select>
-          </div>
-        </div>
-      </div>
+      </section>
     </div>
 
   </main>
 
-  <!-- ========================================================= -->
-  <!-- FIXED BOTTOM NAVIGATION BAR (5 DEDICATED TABS)            -->
-  <!-- ========================================================= -->
-  <nav class="fixed bottom-0 left-0 right-0 z-40 bg-[#090d16]/95 backdrop-blur-md border-t border-gray-800 px-1.5 py-1.5">
-    <div class="max-w-3xl mx-auto grid grid-cols-5 gap-1">
-      <button onclick="switchView('alpha')" id="tab-btn-alpha" class="flex flex-col items-center justify-center py-1.5 rounded-xl text-emeraldPro bg-emeraldPro/10">
-        <svg class="w-4 h-4 mb-0.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-        <span class="text-[9px] font-extrabold">Alpha Greeks</span>
-      </button>
-
-      <button onclick="switchView('flows')" id="tab-btn-flows" class="flex flex-col items-center justify-center py-1.5 rounded-xl text-gray-400 hover:text-gray-200">
-        <svg class="w-4 h-4 mb-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-        <span class="text-[9px] font-semibold">Block Flow</span>
-      </button>
-
-      <button onclick="switchView('chain')" id="tab-btn-chain" class="flex flex-col items-center justify-center py-1.5 rounded-xl text-gray-400 hover:text-gray-200">
-        <svg class="w-4 h-4 mb-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
-        <span class="text-[9px] font-semibold">Greeks Chain</span>
-      </button>
-
-      <button onclick="switchView('trades')" id="tab-btn-trades" class="flex flex-col items-center justify-center py-1.5 rounded-xl text-gray-400 hover:text-gray-200">
-        <svg class="w-4 h-4 mb-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
-        <span class="text-[9px] font-semibold">Trades (<span id="nav-open-badge">0</span>)</span>
-      </button>
-
-      <button onclick="switchView('guard')" id="tab-btn-guard" class="flex flex-col items-center justify-center py-1.5 rounded-xl text-gray-400 hover:text-gray-200">
-        <svg class="w-4 h-4 mb-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-        <span class="text-[9px] font-semibold">API & Guard</span>
-      </button>
-    </div>
+  <nav class="bottom-nav">
+    <button class="nav-btn active" id="nav-flow" onclick="switchView('flow')">
+      <span class="nav-ico">🧠</span><span>AI Flow & Picks</span>
+    </button>
+    <button class="nav-btn" id="nav-chain" onclick="switchView('chain')">
+      <span class="nav-ico">⛓️</span><span>Option Chain</span>
+    </button>
+    <button class="nav-btn" id="nav-trades" onclick="switchView('trades')">
+      <span class="nav-ico">🎯</span><span>Paper Trades (<span id="posCount">0</span>)</span>
+    </button>
+    <button class="nav-btn" id="nav-settings" onclick="switchView('settings')">
+      <span class="nav-ico">⚙️</span><span>Lots & Guard</span>
+    </button>
   </nav>
 
-  <!-- ========================================================= -->
-  <!-- MODAL 1: CLEAN UPSTOX TOKEN VAULT (NO EXPIRY CLUTTER)     -->
-  <!-- ========================================================= -->
-  <div id="upstox-modal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
-    <div class="bg-[#111827] border border-gray-700 w-full max-w-md rounded-t-3xl sm:rounded-2xl p-5 shadow-2xl space-y-3.5 max-h-[92vh] overflow-y-auto">
-      <div class="flex items-center justify-between">
-        <div>
-          <h3 class="text-base font-extrabold text-white">Upstox API v2 Credentials</h3>
-          <p class="text-[11px] text-gray-400">Persists across reloads • Supports Access & Analytics Tokens</p>
-        </div>
-        <button onclick="closeUpstoxModal()" class="w-8 h-8 rounded-full bg-gray-800 text-gray-400 hover:text-white flex items-center justify-center font-bold">✕</button>
-      </div>
-
-      <div class="space-y-3">
-        <div>
-          <label class="block text-[11px] font-bold text-gray-300 mb-1">Upstox Client ID / User ID <span class="text-crimsonPro">*</span></label>
-          <input type="text" id="upx-client-id" placeholder="e.g. 684920" class="w-full bg-[#090d16] border border-gray-700 focus:border-indigoPro rounded-xl px-3 py-2.5 text-sm font-mono text-white focus:outline-none" />
-        </div>
-
-        <div>
-          <label class="block text-[11px] font-bold text-gray-300 mb-1">API Key <span class="text-gray-500 font-normal">(Optional)</span></label>
-          <input type="text" id="upx-api-key" placeholder="Upstox App API Key" class="w-full bg-[#090d16] border border-gray-700 focus:border-indigoPro rounded-xl px-3 py-2 text-xs font-mono text-white focus:outline-none" />
-        </div>
-
-        <div>
-          <label class="block text-[11px] font-bold text-gray-300 mb-1">Access Token or Analytics Token <span class="text-crimsonPro">*</span></label>
-          <div class="relative">
-            <input type="password" id="upx-token" placeholder="Paste eyJ... Upstox Token" class="w-full bg-[#090d16] border border-gray-700 focus:border-indigoPro rounded-xl pl-3 pr-16 py-2.5 text-xs font-mono text-white focus:outline-none" />
-            <button type="button" onclick="toggleUpxTokenVis()" id="upx-vis-btn" class="absolute right-2 top-1/2 -translate-y-1/2 px-2 py-1 rounded bg-gray-800 text-[10px] font-bold text-gray-300">SHOW</button>
-          </div>
-          <p class="text-[10px] text-gray-400 mt-1">Auto-strips spaces/Bearer prefix. Verifies directly against <code class="text-emeraldPro">/v2/market-quote/ltp</code> so long-lived Analytics Tokens never trigger false 401 profile errors.</p>
-        </div>
-
-        <div>
-          <label class="block text-[11px] font-bold text-gray-300 mb-1.5">Order Routing Mode</label>
-          <div class="grid grid-cols-2 gap-2">
-            <button type="button" onclick="setUpxExecMode('PAPER')" id="upx-mode-PAPER" class="py-2.5 px-2 rounded-xl border text-xs font-bold text-center bg-emeraldPro/15 border-emeraldPro text-emeraldPro">
-              🛡️ PAPER TRADING
-              <span class="block text-[9px] font-normal opacity-80">Live Feed • Virtual ₹</span>
-            </button>
-            <button type="button" onclick="setUpxExecMode('LIVE')" id="upx-mode-LIVE" class="py-2.5 px-2 rounded-xl border text-xs font-bold text-center bg-[#090d16] border-gray-700 text-gray-400">
-              ⚡ LIVE UPSTOX
-              <span class="block text-[9px] font-normal opacity-80">POST /v2/order/place</span>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div class="flex items-center gap-2 pt-1">
-        <button onclick="clearUpstoxSession()" class="btn-tap px-3 py-2.5 rounded-xl bg-crimsonPro/15 border border-crimsonPro/40 text-crimsonPro text-xs font-bold">
-          Clear
-        </button>
-        <button onclick="connectAndVerifyUpstox()" class="btn-tap flex-1 py-2.5 rounded-xl bg-gradient-to-r from-emeraldPro to-teal-500 text-[#090d16] text-xs font-extrabold shadow-lg">
-          Save & Verify Live Feed
-        </button>
+  <!-- UPSTOX MODAL -->
+  <div class="modal-bg" id="upstoxModal">
+    <div class="modal-box">
+      <h3 style="font-size:15px;margin-bottom:6px;">Connect Upstox v2 Live API</h3>
+      <p style="font-size:11px;color:var(--text-2);margin-bottom:10px;">Stored in volatile RAM only—automatically erased when tab closes.</p>
+      <input type="password" id="upstoxTokenInput" placeholder="Paste Upstox v2 Access Token..." style="margin-bottom:10px;" />
+      <div style="display:flex;gap:8px;">
+        <button class="btn-paper" style="flex:1;" onclick="saveUpstoxToken()">Connect Live</button>
+        <button class="btn-sm" onclick="closeModal('upstoxModal')">Cancel</button>
       </div>
     </div>
   </div>
 
-  <!-- ========================================================= -->
-  <!-- MODAL 2: SPOT & BASELINE CALIBRATION                      -->
-  <!-- ========================================================= -->
-  <div id="calibrate-modal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
-    <div class="bg-[#111827] border border-gray-700 w-full max-w-md rounded-t-3xl sm:rounded-2xl p-5 shadow-2xl space-y-3.5">
-      <div class="flex items-center justify-between">
-        <div>
-          <h3 class="text-sm font-extrabold text-white">Calibrate Spot & VIX Baseline</h3>
-          <p class="text-[11px] text-gray-400">Recomputes all Black-Scholes Greeks (Δ, Θ, IV, Vega) immediately</p>
-        </div>
-        <button onclick="closeCalibrationModal()" class="w-8 h-8 rounded-full bg-gray-800 text-gray-400 hover:text-white flex items-center justify-center font-bold">✕</button>
-      </div>
-      <div class="grid grid-cols-2 gap-2.5 text-xs">
-        <div>
-          <label class="text-[10px] text-gray-400 font-bold block mb-1">NIFTY 50 Spot</label>
-          <input type="number" step="0.05" id="cal-nifty-spot" value="25419.85" class="w-full bg-[#090d16] border border-gray-700 rounded-xl px-3 py-2 font-mono text-white font-bold" />
-        </div>
-        <div>
-          <label class="text-[10px] text-gray-400 font-bold block mb-1">BANK NIFTY Spot</label>
-          <input type="number" step="0.05" id="cal-bnf-spot" value="57210.40" class="w-full bg-[#090d16] border border-gray-700 rounded-xl px-3 py-2 font-mono text-white font-bold" />
-        </div>
-        <div>
-          <label class="text-[10px] text-gray-400 font-bold block mb-1">India VIX / IV %</label>
-          <input type="number" step="0.1" id="cal-vix" value="16.45" class="w-full bg-[#090d16] border border-gray-700 rounded-xl px-3 py-2 font-mono text-white font-bold" />
-        </div>
-        <div>
-          <label class="text-[10px] text-gray-400 font-bold block mb-1">MCX Gold (10g)</label>
-          <input type="number" step="10" id="cal-gold" value="77850" class="w-full bg-[#090d16] border border-gray-700 rounded-xl px-3 py-2 font-mono text-white font-bold" />
-        </div>
-      </div>
-      <button onclick="applyManualCalibration()" class="btn-tap w-full py-2.5 rounded-xl bg-indigoPro text-white text-xs font-extrabold">
-        Apply & Recalculate Greeks
-      </button>
-    </div>
-  </div>
-
-  <!-- ========================================================= -->
-  <!-- MODAL 3: ORDER EXECUTION TICKET (PAPER & LIVE UPSTOX)     -->
-  <!-- ========================================================= -->
-  <div id="order-ticket-modal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
-    <div class="bg-[#111827] border border-gray-700 w-full max-w-md rounded-t-3xl sm:rounded-2xl p-5 shadow-2xl space-y-3.5">
-      <div class="flex items-center justify-between">
-        <div>
-          <span id="ticket-mode-tag" class="px-2 py-0.5 rounded bg-emeraldPro/20 text-emeraldPro text-[10px] font-mono font-bold uppercase">PAPER EXECUTION TICKET</span>
-          <h3 id="ticket-symbol-title" class="text-base font-extrabold text-white mt-1">NIFTY 29DEC 25500 PE</h3>
-        </div>
-        <button onclick="closeOrderTicket()" class="w-8 h-8 rounded-full bg-gray-800 text-gray-400 hover:text-white flex items-center justify-center font-bold">✕</button>
-      </div>
-
-      <div class="grid grid-cols-2 gap-2.5">
-        <div class="bg-[#090d16] p-2.5 rounded-xl border border-gray-800">
-          <label class="text-[10px] text-gray-400 font-bold block mb-1">Transaction Side</label>
-          <select id="ticket-side" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-2 py-1.5 text-xs font-bold text-white">
-            <option value="BUY CE">BUY CALL (CE)</option>
-            <option value="BUY PE">BUY PUT (PE)</option>
-            <option value="BUY EQ">BUY EQUITY / ETF</option>
-            <option value="BUY FUT">BUY FUTURE</option>
-            <option value="SELL">SHORT / SELL</option>
-          </select>
-        </div>
-        <div class="bg-[#090d16] p-2.5 rounded-xl border border-gray-800">
-          <label class="text-[10px] text-gray-400 font-bold block mb-1">Entry Price / LTP (₹)</label>
-          <input type="number" step="0.05" id="ticket-price" oninput="updateTicketPreview()" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-2.5 py-1.5 font-mono tabular-nums text-xs font-bold text-white" />
-        </div>
-      </div>
-
-      <div class="bg-[#090d16] p-3 rounded-xl border border-gray-800 space-y-2">
-        <div class="flex items-center justify-between">
-          <label class="text-[10px] text-gray-400 font-bold">Units / Lots (Base: <span id="ticket-base-lot" class="text-white font-mono">65</span>)</label>
-          <span id="ticket-margin-req" class="text-[11px] font-mono font-bold text-indigo-300">Capital: ₹16,152</span>
-        </div>
-        <div class="grid grid-cols-4 gap-1.5">
-          <button type="button" onclick="setTicketLots(1)" class="py-1.5 rounded-lg bg-indigoPro text-white font-mono text-xs font-bold">1x</button>
-          <button type="button" onclick="setTicketLots(2)" class="py-1.5 rounded-lg bg-gray-800 text-gray-300 font-mono text-xs font-bold">2x</button>
-          <button type="button" onclick="setTicketLots(4)" class="py-1.5 rounded-lg bg-gray-800 text-gray-300 font-mono text-xs font-bold">4x</button>
-          <input type="number" id="ticket-qty" value="65" min="1" oninput="updateTicketPreview()" class="bg-gray-900 border border-gray-700 rounded-lg px-2 py-1 font-mono text-xs text-center text-white font-bold" />
-        </div>
-      </div>
-
-      <div class="grid grid-cols-3 gap-2 text-center font-mono tabular-nums">
-        <div class="bg-crimsonPro/10 border border-crimsonPro/30 rounded-xl p-2">
-          <div class="text-[9px] text-gray-400">AUTO SL</div>
-          <div id="ticket-sl-val" class="text-xs font-bold text-crimsonPro mt-0.5">₹211.20</div>
-        </div>
-        <div class="bg-emeraldPro/10 border border-emeraldPro/30 rounded-xl p-2">
-          <div class="text-[9px] text-gray-400">TARGET 1</div>
-          <div id="ticket-t1-val" class="text-xs font-bold text-emeraldPro mt-0.5">₹310.60</div>
-        </div>
-        <div class="bg-indigoPro/10 border border-indigoPro/30 rounded-xl p-2">
-          <div class="text-[9px] text-gray-400">TARGET 2</div>
-          <div id="ticket-t2-val" class="text-xs font-bold text-indigo-300 mt-0.5">₹372.75</div>
-        </div>
-      </div>
-
-      <div class="grid grid-cols-2 gap-2.5 pt-1">
-        <button onclick="executeOrder('PAPER')" class="btn-tap py-3 rounded-xl bg-gradient-to-r from-emeraldPro to-teal-500 text-[#090d16] font-extrabold text-xs shadow-lg">
-          ✓ Place Paper Order
-        </button>
-        <button onclick="executeOrder('LIVE')" class="btn-tap py-3 rounded-xl bg-gradient-to-r from-indigoPro to-violet-600 text-white font-extrabold text-xs shadow-lg">
-          ⚡ Execute Live Upstox
-        </button>
+  <!-- MANUAL FLOW MODAL -->
+  <div class="modal-bg" id="flowModal">
+    <div class="modal-box">
+      <h3 style="font-size:15px;margin-bottom:8px;">Edit FII / DII Cash Flow (₹ Cr)</h3>
+      <label style="font-size:11px;color:var(--text-2);">FII Net Cash (₹ Cr)</label>
+      <input type="number" id="manualFii" value="5673" style="margin:4px 0 10px;" />
+      <label style="font-size:11px;color:var(--text-2);">DII Net Cash (₹ Cr)</label>
+      <input type="number" id="manualDii" value="-2760" style="margin:4px 0 12px;" />
+      <div style="display:flex;gap:8px;">
+        <button class="btn-paper" style="flex:1;" onclick="applyManualFlows()">Update</button>
+        <button class="btn-sm" onclick="closeModal('flowModal')">Close</button>
       </div>
     </div>
   </div>
 
-  <!-- ========================================================= -->
-  <!-- MODAL 4: EDIT FII / DII DATA                              -->
-  <!-- ========================================================= -->
-  <div id="fii-edit-modal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
-    <div class="bg-[#111827] border border-gray-700 w-full max-w-md rounded-t-3xl sm:rounded-2xl p-5 shadow-2xl space-y-3.5">
-      <div class="flex items-center justify-between">
-        <h3 class="text-sm font-extrabold text-white">Edit FII / DII Flows (₹ Crores)</h3>
-        <button onclick="closeFiiModal()" class="w-8 h-8 rounded-full bg-gray-800 text-gray-400 hover:text-white flex items-center justify-center font-bold">✕</button>
-      </div>
-      <div class="grid grid-cols-2 gap-2.5 text-xs">
-        <div>
-          <label class="text-[10px] text-gray-400 block mb-1">FII Cash Net (₹ Cr)</label>
-          <input type="number" id="inp-fii-cash" class="w-full bg-[#090d16] border border-gray-700 rounded-xl px-3 py-2 font-mono text-white" />
-        </div>
-        <div>
-          <label class="text-[10px] text-gray-400 block mb-1">FII Index Futures (₹ Cr)</label>
-          <input type="number" id="inp-fii-idx" class="w-full bg-[#090d16] border border-gray-700 rounded-xl px-3 py-2 font-mono text-white" />
-        </div>
-        <div>
-          <label class="text-[10px] text-gray-400 block mb-1">FII Stock Futures (₹ Cr)</label>
-          <input type="number" id="inp-fii-stk" class="w-full bg-[#090d16] border border-gray-700 rounded-xl px-3 py-2 font-mono text-white" />
-        </div>
-        <div>
-          <label class="text-[10px] text-gray-400 block mb-1">DII Cash Net (₹ Cr)</label>
-          <input type="number" id="inp-dii-cash" class="w-full bg-[#090d16] border border-gray-700 rounded-xl px-3 py-2 font-mono text-white" />
-        </div>
-      </div>
-      <button onclick="saveFiiData()" class="btn-tap w-full py-2.5 rounded-xl bg-indigoPro text-white text-xs font-extrabold">
-        Update Flows & Re-Rank Alpha Picks
-      </button>
-    </div>
-  </div>
-
-  <!-- ========================================================= -->
-  <!-- QUANTITATIVE BLACK-SCHOLES GREEKS & MULTI-ASSET ENGINE    -->
-  <!-- ========================================================= -->
   <script>
-    const KEYS = {
-      UPSTOX: 'anurag_upstox_v5',
-      TRADES: 'anurag_trades_v5',
-      CAPITAL: 'anurag_capital_v5',
-      CONFIG: 'anurag_config_v5',
-      FII: 'anurag_fii_v5',
-      CAL: 'anurag_cal_v5'
+    let upstoxToken = "";
+    let currentScenario = "gapfade";
+    let currentSegment = "options";
+    let tradeLots = 1;
+    let paperBalance = 100000;
+    let realizedPnl = 0;
+    let activeTrades = [];
+
+    const market = {
+      nifty: 25369.50,
+      giftNifty: 25742.00,
+      bnf: 57610.00,
+      goldMcx: 76150,
+      crudeMcx: 7680,
+      fii: 5673,
+      dii: -2760,
+      score: 48
     };
 
-    const STOCK_UNIVERSE = [
-      { symbol: 'HDFCBANK', sector: 'BANKING', isinKey: 'NSE_EQ|INE040A01034', lot: 550, ltp: 1662.40, prevClose: 1691.00, volCr: 1840, buyQty: 1420000, sellQty: 2680000, farOpt: 'HDFCBANK 31DEC 1660 PE', farOptLtp: 38.40, delta: -0.58, theta: -0.95, iv: 21.4, vega: 2.15 },
-      { symbol: 'ICICIBANK', sector: 'BANKING', isinKey: 'NSE_EQ|INE090A01021', lot: 700, ltp: 1251.80, prevClose: 1272.50, volCr: 1490, buyQty: 1180000, sellQty: 2150000, farOpt: 'ICICIBANK 31DEC 1250 PE', farOptLtp: 27.90, delta: -0.56, theta: -0.72, iv: 20.8, vega: 1.65 },
-      { symbol: 'RELIANCE', sector: 'ENERGY', isinKey: 'NSE_EQ|INE002A01018', lot: 250, ltp: 1278.50, prevClose: 1298.00, volCr: 2120, buyQty: 1890000, sellQty: 2410000, farOpt: 'RELIANCE 31DEC 1280 PE', farOptLtp: 32.10, delta: -0.57, theta: -0.84, iv: 22.1, vega: 1.72 },
-      { symbol: 'INFY', sector: 'IT', isinKey: 'NSE_EQ|INE009A01021', lot: 400, ltp: 1794.20, prevClose: 1824.00, volCr: 1360, buyQty: 840000, sellQty: 1620000, farOpt: 'INFY 31DEC 1800 PE', farOptLtp: 48.50, delta: -0.61, theta: -1.18, iv: 24.5, vega: 2.40 },
-      { symbol: 'SUNPHARMA', sector: 'PHARMA', isinKey: 'NSE_EQ|INE044A01036', lot: 350, ltp: 1854.60, prevClose: 1831.00, volCr: 940, buyQty: 1390000, sellQty: 720000, farOpt: 'SUNPHARMA 31DEC 1860 CE', farOptLtp: 44.20, delta: 0.59, theta: -1.05, iv: 21.0, vega: 2.35 },
-      { symbol: 'BHARTIARTL', sector: 'TELECOM', isinKey: 'NSE_EQ|INE397D01024', lot: 475, ltp: 1588.40, prevClose: 1574.00, volCr: 890, buyQty: 1120000, sellQty: 690000, farOpt: 'BHARTIARTL 31DEC 1600 CE', farOptLtp: 35.80, delta: 0.55, theta: -0.88, iv: 19.6, vega: 1.98 },
-      { symbol: 'SBIN', sector: 'PSU BANK', isinKey: 'NSE_EQ|INE062A01020', lot: 750, ltp: 811.30, prevClose: 826.50, volCr: 1290, buyQty: 2450000, sellQty: 3910000, farOpt: 'SBIN 31DEC 810 PE', farOptLtp: 21.40, delta: -0.56, theta: -0.54, iv: 23.8, vega: 1.12 },
-      { symbol: 'TCS', sector: 'IT', isinKey: 'NSE_EQ|INE467B01029', lot: 175, ltp: 4028.00, prevClose: 4085.00, volCr: 1180, buyQty: 410000, sellQty: 790000, farOpt: 'TCS 31DEC 4000 PE', farOptLtp: 82.60, delta: -0.54, theta: -2.10, iv: 20.4, vega: 5.10 }
+    const LOT_SIZES = { NIFTY: 65, BANKNIFTY: 30, EQUITY: 25, GOLDM: 10, CRUDEOILM: 10 };
+
+    // --- NSE TUESDAY WEEKLY EXPIRIES ---
+    function populateExpiries() {
+      const expiries = [
+        { val: "2026-12-01", label: "01 Dec 2026 (Next Weekly Tue)" },
+        { val: "2026-12-08", label: "08 Dec 2026 (Weekly Tue)" },
+        { val: "2026-12-15", label: "15 Dec 2026 (Weekly Tue)" },
+        { val: "2026-12-22", label: "22 Dec 2026 (Weekly Tue)" },
+        { val: "2026-12-29", label: "29 Dec 2026 (Monthly Tue)" }
+      ];
+      document.getElementById("ocExpiry").innerHTML = expiries.map(e => `<option value="${e.val}">${e.label}</option>`).join("");
+    }
+
+    // --- AI MACRO & GEOPOLITICAL NEWS PULSE ---
+    const AI_NEWS_FEED = [
+      {
+        title: "Houthi Red Sea & Saudi Tanker Strikes vs. Crude Price",
+        impact: "CRUDE CAPPED / NEUTRAL",
+        tagClass: "tag-warn",
+        summary: "Weekend Houthi strikes hit 2 tankers near Oman & Saudi Rabigh facility, yet Brent Crude slipped to ~$92.10 as strong USD (DXY 104) & demand worries outweigh supply fear. Avoid chasing OTM Crude calls."
+      },
+      {
+        title: "Nasdaq -1.48% Tech Drop vs. Dow +0.85% Rotation",
+        impact: "BEARISH IT • BULLISH BANKS",
+        tagClass: "tag-sell",
+        summary: "US AI/chip stocks sold off (Nvidia, AMD -12%, Micron -11%) while Dow gained +423 pts. Expect selling pressure in Nifty IT (Infosys/TCS) and relative strength in Banking & Domestic Cyclicals."
+      },
+      {
+        title: "US Inflation Data Tonight & Dec Fed Hike Odds",
+        impact: "GOLD UNDER PRESSURE",
+        tagClass: "tag-sell",
+        summary: "US inflation expectations eased to 3.7% ahead of tonight's inflation print, but elevated real-rate expectations pushed COMEX Gold down -2.3% to $3,568/oz. Sell rallies in Gold until DXY cools."
+      },
+      {
+        title: "Post-Expiry Exhaustion & GIFT Nifty +372 Pt Gap-Up",
+        impact: "FADE GAP AT 25,780",
+        tagClass: "tag-buy",
+        summary: "FIIs already unwound Nov futures on Monday (-₹3,630 Cr) while buying +₹5,673 Cr cash for 30 Nov MSCI rebalance. With Kospi -5% & Nikkei -3%, wait for gap-up rejection near 25,780 before entering Puts."
+      }
     ];
 
-    let state = {
-      upstox: {
-        clientId: '',
-        apiKey: '',
-        token: '',
-        mode: 'PAPER',
-        verified: false
-      },
-      config: {
-        slPct: 15,
-        t1Pct: 25,
-        t2Pct: 50,
-        pollMs: 3000
-      },
-      fii: {
-        fiiCash: -3120,
-        fiiIdx: -1450,
-        fiiStk: -820,
-        diiCash: 2340,
-        diiIdx: 490
-      },
-      indices: {
-        nifty: { ltp: 25419.85, prevClose: 25800.60 },
-        bnf: { ltp: 57210.40, prevClose: 57820.60 },
-        vix: 16.45,
-        gold: 77850
-      },
-      selectedChainExpiry: '2026-12-29',
-      optionChain: [],
-      alphaFilter: 'ALL',
-      capital: 100000,
-      openTrades: [],
-      closedTrades: [],
-      pollTimer: null,
-      ticketDraft: { symbol: '', type: 'OPTION', price: 0, baseLot: 65, side: 'BUY PE', instrumentKey: '' }
-    };
+    function renderAiNews() {
+      document.getElementById("aiNewsContainer").innerHTML = AI_NEWS_FEED.map(n => `
+        <div class="news-item">
+          <div class="news-top">
+            <strong style="color:var(--text-1);">${n.title}</strong>
+            <span class="news-tag ${n.tagClass}">${n.impact}</span>
+          </div>
+          <div style="color:var(--text-2);line-height:1.4;">${n.summary}</div>
+        </div>
+      `).join("");
+    }
 
-    // ---------------------------------------------------------
-    // 1. BOOTSTRAP & PERSISTENCE
-    // ---------------------------------------------------------
-    window.addEventListener('DOMContentLoaded', () => {
-      loadPersistentData();
-      rebuildGreeksOptionChain();
-      renderAllViews();
-
-      if (state.upstox.token) {
-        fetchLiveUpstoxSnapshot(false);
-        startLivePollingLoop();
+    async function fetchLiveNewsPulse() {
+      document.getElementById("newsSyncTime").textContent = "Synced: " + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      renderAiNews();
+      if (upstoxToken) {
+        try {
+          const res = await fetch("https://api.upstox.com/v2/market-quote/ltp?instrument_key=NSE_INDEX%7CNifty%2050,NSE_INDEX%7CNifty%20Bank", {
+            headers: { "Authorization": `Bearer ${upstoxToken}`, "Accept": "application/json" }
+          });
+          const json = await res.json();
+          if (json.status === "success" && json.data) {
+            if (json.data["NSE_INDEX:Nifty 50"]?.last_price) market.nifty = json.data["NSE_INDEX:Nifty 50"].last_price;
+            if (json.data["NSE_INDEX:Nifty Bank"]?.last_price) market.bnf = json.data["NSE_INDEX:Nifty Bank"].last_price;
+          }
+        } catch (e) {}
       }
-    });
+      renderAll();
+    }
 
-    function loadPersistentData() {
-      try {
-        const upx = JSON.parse(localStorage.getItem(KEYS.UPSTOX) || 'null');
-        if (upx && upx.token) state.upstox = { ...state.upstox, ...upx };
+    function setFlowScenario(mode) {
+      currentScenario = mode;
+      document.querySelectorAll(".preset-btn").forEach(b => b.classList.remove("active"));
+      document.getElementById(`pre-${mode}`).classList.add("active");
 
-        const cfg = JSON.parse(localStorage.getItem(KEYS.CONFIG) || 'null');
-        if (cfg) {
-          state.config = { ...state.config, ...cfg };
-          document.getElementById('cfg-sl-pct').value = state.config.slPct;
-          document.getElementById('cfg-t1-pct').value = state.config.t1Pct;
-          document.getElementById('cfg-t2-pct').value = state.config.t2Pct;
-          document.getElementById('cfg-poll-sec').value = state.config.pollMs;
-        }
-
-        const fii = JSON.parse(localStorage.getItem(KEYS.FII) || 'null');
-        if (fii) state.fii = { ...state.fii, ...fii };
-
-        const cal = JSON.parse(localStorage.getItem(KEYS.CAL) || 'null');
-        if (cal) {
-          if (cal.nifty) state.indices.nifty.ltp = cal.nifty;
-          if (cal.bnf) state.indices.bnf.ltp = cal.bnf;
-          if (cal.vix) state.indices.vix = cal.vix;
-          if (cal.gold) state.indices.gold = cal.gold;
-        }
-
-        const cap = localStorage.getItem(KEYS.CAPITAL);
-        if (cap !== null) state.capital = parseFloat(cap);
-
-        const tr = JSON.parse(localStorage.getItem(KEYS.TRADES) || 'null');
-        if (tr) {
-          state.openTrades = tr.openTrades || [];
-          state.closedTrades = tr.closedTrades || [];
-        }
-      } catch (e) {
-        console.error('Restore error:', e);
+      const banner = document.getElementById("regimeBanner");
+      const rText = document.getElementById("regimeText");
+      if (mode === "gapfade") {
+        market.score = 48;
+        banner.className = "regime-bar regime-trap";
+        rText.textContent = "⚠ GAP-UP FADE: SELL CALLS / BUY PE ONLY NEAR 25,780 RESISTANCE";
+      } else if (mode === "bear") {
+        market.score = 30;
+        banner.className = "regime-bar regime-bear";
+        rText.textContent = "▼ BREAKDOWN BELOW 25,550: BUY PE / SHORT IT & NIFTY FUT";
+      } else {
+        market.score = 74;
+        banner.className = "regime-bar regime-bull";
+        rText.textContent = "▲ SUSTAINED ABOVE 25,820: BUY CE / LONG BANKS (MSCI FLOW)";
       }
+      document.getElementById("regimeScore").textContent = `Bias: ${market.score}/100`;
+      renderSetups();
+      renderOptionChain();
     }
 
-    function saveTradesToDisk() {
-      localStorage.setItem(KEYS.CAPITAL, state.capital.toString());
-      localStorage.setItem(KEYS.TRADES, JSON.stringify({
-        openTrades: state.openTrades,
-        closedTrades: state.closedTrades
-      }));
+    function applyManualFlows() {
+      market.fii = parseFloat(document.getElementById("manualFii").value) || 0;
+      market.dii = parseFloat(document.getElementById("manualDii").value) || 0;
+      document.getElementById("fiiAmt").textContent = `${market.fii >= 0 ? "+" : ""}₹${market.fii.toLocaleString("en-IN")} Cr Cash`;
+      document.getElementById("diiAmt").textContent = `${market.dii >= 0 ? "+" : ""}₹${market.dii.toLocaleString("en-IN")} Cr DII`;
+      closeModal("flowModal");
+      setFlowScenario(market.fii < 0 ? "bear" : "gapfade");
     }
 
-    // ---------------------------------------------------------
-    // 2. BLACK-SCHOLES GREEKS ENGINE (DELTA, THETA, IV, VEGA)
-    // ---------------------------------------------------------
-    function normCdf(x) {
-      const a1 = 0.254829592, a2 = -0.284496736, a3 = 1.421413741, a4 = -1.453152027, a5 = 1.061405429, p = 0.3275911;
-      const sign = x < 0 ? -1 : 1;
-      x = Math.abs(x) / Math.sqrt(2.0);
-      const t = 1.0 / (1.0 + p * x);
-      const y = 1.0 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-x * x);
-      return 0.5 * (1.0 + sign * y);
+    function switchSegment(seg, btn) {
+      currentSegment = seg;
+      document.querySelectorAll(".seg-tab").forEach(t => t.classList.remove("active"));
+      btn.classList.add("active");
+      renderSetups();
     }
 
-    function normPdf(x) {
-      return Math.exp(-0.5 * x * x) / Math.sqrt(2 * Math.PI);
-    }
+    function getRecommendedSetups() {
+      const exp = document.getElementById("ocExpiry")?.value || "2026-12-01";
+      const refSpot = currentScenario === "gapfade" ? market.giftNifty : market.nifty;
+      const atm = Math.round(refSpot / 50) * 50;
 
-    function calcBlackScholes(S, K, dteDays, ivPct, isCall) {
-      const T = Math.max(1 / 365, dteDays / 365);
-      const r = 0.068; // 6.8% India 10Y risk-free rate
-      const sigma = Math.max(0.05, ivPct / 100);
-      const sqrtT = Math.sqrt(T);
-
-      const d1 = (Math.log(S / K) + (r + 0.5 * sigma * sigma) * T) / (sigma * sqrtT);
-      const d2 = d1 - sigma * sqrtT;
-
-      const price = isCall
-        ? S * normCdf(d1) - K * Math.exp(-r * T) * normCdf(d2)
-        : K * Math.exp(-r * T) * normCdf(-d2) - S * normCdf(-d1);
-
-      const delta = isCall ? normCdf(d1) : normCdf(d1) - 1;
-      const vega = (S * normPdf(d1) * sqrtT) / 100; // Per 1% IV change
-      const thetaAnnual = isCall
-        ? -(S * normPdf(d1) * sigma) / (2 * sqrtT) - r * K * Math.exp(-r * T) * normCdf(d2)
-        : -(S * normPdf(d1) * sigma) / (2 * sqrtT) + r * K * Math.exp(-r * T) * normCdf(-d2);
-      const thetaDaily = thetaAnnual / 365;
-
-      return {
-        price: Math.max(1.5, price),
-        delta,
-        theta: thetaDaily,
-        vega,
-        iv: ivPct
-      };
-    }
-
-    function getDteFromExpiryStr(expStr) {
-      const baseDate = new Date('2026-11-23T15:30:00+05:30');
-      const expDate = new Date(expStr + 'T15:30:00+05:30');
-      const diffDays = Math.round((expDate - baseDate) / (1000 * 60 * 60 * 24));
-      return Math.max(7, diffDays); // Always enforce >= 7 DTE (never near-term expiry)
-    }
-
-    function rebuildGreeksOptionChain() {
-      const underlying = document.getElementById('chain-underlying')?.value || 'NSE_INDEX|Nifty 50';
-      const isBnf = underlying.includes('Bank');
-      const spot = isBnf ? state.indices.bnf.ltp : state.indices.nifty.ltp;
-      const step = isBnf ? 100 : 50;
-      const atm = Math.round(spot / step) * step;
-      const expStr = document.getElementById('chain-expiry')?.value || state.selectedChainExpiry;
-      state.selectedChainExpiry = expStr;
-      const dte = getDteFromExpiryStr(expStr);
-
-      document.getElementById('chain-dte-label').textContent = `${dte} DTE (Low Theta)`;
-      document.getElementById('chain-spot-label').textContent = spot.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-
-      const strikes = [];
-      for (let i = -3; i <= 4; i++) {
-        strikes.push(atm + i * step);
+      if (currentSegment === "options") {
+        if (currentScenario === "gapfade") {
+          return [
+            {
+              symbol: `NIFTY ${exp} 25750 PE`,
+              side: "BUY",
+              badge: "BUY PE ON GAP-UP FADE",
+              reason: "Wait for GIFT Nifty +370 pt gap-up to stall near 25,750–25,800 (Kospi -5%, Nikkei -3% drag). High Delta (-0.51) avoids bottom-chasing.",
+              entry: 155.0, t1: 198.0, t2: 245.0, sl: 122.0, lotSize: 65
+            },
+            {
+              symbol: `NIFTY ${exp} 25900 CE`,
+              side: "SELL",
+              badge: "SELL 25900 CE (RESISTANCE)",
+              reason: "25,800–25,900 is major FII supply zone from Friday's top. Writing 25900 CE captures rapid decay if gap fails.",
+              entry: 92.0, t1: 54.0, t2: 22.0, sl: 124.0, lotSize: 65
+            }
+          ];
+        } else if (currentScenario === "bear") {
+          return [
+            {
+              symbol: `NIFTY ${exp} ${atm} PE`,
+              side: "BUY",
+              badge: "BUY PE (BREAKDOWN)",
+              reason: "Confirmed break below opening VWAP & 25,550 support; strong downside momentum.",
+              entry: 148.0, t1: 190.0, t2: 235.0, sl: 118.0, lotSize: 65
+            }
+          ];
+        } else {
+          return [
+            {
+              symbol: `NIFTY ${exp} ${atm} CE`,
+              side: "BUY",
+              badge: "BUY CE (MSCI BREAKOUT)",
+              reason: "FII cash buying (+₹5,673 Cr) absorbs Asian weakness above 25,820.",
+              entry: 152.0, t1: 195.0, t2: 240.0, sl: 120.0, lotSize: 65
+            }
+          ];
+        }
       }
 
-      state.optionChain = strikes.map((k, idx) => {
-        const skew = (atm - k) / (step * 40); // Put skew slightly higher on downside
-        const ceIv = parseFloat((state.indices.vix - 0.6 + Math.abs(idx - 3) * 0.25).toFixed(1));
-        const peIv = parseFloat((state.indices.vix + 0.5 + skew * 2.2).toFixed(1));
+      if (currentSegment === "futures") {
+        return [
+          {
+            symbol: "NIFTY DEC FUT",
+            side: currentScenario === "bull" ? "BUY" : "SELL",
+            badge: currentScenario === "bull" ? "LONG DEC FUT" : "SHORT DEC FUT AT GAP",
+            reason: currentScenario === "bull"
+              ? "Sustained hold above 25,820 confirms FII Dec rollover longs."
+              : "Shorting gap-up near 25,840 Dec Fut resistance aligns with Asian -3% to -5% selloff.",
+            entry: 25840, t1: currentScenario === "bull" ? 25980 : 25680, t2: currentScenario === "bull" ? 26120 : 25520, sl: currentScenario === "bull" ? 25750 : 25930, lotSize: 65
+          }
+        ];
+      }
 
-        const ceG = calcBlackScholes(spot, k, dte, ceIv, true);
-        const peG = calcBlackScholes(spot, k, dte, peIv, false);
-
-        return {
-          strike: k,
-          ceLtp: ceG.price,
-          ceDelta: ceG.delta,
-          ceTheta: ceG.theta,
-          ceVega: ceG.vega,
-          ceIv: ceG.iv,
-          ceOi: `${(42 + idx * 9).toFixed(1)}L`,
-          peLtp: peG.price,
-          peDelta: peG.delta,
-          peTheta: peG.theta,
-          peVega: peG.vega,
-          peIv: peG.iv,
-          peOi: `${(58 - idx * 4).toFixed(1)}L`,
-          ceKey: '',
-          peKey: ''
-        };
-      });
-    }
-
-    // ---------------------------------------------------------
-    // 3. MULTI-ASSET GREEKS & SECTOR-SHIFT ALPHA GENERATOR
-    // ---------------------------------------------------------
-    function generateMultiAssetAlphaOpportunities() {
-      const spot = state.indices.nifty.ltp;
-      const expStr = '2026-12-29'; // Monthly 36 DTE (Next Month / Long Expiry)
-      const dte = 36;
-      const farExpStr = '2027-01-28'; // 66 DTE Far-Month Expiry
-      const farDte = 66;
-
-      // Determine institutional regime from FII/DII + Order Book
-      const netInst = state.fii.fiiCash + state.fii.fiiIdx + state.fii.fiiStk + state.fii.diiCash + state.fii.diiIdx;
-      const isBearishMacro = netInst < 0;
-
-      // 1. Directional Index Option (Monthly 36 DTE — High Delta, Low Theta Decay)
-      const opt1Strike = isBearishMacro ? Math.round((spot + 100) / 50) * 50 : Math.round((spot - 100) / 50) * 50;
-      const opt1G = calcBlackScholes(spot, opt1Strike, dte, state.indices.vix + 0.4, !isBearishMacro);
-
-      // 2. Far-Month Quarterly/Next-Month Option (66 DTE — Ultra-Low Theta Burn + Vega Expansion)
-      const opt2Strike = isBearishMacro ? Math.round(spot / 50) * 50 : Math.round((spot + 150) / 50) * 50;
-      const opt2G = calcBlackScholes(spot, opt2Strike, farDte, state.indices.vix + 0.2, !isBearishMacro);
-
-      // 3. Sector-Shift Stock Option (Next-Month Expiry — SUNPHARMA Defensive Accumulation or HDFCBANK Breakdown)
-      const ph = STOCK_UNIVERSE.find(s => s.symbol === 'SUNPHARMA');
-      const hb = STOCK_UNIVERSE.find(s => s.symbol === 'HDFCBANK');
-
-      const opportunities = [
-        {
-          id: 'ALP-1',
-          assetClass: 'OPTION',
-          badge: 'BEST GREEKS PICK • 36 DTE MONTHLY',
-          symbol: isBearishMacro ? `NIFTY 29DEC ${opt1Strike} PE` : `NIFTY 29DEC ${opt1Strike} CE`,
-          side: isBearishMacro ? 'BUY PE' : 'BUY CE',
-          ltp: opt1G.price,
-          lot: 65,
-          score: 94,
-          expiryLabel: '29 Dec 2026 (36 DTE)',
-          greeks: {
-            delta: opt1G.delta.toFixed(2),
-            theta: opt1G.theta.toFixed(2),
-            iv: `${opt1G.iv.toFixed(1)}%`,
-            vega: `+₹${opt1G.vega.toFixed(2)}`
+      if (currentSegment === "equity") {
+        return [
+          {
+            symbol: "INFY (Intraday Short)",
+            side: "SELL",
+            badge: "SHORT IT (NASDAQ -1.48%)",
+            reason: "Nasdaq tech/AI selloff (Nvidia, AMD -12%, Micron -11%) directly pressures Indian IT ADRs at open.",
+            entry: 1865.0, t1: 1842.0, t2: 1820.0, sl: 1880.0, lotSize: 25
           },
-          thesis: isBearishMacro
-            ? `FII net outflow (₹${Math.abs(netInst).toLocaleString('en-IN')} Cr) + heavy Banking/IT selling. 36 DTE Monthly ITM Put gives strong ${Math.abs(opt1G.delta).toFixed(2)} Delta with minimal ₹${Math.abs(opt1G.theta).toFixed(1)}/day Theta decay.`
-            : `Institutional accumulation + rising PCR. 36 DTE Monthly ITM Call captures directional upside with low daily Theta burn.`,
-          instrumentKey: ''
+          {
+            symbol: "ICICIBANK (MSCI + Dow Rotation)",
+            side: "BUY",
+            badge: "BUY BANKING LEADER",
+            reason: "Dow Jones +0.85% bank/value rotation + FII cash inflows ahead of 30 Nov MSCI rebalance.",
+            entry: 1322.0, t1: 1342.0, t2: 1360.0, sl: 1308.0, lotSize: 25
+          }
+        ];
+      }
+
+      // Commodity
+      return [
+        {
+          symbol: "MCX GOLDM DEC FUT",
+          side: "SELL",
+          badge: "SELL GOLD ON RISE",
+          reason: "COMEX Gold plunged -2.3% to $3,568/oz on strong USD (DXY 104) and elevated US real-rate expectations.",
+          entry: 76150, t1: 75750, t2: 75350, sl: 76420, lotSize: 10
         },
         {
-          id: 'ALP-2',
-          assetClass: 'OPTION',
-          badge: 'FAR EXPIRY • 66 DTE VEGA PLAY',
-          symbol: isBearishMacro ? `NIFTY 28JAN ${opt2Strike} PE` : `NIFTY 28JAN ${opt2Strike} CE`,
-          side: isBearishMacro ? 'BUY PE' : 'BUY CE',
-          ltp: opt2G.price,
-          lot: 65,
-          score: 91,
-          expiryLabel: '28 Jan 2027 (66 DTE)',
-          greeks: {
-            delta: opt2G.delta.toFixed(2),
-            theta: opt2G.theta.toFixed(2),
-            iv: `${opt2G.iv.toFixed(1)}%`,
-            vega: `+₹${opt2G.vega.toFixed(2)}`
-          },
-          thesis: `Next-Month 66 DTE contract eliminates weekly expiry time-decay stress (Theta only ₹${Math.abs(opt2G.theta).toFixed(1)}/day) while high Vega (+₹${opt2G.vega.toFixed(1)}) profits from IV expansion.`,
-          instrumentKey: ''
-        },
-        {
-          id: 'ALP-3',
-          assetClass: 'ETF',
-          badge: 'ETF SAFE HEDGE • ZERO THETA',
-          symbol: 'GOLDBEES ETF',
-          side: 'BUY EQ',
-          ltp: 66.40,
-          lot: 100,
-          score: 89,
-          expiryLabel: 'Perpetual ETF (0 Theta)',
-          greeks: { delta: '+1.00', theta: '₹0.00', iv: '11.4%', vega: 'N/A' },
-          thesis: 'Equity volatility & FII outflows trigger institutional rotation into Gold ETFs. 1.00 Delta exposure with zero time decay and high liquidity.',
-          instrumentKey: 'NSE_EQ|INF204KB17I5'
-        },
-        {
-          id: 'ALP-4',
-          assetClass: 'FUTURE',
-          badge: 'COMMODITY FUTURES • MCX',
-          symbol: 'MCX GOLDM 05FEB FUT',
-          side: 'BUY FUT',
-          ltp: state.indices.gold,
-          lot: 1,
-          score: 88,
-          expiryLabel: '05 Feb 2027 (Far Contract)',
-          greeks: { delta: '+1.00', theta: '₹0.00', iv: '12.1%', vega: 'Basis +0.4%' },
-          thesis: 'Far-month MCX Gold Mini futures showing fresh long buildup (+6.4% OI) as currency hedge against FII equity outflows.',
-          instrumentKey: ''
-        },
-        {
-          id: 'ALP-5',
-          assetClass: 'OPTION',
-          badge: 'SECTOR ROTATION • 38 DTE',
-          symbol: ph.farOpt,
-          side: 'BUY CE',
-          ltp: ph.farOptLtp,
-          lot: ph.lot,
-          score: 86,
-          expiryLabel: '31 Dec 2026 (38 DTE)',
-          greeks: { delta: '+0.59', theta: '-1.05', iv: '21.0%', vega: '+₹2.35' },
-          thesis: 'Pharma is the #1 defensive institutional rotation sector (+66% buy-side depth). Next-month 1860 CE offers 0.59 Delta breakout leverage.',
-          instrumentKey: ''
-        },
-        {
-          id: 'ALP-6',
-          assetClass: 'EQUITY',
-          badge: 'CASH / DELIVERY LEADER',
-          symbol: 'SUNPHARMA EQ',
-          side: 'BUY EQ',
-          ltp: ph.ltp,
-          lot: 10,
-          score: 85,
-          expiryLabel: 'Cash Delivery (0 Theta)',
-          greeks: { delta: '+1.00', theta: '₹0.00', iv: '21.0%', vega: 'Delivery 74%' },
-          thesis: 'Strong DII delivery accumulation above VWAP while Nifty heavyweights face distribution.',
-          instrumentKey: ph.isinKey
-        },
-        {
-          id: 'ALP-7',
-          assetClass: 'ETF',
-          badge: 'INDEX ETF ACCUMULATION',
-          symbol: 'PHARMABEES ETF',
-          side: 'BUY EQ',
-          ltp: 22.85,
-          lot: 250,
-          score: 83,
-          expiryLabel: 'Perpetual ETF (0 Theta)',
-          greeks: { delta: '+1.00', theta: '₹0.00', iv: '16.2%', vega: 'N/A' },
-          thesis: 'Captures broad Pharma sector rotation without single-stock earnings gap risk.',
-          instrumentKey: ''
-        },
-        {
-          id: 'ALP-8',
-          assetClass: 'FUTURE',
-          badge: 'INDEX FUTURES • NEXT MONTH',
-          symbol: isBearishMacro ? 'NIFTY 29DEC FUT' : 'NIFTY 29DEC FUT',
-          side: isBearishMacro ? 'SELL' : 'BUY FUT',
-          ltp: spot + 115,
-          lot: 65,
-          score: 82,
-          expiryLabel: '29 Dec 2026 (36 DTE)',
-          greeks: { delta: isBearishMacro ? '-1.00' : '+1.00', theta: '₹0.00', iv: '15.8%', vega: 'Basis +115' },
-          thesis: 'Pure 1.00 Delta directional index futures contract with zero option Theta decay and tight bid-ask spread.',
-          instrumentKey: ''
+          symbol: "MCX CRUDEOILM DEC FUT",
+          side: "SELL",
+          badge: "RANGE SELL CRUDE",
+          reason: "Despite Houthi tanker strikes, Brent Crude stays capped near $92.10 on weak global demand.",
+          entry: 7680, t1: 7590, t2: 7510, sl: 7745, lotSize: 10
         }
       ];
-
-      return opportunities;
     }
 
-    // ---------------------------------------------------------
-    // 4. GENUINE UPSTOX API v2 LIVE POLLING (FIXED 401 LOGIC)
-    // ---------------------------------------------------------
-    function startLivePollingLoop() {
-      if (state.pollTimer) clearInterval(state.pollTimer);
-      if (!state.upstox.token) return;
-      state.pollTimer = setInterval(() => fetchLiveUpstoxSnapshot(false), state.config.pollMs);
-    }
-
-    async function fetchLiveUpstoxSnapshot(manualTrigger = false) {
-      const token = state.upstox.token;
-      if (!token) {
-        if (manualTrigger) {
-          openUpstoxModal();
-          notify('Paste your Upstox Access or Analytics Token first.', 'info');
-        }
-        return;
-      }
-
-      const spinner = document.getElementById('poll-spinner');
-      spinner.classList.add('animate-spin');
-      const tStart = performance.now();
-
-      const headers = {
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${token}`
-      };
-
-      try {
-        // Probe /v2/market-quote/quotes directly (works with BOTH daily Access Tokens & 1-year Analytics Tokens)
-        const indexKeys = ['NSE_INDEX|Nifty 50', 'NSE_INDEX|Nifty Bank', 'NSE_INDEX|India VIX'];
-        const stockKeys = STOCK_UNIVERSE.map(s => s.isinKey);
-        const allKeys = encodeURIComponent([...indexKeys, ...stockKeys].join(','));
-
-        const res = await fetch(`https://api.upstox.com/v2/market-quote/quotes?instrument_key=${allKeys}`, { headers });
-
-        if (!res.ok) {
-          let detail = `HTTP ${res.status}`;
-          try {
-            const errJson = await res.json();
-            if (errJson.errors && errJson.errors[0]?.message) detail = errJson.errors[0].message;
-          } catch (_) {}
-          throw new Error(detail);
-        }
-
-        const json = await res.json();
-        const qData = json.data || {};
-
-        const niftyObj = findQuoteEntry(qData, 'NSE_INDEX|Nifty 50', 'NSE_INDEX:Nifty 50');
-        if (niftyObj?.last_price) {
-          state.indices.nifty.ltp = niftyObj.last_price;
-          if (niftyObj.ohlc?.close) state.indices.nifty.prevClose = niftyObj.ohlc.close;
-        }
-
-        const bnfObj = findQuoteEntry(qData, 'NSE_INDEX|Nifty Bank', 'NSE_INDEX:Nifty Bank');
-        if (bnfObj?.last_price) {
-          state.indices.bnf.ltp = bnfObj.last_price;
-          if (bnfObj.ohlc?.close) state.indices.bnf.prevClose = bnfObj.ohlc.close;
-        }
-
-        const vixObj = findQuoteEntry(qData, 'NSE_INDEX|India VIX', 'NSE_INDEX:India VIX');
-        if (vixObj?.last_price) {
-          state.indices.vix = vixObj.last_price;
-        }
-
-        STOCK_UNIVERSE.forEach(stk => {
-          const entry = findQuoteEntry(qData, stk.isinKey, stk.isinKey.replace('|', ':'));
-          if (entry) {
-            if (entry.last_price) stk.ltp = entry.last_price;
-            if (entry.ohlc?.close) stk.prevClose = entry.ohlc.close;
-            if (entry.volume) stk.volCr = Math.round((entry.volume * stk.ltp) / 10000000);
-            if (typeof entry.total_buy_quantity === 'number') stk.buyQty = entry.total_buy_quantity;
-            if (typeof entry.total_sell_quantity === 'number') stk.sellQty = entry.total_sell_quantity;
-          }
-        });
-
-        state.upstox.verified = true;
-        localStorage.setItem(KEYS.UPSTOX, JSON.stringify(state.upstox));
-
-        rebuildGreeksOptionChain();
-        syncOpenTradesWithRealLtp();
-
-        const latency = Math.round(performance.now() - tStart);
-        updateConnectionStatusUI('LIVE', latency);
-        renderAllViews();
-
-        if (manualTrigger) {
-          notify(`Live Upstox Sync OK (${latency}ms) • Nifty ${state.indices.nifty.ltp.toFixed(2)}`, 'success');
-        }
-      } catch (err) {
-        updateConnectionStatusUI('ERROR', 0, err.message);
-        if (manualTrigger) {
-          notify(`Upstox Rejected Token: ${err.message}`, 'error');
-        }
-      } finally {
-        spinner.classList.remove('animate-spin');
-      }
-    }
-
-    function findQuoteEntry(dataMap, pipeKey, colonKey) {
-      if (dataMap[pipeKey]) return dataMap[pipeKey];
-      if (dataMap[colonKey]) return dataMap[colonKey];
-      const suffix = pipeKey.split('|')[1];
-      for (const k of Object.keys(dataMap)) {
-        if (k.endsWith(suffix)) return dataMap[k];
-      }
-      return null;
-    }
-
-    function updateConnectionStatusUI(status, latencyMs = 0, errMsg = '') {
-      const pill = document.getElementById('feed-status-pill');
-      const dot = document.getElementById('feed-status-dot');
-      const txt = document.getElementById('feed-status-text');
-      const errBanner = document.getElementById('api-error-banner');
-      const errSpan = document.getElementById('api-error-msg');
-      const hdrBtn = document.getElementById('header-upstox-btn');
-      const guardInfo = document.getElementById('guard-profile-info');
-
-      if (status === 'LIVE') {
-        errBanner.classList.add('hidden');
-        pill.className = 'mt-0.5 inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emeraldPro/15 text-emeraldPro border border-emeraldPro/40 max-w-full';
-        dot.className = 'w-1.5 h-1.5 rounded-full bg-emeraldPro pulse-live shrink-0';
-        txt.textContent = `LIVE • ID:${state.upstox.clientId || 'UPX'}`;
-        hdrBtn.textContent = state.upstox.clientId || 'LIVE';
-        document.getElementById('latency-badge').textContent = `${latencyMs} ms`;
-        if (guardInfo) {
-          guardInfo.innerHTML = `<span class="text-emeraldPro font-bold">Connected Live:</span> Client ID <span class="font-mono text-white">${state.upstox.clientId}</span> • Mode: <strong>${state.upstox.mode}</strong>`;
-        }
-      } else if (status === 'ERROR') {
-        errBanner.classList.remove('hidden');
-        errSpan.textContent = errMsg;
-        pill.className = 'mt-0.5 inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-crimsonPro/20 text-rose-300 border border-crimsonPro/40 max-w-full';
-        dot.className = 'w-1.5 h-1.5 rounded-full bg-crimsonPro shrink-0';
-        txt.textContent = 'TOKEN EXPIRED • Tap to Update';
-      } else {
-        errBanner.classList.add('hidden');
-        pill.className = 'mt-0.5 inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-gray-800/90 text-gray-300 border border-gray-700 max-w-full';
-        dot.className = 'w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0';
-        txt.textContent = 'BASELINE • Connect Upstox';
-        hdrBtn.textContent = 'Upstox';
-      }
-    }
-
-    // ---------------------------------------------------------
-    // 5. UPSTOX MODAL & CALIBRATION HANDLERS
-    // ---------------------------------------------------------
-    function openUpstoxModal() {
-      document.getElementById('upx-client-id').value = state.upstox.clientId || '';
-      document.getElementById('upx-api-key').value = state.upstox.apiKey || '';
-      document.getElementById('upx-token').value = state.upstox.token || '';
-      setUpxExecMode(state.upstox.mode || 'PAPER');
-      document.getElementById('upstox-modal').classList.remove('hidden');
-    }
-    function closeUpstoxModal() {
-      document.getElementById('upstox-modal').classList.add('hidden');
-    }
-    function toggleUpxTokenVis() {
-      const inp = document.getElementById('upx-token');
-      const btn = document.getElementById('upx-vis-btn');
-      inp.type = inp.type === 'password' ? 'text' : 'password';
-      btn.textContent = inp.type === 'password' ? 'SHOW' : 'HIDE';
-    }
-    function setUpxExecMode(mode) {
-      state.upstox.mode = mode;
-      const pBtn = document.getElementById('upx-mode-PAPER');
-      const lBtn = document.getElementById('upx-mode-LIVE');
-      if (mode === 'PAPER') {
-        pBtn.className = 'py-2.5 px-2 rounded-xl border text-xs font-bold text-center bg-emeraldPro/15 border-emeraldPro text-emeraldPro';
-        lBtn.className = 'py-2.5 px-2 rounded-xl border text-xs font-bold text-center bg-[#090d16] border-gray-700 text-gray-400';
-      } else {
-        lBtn.className = 'py-2.5 px-2 rounded-xl border text-xs font-bold text-center bg-indigoPro/20 border-indigoPro text-indigo-300';
-        pBtn.className = 'py-2.5 px-2 rounded-xl border text-xs font-bold text-center bg-[#090d16] border-gray-700 text-gray-400';
-      }
-    }
-
-    async function connectAndVerifyUpstox() {
-      const clientId = document.getElementById('upx-client-id').value.trim();
-      const apiKey = document.getElementById('upx-api-key').value.trim();
-      // Sanitize token: remove newlines, spaces, quotes, and accidental "Bearer " prefix
-      let rawToken = document.getElementById('upx-token').value.trim();
-      rawToken = rawToken.replace(/^Bearer\s+/i, '').replace(/["'\s\r\n]+/g, '');
-
-      if (!rawToken) {
-        notify('Please paste your Upstox Access Token or Analytics Token.', 'error');
-        return;
-      }
-
-      state.upstox = {
-        clientId: clientId || 'UPX-PRO',
-        apiKey,
-        token: rawToken,
-        mode: state.upstox.mode || 'PAPER',
-        verified: false
-      };
-
-      localStorage.setItem(KEYS.UPSTOX, JSON.stringify(state.upstox));
-      closeUpstoxModal();
-      await fetchLiveUpstoxSnapshot(true);
-      startLivePollingLoop();
-    }
-
-    function clearUpstoxSession() {
-      if (state.pollTimer) clearInterval(state.pollTimer);
-      localStorage.removeItem(KEYS.UPSTOX);
-      state.upstox = { clientId: '', apiKey: '', token: '', mode: 'PAPER', verified: false };
-      updateConnectionStatusUI('DEMO');
-      closeUpstoxModal();
-      notify('Upstox token cleared.', 'info');
-    }
-
-    function openCalibrationModal() {
-      document.getElementById('cal-nifty-spot').value = state.indices.nifty.ltp;
-      document.getElementById('cal-bnf-spot').value = state.indices.bnf.ltp;
-      document.getElementById('cal-vix').value = state.indices.vix;
-      document.getElementById('cal-gold').value = state.indices.gold;
-      document.getElementById('calibrate-modal').classList.remove('hidden');
-    }
-    function closeCalibrationModal() {
-      document.getElementById('calibrate-modal').classList.add('hidden');
-    }
-    function applyManualCalibration() {
-      const nifty = parseFloat(document.getElementById('cal-nifty-spot').value);
-      const bnf = parseFloat(document.getElementById('cal-bnf-spot').value);
-      const vix = parseFloat(document.getElementById('cal-vix').value);
-      const gold = parseFloat(document.getElementById('cal-gold').value);
-
-      if (nifty > 0) state.indices.nifty.ltp = nifty;
-      if (bnf > 0) state.indices.bnf.ltp = bnf;
-      if (vix > 0) state.indices.vix = vix;
-      if (gold > 0) state.indices.gold = gold;
-
-      localStorage.setItem(KEYS.CAL, JSON.stringify({ nifty, bnf, vix, gold }));
-      rebuildGreeksOptionChain();
-      renderAllViews();
-      closeCalibrationModal();
-      notify('Spot & Black-Scholes Greeks recalculated!', 'success');
-    }
-
-    // ---------------------------------------------------------
-    // 6. RENDER ALPHA GREEKS, BLOCK FLOW, CHAIN & TRADES
-    // ---------------------------------------------------------
-    function renderAllViews() {
-      renderTopTickers();
-      renderAlphaPicksView();
-      renderFiiAndSectorViews();
-      renderOptionChainTable();
-      renderTradesView();
-    }
-
-    function renderTopTickers() {
-      const n = state.indices.nifty;
-      const nDiff = n.ltp - n.prevClose;
-      const nPct = (nDiff / n.prevClose) * 100;
-      document.getElementById('ticker-nifty-ltp').textContent = n.ltp.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-      const nEl = document.getElementById('ticker-nifty-chg');
-      nEl.textContent = `${nDiff >= 0 ? '+' : ''}${nDiff.toFixed(2)} (${nPct >= 0 ? '+' : ''}${nPct.toFixed(2)}%)`;
-      nEl.className = `font-mono tabular-nums text-[10px] font-semibold ${nDiff >= 0 ? 'text-emeraldPro' : 'text-crimsonPro'}`;
-
-      const b = state.indices.bnf;
-      const bDiff = b.ltp - b.prevClose;
-      const bPct = (bDiff / b.prevClose) * 100;
-      document.getElementById('ticker-bnf-ltp').textContent = b.ltp.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-      const bEl = document.getElementById('ticker-bnf-chg');
-      bEl.textContent = `${bDiff >= 0 ? '+' : ''}${bDiff.toFixed(2)} (${bPct >= 0 ? '+' : ''}${bPct.toFixed(2)}%)`;
-      bEl.className = `font-mono tabular-nums text-[10px] font-semibold ${bDiff >= 0 ? 'text-emeraldPro' : 'text-crimsonPro'}`;
-
-      document.getElementById('ticker-vix-val').innerHTML = `${state.indices.vix.toFixed(2)} <span class="text-[9px] text-emeraldPro">IV</span>`;
-    }
-
-    function setAlphaFilter(flt) {
-      state.alphaFilter = flt;
-      document.querySelectorAll('.alp-flt').forEach(b => {
-        b.className = 'alp-flt px-3 py-1.5 rounded-lg text-[11px] font-semibold bg-gray-800 text-gray-300 border border-gray-700 shrink-0';
-      });
-      const active = document.getElementById(`aflt-${flt}`);
-      if (active) active.className = 'alp-flt px-3 py-1.5 rounded-lg text-[11px] font-bold bg-indigoPro text-white shrink-0';
-      renderAlphaPicksView();
-    }
-
-    function renderAlphaPicksView() {
-      const allPicks = generateMultiAssetAlphaOpportunities();
-      const topPick = allPicks[0];
-
-      // Top #1 Featured Alpha Callout
-      document.getElementById('best-alpha-callout').innerHTML = `
-        <div class="flex items-start justify-between gap-2">
-          <div>
-            <span class="px-2 py-0.5 rounded bg-emeraldPro text-[#090d16] text-[9px] font-extrabold uppercase">#1 HIGHEST EDGE (${topPick.score}/100)</span>
-            <h3 class="text-base font-extrabold text-white mt-1">${topPick.symbol}</h3>
-            <span class="text-[10px] font-mono text-indigo-300">${topPick.expiryLabel}</span>
-          </div>
-          <div class="text-right font-mono tabular-nums">
-            <div class="text-base font-extrabold text-white">₹${topPick.ltp.toFixed(2)}</div>
-            <div class="text-[10px] text-emeraldPro font-bold">Lot: ${topPick.lot}</div>
-          </div>
-        </div>
-        <div class="grid grid-cols-4 gap-1.5 bg-[#090d16]/90 p-2 rounded-xl border border-gray-800 text-center font-mono">
-          <div><div class="text-[9px] text-gray-400">DELTA (Δ)</div><div class="text-xs font-bold text-emeraldPro">${topPick.greeks.delta}</div></div>
-          <div><div class="text-[9px] text-gray-400">THETA (Θ)</div><div class="text-xs font-bold text-amber-300">${topPick.greeks.theta}</div></div>
-          <div><div class="text-[9px] text-gray-400">IV %</div><div class="text-xs font-bold text-white">${topPick.greeks.iv}</div></div>
-          <div><div class="text-[9px] text-gray-400">VEGA (ν)</div><div class="text-xs font-bold text-indigo-300">${topPick.greeks.vega}</div></div>
-        </div>
-        <p class="text-[11px] text-gray-300 leading-relaxed">${topPick.thesis}</p>
-        <div class="grid grid-cols-2 gap-2 pt-0.5">
-          <button onclick="openOrderTicket('${topPick.symbol}', '${topPick.assetClass}', ${topPick.ltp}, ${topPick.lot}, '${topPick.side}', '${topPick.instrumentKey}')"
-            class="btn-tap py-2.5 rounded-xl bg-emeraldPro text-[#090d16] text-xs font-extrabold">
-            + Paper Trade #1 Pick
-          </button>
-          <button onclick="openOrderTicket('${topPick.symbol}', '${topPick.assetClass}', ${topPick.ltp}, ${topPick.lot}, '${topPick.side}', '${topPick.instrumentKey}')"
-            class="btn-tap py-2.5 rounded-xl bg-gray-800 border border-gray-600 text-white text-xs font-bold">
-            ⚡ Live Upstox Order
-          </button>
-        </div>
-      `;
-
-      const filtered = allPicks.filter(p => state.alphaFilter === 'ALL' || p.assetClass === state.alphaFilter);
-      const list = document.getElementById('alpha-picks-list');
-
-      list.innerHTML = filtered.map(p => `
-        <div class="terminal-card rounded-2xl p-3.5 space-y-2.5">
-          <div class="flex items-start justify-between gap-2">
+    function renderSetups() {
+      const setups = getRecommendedSetups();
+      document.getElementById("setupsContainer").innerHTML = setups.map((s, idx) => `
+        <div class="setup-card">
+          <div class="setup-top">
             <div>
-              <div class="flex items-center gap-1.5 flex-wrap">
-                <span class="px-1.5 py-0.5 rounded bg-indigoPro/20 text-indigo-300 text-[9px] font-mono font-bold">${p.assetClass}</span>
-                <span class="text-[10px] font-mono text-gray-400">${p.badge}</span>
-              </div>
-              <h4 class="text-sm font-extrabold text-white mt-1">${p.symbol}</h4>
-              <span class="text-[10px] font-mono text-emeraldPro">${p.expiryLabel}</span>
+              <div class="setup-title">${s.symbol}</div>
+              <div class="setup-sub">${s.reason}</div>
             </div>
-            <div class="text-right font-mono tabular-nums shrink-0">
-              <div class="text-sm font-extrabold text-white">₹${p.ltp.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
-              <div class="text-[10px] font-bold text-indigo-300">Edge: ${p.score}/100</div>
-            </div>
+            <span class="action-pill ${s.side === "BUY" ? "pill-buy" : "pill-sell"}">${s.badge}</span>
           </div>
-
-          <div class="grid grid-cols-4 gap-1.5 bg-[#090d16] p-2 rounded-xl border border-gray-800 text-center font-mono text-[11px]">
-            <div><span class="text-[9px] text-gray-500 block">DELTA</span><strong class="text-emeraldPro">${p.greeks.delta}</strong></div>
-            <div><span class="text-[9px] text-gray-500 block">THETA</span><strong class="text-amber-300">${p.greeks.theta}</strong></div>
-            <div><span class="text-[9px] text-gray-500 block">IV</span><strong class="text-white">${p.greeks.iv}</strong></div>
-            <div><span class="text-[9px] text-gray-500 block">VEGA</span><strong class="text-indigo-300">${p.greeks.vega}</strong></div>
+          <div class="levels-grid">
+            <div><div class="lvl-k">ENTRY</div><div class="lvl-v">₹${s.entry}</div></div>
+            <div><div class="lvl-k">TARGET 1</div><div class="lvl-v green">₹${s.t1}</div></div>
+            <div><div class="lvl-k">TARGET 2</div><div class="lvl-v green">₹${s.t2}</div></div>
+            <div><div class="lvl-k">STOP LOSS</div><div class="lvl-v red">₹${s.sl}</div></div>
           </div>
-
-          <p class="text-[11px] text-gray-300">${p.thesis}</p>
-
-          <div class="pt-1.5 border-t border-gray-800/80 flex items-center justify-between gap-2">
-            <span class="text-[10px] font-mono text-gray-400">Base Qty: <strong class="text-white">${p.lot}</strong></span>
-            <div class="flex items-center gap-1.5">
-              <button onclick="openOrderTicket('${p.symbol}', '${p.assetClass}', ${p.ltp}, ${p.lot}, '${p.side}', '${p.instrumentKey}')"
-                class="btn-tap px-3 py-1.5 rounded-lg bg-emeraldPro/20 border border-emeraldPro/50 text-emeraldPro text-[11px] font-extrabold">
-                + Paper Order
-              </button>
-              <button onclick="openOrderTicket('${p.symbol}', '${p.assetClass}', ${p.ltp}, ${p.lot}, '${p.side}', '${p.instrumentKey}')"
-                class="btn-tap px-2.5 py-1.5 rounded-lg bg-gray-800 border border-gray-600 text-gray-200 text-[11px] font-bold">
-                Live
-              </button>
-            </div>
+          <div class="trade-btns">
+            <button class="btn-paper" onclick="initiateTrade(${idx}, 'PAPER')">▶ PAPER TRADE (${tradeLots} Lot)</button>
+            <button class="btn-real" onclick="initiateTrade(${idx}, 'REAL')">⚡ REAL UPSTOX (${tradeLots} Lot)</button>
           </div>
         </div>
-      `).join('');
+      `).join("");
     }
 
-    function renderFiiAndSectorViews() {
-      const f = state.fii;
-      const netInst = f.fiiCash + f.fiiIdx + f.fiiStk + f.diiCash + f.diiIdx;
-      const fmt = v => `${v >= 0 ? '+' : '-'}₹${Math.abs(v).toLocaleString('en-IN')} Cr`;
-      const cls = v => `font-mono tabular-nums font-bold ${v >= 0 ? 'text-emeraldPro' : 'text-crimsonPro'}`;
+    function renderOptionChain() {
+      const idx = document.getElementById("ocIndex").value;
+      const spot = idx === "NIFTY" ? market.giftNifty : market.bnf;
+      const step = idx === "NIFTY" ? 50 : 100;
+      const lot = LOT_SIZES[idx];
+      const atm = Math.round(spot / step) * step;
+      const exp = document.getElementById("ocExpiry").value;
+      let rows = "";
 
-      document.getElementById('val-fii-cash').textContent = fmt(f.fiiCash);
-      document.getElementById('val-fii-cash').className = cls(f.fiiCash);
-      document.getElementById('val-fii-idx').textContent = fmt(f.fiiIdx);
-      document.getElementById('val-fii-idx').className = cls(f.fiiIdx);
-      document.getElementById('val-fii-stk').textContent = fmt(f.fiiStk);
-      document.getElementById('val-fii-stk').className = cls(f.fiiStk);
-      document.getElementById('val-dii-cash').textContent = fmt(f.diiCash);
-      document.getElementById('val-dii-cash').className = cls(f.diiCash);
-      document.getElementById('val-dii-idx').textContent = fmt(f.diiIdx);
-      document.getElementById('val-dii-idx').className = cls(f.diiIdx);
-      document.getElementById('val-net-inst').textContent = fmt(netInst);
-      document.getElementById('val-net-inst').className = cls(netInst);
+      for (let i = -4; i <= 4; i++) {
+        const strike = atm + i * step;
+        const dist = strike - spot;
+        const timeVal = Math.max(18, Math.round((idx === "NIFTY" ? 155 : 320) * Math.exp(-Math.abs(dist) / (step * 4.5))));
+        const ceLtp = +(Math.max(0, spot - strike) + timeVal).toFixed(1);
+        const peLtp = +(Math.max(0, strike - spot) + timeVal).toFixed(1);
+        const ceOi = (22 + Math.max(0, i * 5)).toFixed(1) + "L";
+        const peOi = (22 + Math.max(0, -i * 5)).toFixed(1) + "L";
 
-      const totBuy = STOCK_UNIVERSE.reduce((a, s) => a + s.buyQty, 0);
-      const totSell = STOCK_UNIVERSE.reduce((a, s) => a + s.sellQty, 0);
-      const buyPct = Math.round((totBuy / Math.max(1, totBuy + totSell)) * 100);
-      document.getElementById('live-imbalance-ratio').textContent = `${buyPct}% : ${100 - buyPct}%`;
-
-      // Sector Heatmap
-      const sectors = {};
-      STOCK_UNIVERSE.forEach(s => {
-        const chgPct = ((s.ltp - s.prevClose) / s.prevClose) * 100;
-        if (!sectors[s.sector]) sectors[s.sector] = { sumPct: 0, count: 0, turnover: 0 };
-        sectors[s.sector].sumPct += chgPct;
-        sectors[s.sector].count += 1;
-        sectors[s.sector].turnover += s.volCr;
-      });
-
-      document.getElementById('sector-grid').innerHTML = Object.entries(sectors).map(([name, info]) => {
-        const avgPct = info.sumPct / info.count;
-        const isUp = avgPct >= 0;
-        return `
-          <div class="bg-[#090d16] border ${isUp ? 'border-emeraldPro/30' : 'border-crimsonPro/30'} rounded-xl p-2.5">
-            <div class="flex items-center justify-between text-[10px] font-bold text-gray-300">
-              <span>${name}</span>
-              <span class="font-mono text-gray-500">₹${info.turnover}Cr</span>
-            </div>
-            <div class="font-mono tabular-nums font-extrabold text-xs mt-1 ${isUp ? 'text-emeraldPro' : 'text-crimsonPro'}">
-              ${isUp ? '▲ +' : '▼ '}${avgPct.toFixed(2)}%
-            </div>
-          </div>
-        `;
-      }).join('');
-
-      // Institutional Tape
-      document.getElementById('block-tape-list').innerHTML = STOCK_UNIVERSE.map(s => {
-        const chgPct = ((s.ltp - s.prevClose) / s.prevClose) * 100;
-        const buyRatio = Math.round((s.buyQty / Math.max(1, s.buyQty + s.sellQty)) * 100);
-        const isBull = buyRatio >= 50;
-
-        return `
-          <div class="bg-[#090d16] border border-gray-800 ${isBull ? 'border-l-4 border-l-emeraldPro' : 'border-l-4 border-l-crimsonPro'} rounded-xl p-3 space-y-2">
-            <div class="flex items-start justify-between gap-2">
-              <div>
-                <div class="flex items-center gap-2">
-                  <span class="font-extrabold text-sm text-white">${s.symbol}</span>
-                  <span class="px-1.5 py-0.5 rounded text-[9px] font-mono font-bold ${isBull ? 'bg-emeraldPro/15 text-emeraldPro' : 'bg-crimsonPro/15 text-crimsonPro'}">
-                    ${isBull ? 'ACCUMULATION' : 'DISTRIBUTION'}
-                  </span>
-                </div>
-                <div class="text-[10px] font-mono text-gray-400 mt-1">
-                  Next-Month Play: <strong class="text-gray-200">${s.farOpt}</strong> (Δ ${s.delta}, Θ ${s.theta})
-                </div>
-              </div>
-              <div class="text-right font-mono tabular-nums">
-                <div class="text-sm font-extrabold text-white">₹${s.ltp.toFixed(2)}</div>
-                <div class="text-[10px] ${chgPct >= 0 ? 'text-emeraldPro' : 'text-crimsonPro'}">${chgPct >= 0 ? '+' : ''}${chgPct.toFixed(2)}%</div>
-              </div>
-            </div>
-            <div class="w-full h-1.5 bg-crimsonPro/80 rounded-full overflow-hidden flex">
-              <div class="h-full bg-emeraldPro" style="width: ${buyRatio}%"></div>
-            </div>
-            <div class="pt-1 flex items-center justify-between gap-2">
-              <span class="text-[10px] font-mono text-gray-400">Buy/Sell: ${buyRatio}% / ${100 - buyRatio}%</span>
-              <button onclick="openOrderTicket('${s.farOpt}', 'OPTION', ${s.farOptLtp}, ${s.lot}, '${isBull ? 'BUY CE' : 'BUY PE'}', '')"
-                class="btn-tap px-2.5 py-1 rounded-lg bg-emeraldPro/20 border border-emeraldPro/40 text-emeraldPro text-[10px] font-extrabold">
-                + Paper Trade Option (₹${s.farOptLtp})
-              </button>
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    function renderOptionChainTable() {
-      const tbody = document.getElementById('option-chain-body');
-      const underlying = document.getElementById('chain-underlying').value;
-      const isBnf = underlying.includes('Bank');
-      const spot = isBnf ? state.indices.bnf.ltp : state.indices.nifty.ltp;
-      const lot = isBnf ? 30 : 65;
-      const prefix = isBnf ? 'BANKNIFTY' : 'NIFTY';
-      const expTag = state.selectedChainExpiry.slice(5);
-
-      tbody.innerHTML = state.optionChain.map(r => {
-        const isAtm = Math.abs(r.strike - spot) <= (isBnf ? 60 : 30);
-        return `
-          <tr class="${isAtm ? 'bg-indigoPro/15' : 'hover:bg-gray-900/60'}">
-            <td class="py-2.5 px-2 text-[10px]">
-              <div>Δ <strong class="text-emeraldPro">+${r.ceDelta.toFixed(2)}</strong> • IV ${r.ceIv}%</div>
-              <div class="text-amber-300">Θ ${r.ceTheta.toFixed(2)} • ν +${r.ceVega.toFixed(1)}</div>
+        rows += `
+          <tr class="${i === 0 ? "atm-row" : ""}">
+            <td style="color:var(--text-2);">${ceOi}</td>
+            <td class="green" style="font-weight:700;">₹${ceLtp}</td>
+            <td>
+              <button class="oc-btn pill-buy" onclick="quickChainPaper('${idx} ${exp} ${strike} CE', 'BUY', ${ceLtp}, ${lot})">B</button>
+              <button class="oc-btn pill-sell" onclick="quickChainPaper('${idx} ${exp} ${strike} CE', 'SELL', ${ceLtp}, ${lot})">S</button>
             </td>
-            <td class="py-2.5 px-2 text-right">
-              <div class="text-white font-bold">₹${r.ceLtp.toFixed(2)}</div>
-              <div class="text-[9px] text-gray-400 mb-1">OI ${r.ceOi}</div>
-              <button onclick="openOrderTicket('${prefix} ${expTag} ${r.strike} CE', 'OPTION', ${r.ceLtp.toFixed(2)}, ${lot}, 'BUY CE', '')"
-                class="btn-tap px-2 py-1 rounded bg-emeraldPro/20 border border-emeraldPro/40 text-emeraldPro text-[10px] font-extrabold">
-                Buy CE
-              </button>
+            <td style="font-weight:800;">${strike}</td>
+            <td>
+              <button class="oc-btn pill-buy" onclick="quickChainPaper('${idx} ${exp} ${strike} PE', 'BUY', ${peLtp}, ${lot})">B</button>
+              <button class="oc-btn pill-sell" onclick="quickChainPaper('${idx} ${exp} ${strike} PE', 'SELL', ${peLtp}, ${lot})">S</button>
             </td>
-            <td class="py-2.5 px-2 text-center bg-gray-900/95">
-              <div class="font-extrabold text-white text-xs">${r.strike}</div>
-              ${isAtm ? `<span class="inline-block mt-0.5 px-1.5 py-0.2 rounded bg-emeraldPro text-[#090d16] text-[8px] font-extrabold">ATM</span>` : ''}
-            </td>
-            <td class="py-2.5 px-2">
-              <div class="text-white font-bold">₹${r.peLtp.toFixed(2)}</div>
-              <div class="text-[9px] text-gray-400 mb-1">OI ${r.peOi}</div>
-              <button onclick="openOrderTicket('${prefix} ${expTag} ${r.strike} PE', 'OPTION', ${r.peLtp.toFixed(2)}, ${lot}, 'BUY PE', '')"
-                class="btn-tap px-2 py-1 rounded bg-crimsonPro/20 border border-crimsonPro/40 text-rose-300 text-[10px] font-extrabold">
-                Buy PE
-              </button>
-            </td>
-            <td class="py-2.5 px-2 text-right text-[10px]">
-              <div>Δ <strong class="text-rose-300">${r.peDelta.toFixed(2)}</strong> • IV ${r.peIv}%</div>
-              <div class="text-amber-300">Θ ${r.peTheta.toFixed(2)} • ν +${r.peVega.toFixed(1)}</div>
-            </td>
+            <td class="red" style="font-weight:700;">₹${peLtp}</td>
+            <td style="color:var(--text-2);">${peOi}</td>
           </tr>
         `;
-      }).join('');
-    }
-
-    function handleChainConfigChange() {
-      rebuildGreeksOptionChain();
-      renderOptionChainTable();
-    }
-
-    // ---------------------------------------------------------
-    // 7. ORDER EXECUTION TICKET & ACTIVE POSITIONS MANAGER
-    // ---------------------------------------------------------
-    function openOrderTicket(symbol, type, price, baseLot, side, instrumentKey = '') {
-      state.ticketDraft = { symbol, type, price, baseLot, side, instrumentKey };
-      document.getElementById('ticket-symbol-title').textContent = symbol;
-      document.getElementById('ticket-side').value = side;
-      document.getElementById('ticket-price').value = parseFloat(price).toFixed(2);
-      document.getElementById('ticket-base-lot').textContent = baseLot;
-      document.getElementById('ticket-qty').value = baseLot;
-
-      const tag = document.getElementById('ticket-mode-tag');
-      if (state.upstox.token && state.upstox.mode === 'LIVE') {
-        tag.textContent = `LIVE UPSTOX ORDER • ID: ${state.upstox.clientId}`;
-        tag.className = 'px-2 py-0.5 rounded bg-indigoPro/25 text-indigo-300 text-[10px] font-mono font-bold uppercase';
-      } else {
-        tag.textContent = 'PAPER EXECUTION TICKET • SAVED PERSISTENTLY';
-        tag.className = 'px-2 py-0.5 rounded bg-emeraldPro/20 text-emeraldPro text-[10px] font-mono font-bold uppercase';
       }
-
-      updateTicketPreview();
-      document.getElementById('order-ticket-modal').classList.remove('hidden');
+      document.getElementById("ocBody").innerHTML = rows;
     }
 
-    function closeOrderTicket() {
-      document.getElementById('order-ticket-modal').classList.add('hidden');
+    function quickChainPaper(symbol, side, ltp, lotSize) {
+      const mult = side === "BUY" ? 1 : -1;
+      activeTrades.unshift({
+        id: Date.now(), symbol, side, entry: ltp, ltp,
+        t1: +(ltp + mult * ltp * 0.25).toFixed(1),
+        t2: +(ltp + mult * ltp * 0.50).toFixed(1),
+        sl: +(ltp - mult * ltp * 0.18).toFixed(1),
+        qty: tradeLots * lotSize,
+        guardStatus: "Armed (+12% Breakeven Lock)",
+        status: "OPEN"
+      });
+      updateTradeStats();
+      switchView("trades");
     }
 
-    function setTicketLots(mult) {
-      document.getElementById('ticket-qty').value = state.ticketDraft.baseLot * mult;
-      updateTicketPreview();
-    }
-
-    function updateTicketPreview() {
-      const price = parseFloat(document.getElementById('ticket-price').value) || 0;
-      const qty = parseInt(document.getElementById('ticket-qty').value, 10) || 1;
-      const sl = (price * (1 - state.config.slPct / 100)).toFixed(2);
-      const t1 = (price * (1 + state.config.t1Pct / 100)).toFixed(2);
-      const t2 = (price * (1 + state.config.t2Pct / 100)).toFixed(2);
-
-      document.getElementById('ticket-sl-val').textContent = `₹${sl}`;
-      document.getElementById('ticket-t1-val').textContent = `₹${t1}`;
-      document.getElementById('ticket-t2-val').textContent = `₹${t2}`;
-      document.getElementById('ticket-margin-req').textContent = `Capital: ₹${(price * qty).toLocaleString('en-IN', { maximumFractionDigits: 0 })}`;
-    }
-
-    async function executeOrder(execMode) {
-      const symbol = document.getElementById('ticket-symbol-title').textContent;
-      const side = document.getElementById('ticket-side').value;
-      const entry = parseFloat(document.getElementById('ticket-price').value);
-      const qty = parseInt(document.getElementById('ticket-qty').value, 10);
-
-      if (!entry || entry <= 0 || !qty || qty <= 0) {
-        notify('Invalid price or quantity.', 'error');
-        return;
-      }
-
-      if (execMode === 'LIVE') {
-        if (!state.upstox.token) {
-          closeOrderTicket();
-          openUpstoxModal();
-          notify('Save your Upstox Access Token before placing Live Orders.', 'error');
+    function initiateTrade(idx, mode) {
+      const s = getRecommendedSetups()[idx];
+      if (!s) return;
+      if (mode === "REAL") {
+        if (!upstoxToken) {
+          alert("Connect your Upstox v2 Access Token via the top-right 'Upstox API' button first.");
+          openModal("upstoxModal");
           return;
         }
-        if (!state.ticketDraft.instrumentKey) {
-          notify('Live API routing requires a mapped Upstox instrument_token; logged in Paper Ledger instead.', 'info');
-        } else {
-          try {
-            const txnType = side.startsWith('SELL') ? 'SELL' : 'BUY';
-            const res = await fetch('https://api.upstox.com/v2/order/place', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'Authorization': `Bearer ${state.upstox.token}`
-              },
-              body: JSON.stringify({
-                quantity: qty,
-                product: 'I',
-                validity: 'DAY',
-                price: 0,
-                tag: 'AnuragPulseV5',
-                instrument_token: state.ticketDraft.instrumentKey,
-                order_type: 'MARKET',
-                transaction_type: txnType,
-                disclosed_quantity: 0,
-                trigger_price: 0,
-                is_amo: false
-              })
-            });
-            const data = await res.json();
-            if (!res.ok) throw new Error(data.errors?.[0]?.message || `HTTP ${res.status}`);
-            notify(`LIVE Upstox Order Sent! ID: ${data.data?.order_id || 'OK'}`, 'success');
-          } catch (err) {
-            notify(`Upstox Order Error: ${err.message}`, 'error');
-            return;
-          }
-        }
+        placeUpstoxLiveOrder(s);
+        return;
       }
-
-      const sl = parseFloat((entry * (1 - state.config.slPct / 100)).toFixed(2));
-      const t1 = parseFloat((entry * (1 + state.config.t1Pct / 100)).toFixed(2));
-      const t2 = parseFloat((entry * (1 + state.config.t2Pct / 100)).toFixed(2));
-
-      state.openTrades.unshift({
-        id: 'AP-' + Date.now().toString().slice(-5),
-        symbol,
-        side,
-        mode: execMode,
-        qty,
-        entry,
-        ltp: entry,
-        sl,
-        t1,
-        t2,
-        peak: entry,
-        guardStage: 'ARMED'
+      activeTrades.unshift({
+        id: Date.now(), symbol: s.symbol, side: s.side, entry: s.entry, ltp: s.entry,
+        t1: s.t1, t2: s.t2, sl: s.sl, qty: tradeLots * s.lotSize,
+        guardStatus: "Armed (+12% Breakeven Lock)", status: "OPEN"
       });
-
-      saveTradesToDisk();
-      renderTradesView();
-      closeOrderTicket();
-      switchView('trades');
-      notify(`${execMode} Order Active: ${side} ${symbol} (${qty} Qty @ ₹${entry.toFixed(2)})`, 'success');
+      updateTradeStats();
+      switchView("trades");
     }
 
-    function syncOpenTradesWithRealLtp() {
-      if (state.openTrades.length === 0) return;
-      const remaining = [];
+    function simulateMarketTick() {
+      if (activeTrades.length === 0) return;
+      const lockTriggerPct = (parseFloat(document.getElementById("lockPctInput").value) || 12) / 100;
 
-      for (const t of state.openTrades) {
-        const stk = STOCK_UNIVERSE.find(s => t.symbol.startsWith(s.symbol));
-        if (stk && t.symbol.endsWith('EQ')) t.ltp = stk.ltp;
+      activeTrades.forEach(t => {
+        if (t.status !== "OPEN") return;
+        const fav = Math.random() < 0.72;
+        const step = Math.max(0.5, t.entry * 0.045);
+        const dir = (t.side === "BUY" ? 1 : -1) * (fav ? 1 : -1);
+        t.ltp = +(t.ltp + dir * step).toFixed(1);
 
-        if (t.ltp > t.peak) t.peak = t.ltp;
-        const pct = ((t.ltp - t.entry) / t.entry) * 100;
+        const pnl = (t.side === "BUY" ? (t.ltp - t.entry) : (t.entry - t.ltp)) * t.qty;
+        const pctGain = (t.side === "BUY" ? (t.ltp - t.entry) : (t.entry - t.ltp)) / t.entry;
 
-        if (pct >= 12 && t.guardStage === 'ARMED') {
+        if (pctGain >= lockTriggerPct && ((t.side === "BUY" && t.sl < t.entry) || (t.side === "SELL" && t.sl > t.entry))) {
           t.sl = t.entry;
-          t.guardStage = 'BREAKEVEN';
+          t.guardStatus = "🔒 BREAKEVEN LOCKED (Zero-Loss)";
         }
-        if (t.ltp >= t.t1) {
-          t.guardStage = 'T1_TRAILING';
-          const trailSl = parseFloat((t.entry + (t.peak - t.entry) * 0.65).toFixed(2));
-          if (trailSl > t.sl) t.sl = trailSl;
+        if ((t.side === "BUY" && t.ltp >= t.t1) || (t.side === "SELL" && t.ltp <= t.t1)) {
+          t.sl = +(t.entry + (t.ltp - t.entry) * 0.65).toFixed(1);
+          t.guardStatus = `🛡️ T1 HIT! Profit Locked at ₹${t.sl}`;
         }
-
-        if (t.ltp >= t.t2) {
-          finalizeTradeExit(t, t.t2, 'Target 2 Auto-Exit 🎯');
-        } else if (t.ltp <= t.sl) {
-          finalizeTradeExit(t, t.sl, t.guardStage === 'ARMED' ? 'Stop-Loss Hit' : 'Profit Guard Exit 🛡️');
-        } else {
-          remaining.push(t);
+        const hitT2 = (t.side === "BUY" && t.ltp >= t.t2) || (t.side === "SELL" && t.ltp <= t.t2);
+        const hitSL = (t.side === "BUY" && t.ltp <= t.sl) || (t.side === "SELL" && t.ltp >= t.sl);
+        if (hitT2 || hitSL) {
+          t.status = hitT2 ? "CLOSED (TARGET 2 HIT)" : (pnl >= 0 ? "CLOSED (PROFIT LOCKED)" : "CLOSED (SL HIT)");
+          realizedPnl += pnl;
+          paperBalance += pnl;
         }
-      }
-
-      state.openTrades = remaining;
-      saveTradesToDisk();
-    }
-
-    function manualExitPosition(id) {
-      const idx = state.openTrades.findIndex(t => t.id === id);
-      if (idx === -1) return;
-      const tr = state.openTrades[idx];
-      state.openTrades.splice(idx, 1);
-      finalizeTradeExit(tr, tr.ltp, 'Manual Exit');
-      saveTradesToDisk();
-      renderTradesView();
-    }
-
-    function finalizeTradeExit(tr, exitPrice, reason) {
-      const isShort = tr.side.startsWith('SELL');
-      const pnl = isShort ? (tr.entry - exitPrice) * tr.qty : (exitPrice - tr.entry) * tr.qty;
-      state.closedTrades.unshift({
-        id: tr.id,
-        symbol: tr.symbol,
-        exitPrice,
-        pnl,
-        reason
       });
-      notify(`${tr.symbol} Closed (${reason}): ${pnl >= 0 ? '+' : '-'}₹${Math.abs(pnl).toFixed(2)}`, pnl >= 0 ? 'success' : 'error');
+      updateTradeStats();
     }
 
-    function renderTradesView() {
-      const openList = document.getElementById('open-positions-list');
-      const closedList = document.getElementById('closed-positions-list');
+    function closePaperTrade(id) {
+      const t = activeTrades.find(x => x.id === id);
+      if (!t || t.status !== "OPEN") return;
+      const pnl = (t.side === "BUY" ? (t.ltp - t.entry) : (t.entry - t.ltp)) * t.qty;
+      t.status = "CLOSED (MANUAL EXIT)";
+      realizedPnl += pnl;
+      paperBalance += pnl;
+      updateTradeStats();
+    }
 
-      document.getElementById('lbl-open-count').textContent = state.openTrades.length;
-      document.getElementById('lbl-closed-count').textContent = state.closedTrades.length;
-      document.getElementById('nav-open-badge').textContent = state.openTrades.length;
-
+    function updateTradeStats() {
+      const openTrades = activeTrades.filter(t => t.status === "OPEN");
+      document.getElementById("posCount").textContent = openTrades.length;
       let unrealized = 0;
-      const realized = state.closedTrades.reduce((acc, c) => acc + c.pnl, 0);
+      openTrades.forEach(t => unrealized += (t.side === "BUY" ? (t.ltp - t.entry) : (t.entry - t.ltp)) * t.qty);
+      const total = realizedPnl + unrealized;
 
-      if (state.openTrades.length === 0) {
-        openList.innerHTML = `
-          <div class="bg-[#090d16] border border-dashed border-gray-800 rounded-xl p-5 text-center">
-            <p class="text-xs text-gray-400">No open positions yet. Tap any trade in Alpha Greeks, Block Flow, or Option Chain to place a persistent paper order.</p>
+      document.getElementById("paperBal").textContent = "₹" + Math.round(paperBalance).toLocaleString("en-IN");
+      const pnlEl = document.getElementById("totalPnl");
+      pnlEl.textContent = `${total >= 0 ? "+" : ""}₹${total.toFixed(2)}`;
+      pnlEl.className = `flow-amt ${total >= 0 ? "green" : "red"}`;
+
+      const list = document.getElementById("activePositionsList");
+      if (activeTrades.length === 0) {
+        list.innerHTML = `<div style="text-align:center;color:var(--text-2);font-size:12px;padding:16px;">No active trades yet. Tap <strong>PAPER TRADE</strong> on any setup in <strong>AI Flow & Picks</strong>.</div>`;
+        return;
+      }
+      list.innerHTML = activeTrades.map(t => {
+        const pnl = (t.side === "BUY" ? (t.ltp - t.entry) : (t.entry - t.ltp)) * t.qty;
+        const pct = Math.min(100, Math.round((Math.max(0, t.side === "BUY" ? t.ltp - t.entry : t.entry - t.ltp) / (Math.abs(t.t2 - t.entry) || 1)) * 100));
+        return `
+          <div class="pos-card">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <div>
+                <strong style="font-size:12px;">${t.symbol}</strong>
+                <div style="font-size:10px;color:var(--text-2);">${t.side} • Qty: ${t.qty} • Entry: ₹${t.entry} • LTP: <strong>₹${t.ltp}</strong></div>
+              </div>
+              <div style="text-align:right;">
+                <div style="font-size:14px;font-weight:800;" class="${pnl >= 0 ? "green" : "red"}">${pnl >= 0 ? "+" : ""}₹${pnl.toFixed(1)}</div>
+                <div style="font-size:10px;color:var(--text-2);">${t.status}</div>
+              </div>
+            </div>
+            <div class="prog-track"><div class="prog-fill" style="width:${pct}%;"></div></div>
+            <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text-2);margin-bottom:8px;">
+              <span>SL: <strong class="red">₹${t.sl}</strong></span>
+              <span>T1: <strong class="green">₹${t.t1}</strong></span>
+              <span>T2: <strong class="green">₹${t.t2}</strong></span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <span class="guard-badge">${t.guardStatus}</span>
+              ${t.status === "OPEN" ? `<button class="btn-sm" style="background:var(--red-bg);color:var(--red);" onclick="closePaperTrade(${t.id})">Exit</button>` : ""}
+            </div>
           </div>
         `;
-      } else {
-        openList.innerHTML = state.openTrades.map(t => {
-          const isShort = t.side.startsWith('SELL');
-          const pnl = isShort ? (t.entry - t.ltp) * t.qty : (t.ltp - t.entry) * t.qty;
-          const pct = (pnl / Math.max(1, t.entry * t.qty)) * 100;
-          unrealized += pnl;
-          const isPos = pnl >= 0;
-
-          return `
-            <div class="bg-[#090d16] border border-gray-800 rounded-xl p-3 space-y-2.5">
-              <div class="flex items-start justify-between gap-2">
-                <div>
-                  <div class="flex items-center gap-1.5">
-                    <span class="font-extrabold text-sm text-white">${t.symbol}</span>
-                    <span class="px-1.5 py-0.5 rounded bg-gray-800 text-[9px] font-mono text-gray-300">${t.mode}</span>
-                  </div>
-                  <div class="text-[11px] font-mono tabular-nums text-gray-400 mt-0.5">
-                    ${t.side} • Qty: ${t.qty} • Entry: ₹${t.entry.toFixed(2)} • LTP: <strong class="text-white">₹${t.ltp.toFixed(2)}</strong>
-                  </div>
-                </div>
-                <div class="text-right font-mono tabular-nums">
-                  <div class="text-sm font-extrabold ${isPos ? 'text-emeraldPro' : 'text-crimsonPro'}">
-                    ${isPos ? '+' : '-'}₹${Math.abs(pnl).toFixed(2)}
-                  </div>
-                  <div class="text-[10px] ${isPos ? 'text-emeraldPro' : 'text-crimsonPro'}">
-                    (${isPos ? '+' : ''}${pct.toFixed(1)}%)
-                  </div>
-                </div>
-              </div>
-
-              <div class="flex items-center justify-between text-[11px] font-mono tabular-nums">
-                <span class="text-crimsonPro font-semibold">SL: ₹${t.sl.toFixed(2)}</span>
-                <span class="text-emeraldPro font-semibold">T1: ₹${t.t1.toFixed(2)}</span>
-                <span class="text-indigo-400 font-semibold">T2: ₹${t.t2.toFixed(2)}</span>
-              </div>
-
-              <div class="pt-1.5 border-t border-gray-800/80 flex items-center justify-between gap-2">
-                <span class="px-2 py-1 rounded-lg bg-indigoPro/15 border border-indigoPro/40 text-indigo-300 text-[10px] font-semibold">
-                  Profit Guard Active
-                </span>
-                <button onclick="manualExitPosition('${t.id}')" class="btn-tap px-3 py-1.5 rounded-lg bg-crimsonPro/20 border border-crimsonPro/40 text-crimsonPro text-[11px] font-bold">
-                  Exit Now
-                </button>
-              </div>
-            </div>
-          `;
-        }).join('');
-      }
-
-      closedList.innerHTML = state.closedTrades.length === 0
-        ? `<p class="text-[11px] text-gray-500">No closed positions yet.</p>`
-        : state.closedTrades.slice(0, 10).map(c => `
-            <div class="bg-[#090d16]/70 border border-gray-800 rounded-xl px-3 py-2 flex items-center justify-between text-xs">
-              <div>
-                <span class="font-bold text-gray-200">${c.symbol}</span>
-                <span class="text-[10px] text-gray-400 block">${c.reason} • Exit ₹${c.exitPrice.toFixed(2)}</span>
-              </div>
-              <span class="font-mono tabular-nums font-bold ${c.pnl >= 0 ? 'text-emeraldPro' : 'text-crimsonPro'}">
-                ${c.pnl >= 0 ? '+' : '-'}₹${Math.abs(c.pnl).toFixed(2)}
-              </span>
-            </div>
-          `).join('');
-
-      const totalPnl = unrealized + realized;
-      const curCap = state.capital + realized;
-      document.getElementById('ui-paper-capital').textContent = `₹${curCap.toLocaleString('en-IN', { maximumFractionDigits: 0 })}`;
-      const pnlEl = document.getElementById('ui-total-pnl');
-      pnlEl.textContent = `${totalPnl >= 0 ? '+' : '-'}₹${Math.abs(totalPnl).toFixed(2)}`;
-      pnlEl.className = `font-mono tabular-nums font-extrabold text-lg mt-0.5 ${totalPnl >= 0 ? 'text-emeraldPro' : 'text-crimsonPro'}`;
+      }).join("");
     }
 
-    function editPaperCapital() {
-      const nextCap = state.capital === 100000 ? 250000 : state.capital === 250000 ? 500000 : 100000;
-      state.capital = nextCap;
-      saveTradesToDisk();
-      renderTradesView();
-      notify(`Paper Capital updated to ₹${nextCap.toLocaleString('en-IN')}`, 'info');
+    function saveUpstoxToken() {
+      const val = document.getElementById("upstoxTokenInput").value.trim();
+      if (!val) return;
+      upstoxToken = val;
+      document.getElementById("upstoxTokenInput").value = "";
+      const badge = document.getElementById("connBadge");
+      badge.className = "badge badge-live";
+      badge.textContent = "● UPSTOX LIVE";
+      closeModal("upstoxModal");
+      fetchLiveNewsPulse();
     }
 
-    function resetAllPaperTrades() {
-      state.capital = 100000;
-      state.openTrades = [];
-      state.closedTrades = [];
-      saveTradesToDisk();
-      renderTradesView();
-      notify('Paper account reset to ₹1,00,000.', 'info');
+    async function placeUpstoxLiveOrder(s) {
+      if (!confirm(`Confirm LIVE Upstox Order?\n${s.side} ${s.symbol} | Qty: ${tradeLots * s.lotSize}`)) return;
+      try {
+        const res = await fetch("https://api.upstox.com/v2/order/place", {
+          method: "POST",
+          headers: { "Authorization": `Bearer ${upstoxToken}`, "Content-Type": "application/json", "Accept": "application/json" },
+          body: JSON.stringify({
+            quantity: tradeLots * s.lotSize, product: "I", validity: "DAY", price: 0,
+            tag: "AnuragPulsePro", instrument_token: s.symbol, order_type: "MARKET",
+            transaction_type: s.side, disclosed_quantity: 0, trigger_price: 0, is_amo: false
+          })
+        });
+        const data = await res.json();
+        alert(data.status === "success" ? `Order Placed! ID: ${data.data.order_id}` : JSON.stringify(data));
+      } catch (e) { alert("Order error: " + e.message); }
     }
 
-    function openFiiModal() {
-      document.getElementById('inp-fii-cash').value = state.fii.fiiCash;
-      document.getElementById('inp-fii-idx').value = state.fii.fiiIdx;
-      document.getElementById('inp-fii-stk').value = state.fii.fiiStk;
-      document.getElementById('inp-dii-cash').value = state.fii.diiCash;
-      document.getElementById('fii-edit-modal').classList.remove('hidden');
-    }
-    function closeFiiModal() {
-      document.getElementById('fii-edit-modal').classList.add('hidden');
-    }
-    function saveFiiData() {
-      state.fii.fiiCash = parseFloat(document.getElementById('inp-fii-cash').value) || 0;
-      state.fii.fiiIdx = parseFloat(document.getElementById('inp-fii-idx').value) || 0;
-      state.fii.fiiStk = parseFloat(document.getElementById('inp-fii-stk').value) || 0;
-      state.fii.diiCash = parseFloat(document.getElementById('inp-dii-cash').value) || 0;
-      localStorage.setItem(KEYS.FII, JSON.stringify(state.fii));
-      renderAllViews();
-      closeFiiModal();
-      notify('FII / DII updated & Alpha Picks re-ranked!', 'success');
-    }
-
-    function saveRiskConfig() {
-      state.config.slPct = parseFloat(document.getElementById('cfg-sl-pct').value) || 15;
-      state.config.t1Pct = parseFloat(document.getElementById('cfg-t1-pct').value) || 25;
-      state.config.t2Pct = parseFloat(document.getElementById('cfg-t2-pct').value) || 50;
-      state.config.pollMs = parseInt(document.getElementById('cfg-poll-sec').value, 10) || 3000;
-      localStorage.setItem(KEYS.CONFIG, JSON.stringify(state.config));
-      if (state.upstox.token) startLivePollingLoop();
-      notify('Risk Guard settings saved!', 'success');
-    }
-
-    function switchView(viewName) {
-      ['alpha', 'flows', 'chain', 'trades', 'guard'].forEach(v => {
-        document.getElementById(`view-${v}`).classList.add('hidden');
-        const btn = document.getElementById(`tab-btn-${v}`);
-        btn.className = 'flex flex-col items-center justify-center py-1.5 rounded-xl text-gray-400 hover:text-gray-200';
+    function switchView(v) {
+      ["flow", "chain", "trades", "settings"].forEach(id => {
+        document.getElementById(`view-${id}`).classList.add("hidden");
+        document.getElementById(`nav-${id}`).classList.remove("active");
       });
-      document.getElementById(`view-${viewName}`).classList.remove('hidden');
-      const activeBtn = document.getElementById(`tab-btn-${viewName}`);
-      activeBtn.className = 'flex flex-col items-center justify-center py-1.5 rounded-xl text-emeraldPro bg-emeraldPro/10';
+      document.getElementById(`view-${v}`).classList.remove("hidden");
+      document.getElementById(`nav-${v}`).classList.add("active");
     }
 
-    function notify(msg, type = 'info') {
-      const stack = document.getElementById('toast-stack');
-      const el = document.createElement('div');
-      let style = 'bg-gray-900/95 border-gray-700 text-white';
-      if (type === 'success') style = 'bg-[#05291e]/95 border-emeraldPro/60 text-emeraldPro';
-      if (type === 'error') style = 'bg-[#2b0b14]/95 border-crimsonPro/60 text-rose-200';
-      el.className = `pointer-events-auto px-3.5 py-2.5 rounded-xl border shadow-xl text-xs font-semibold backdrop-blur-md transition-all duration-300 ${style}`;
-      el.textContent = msg;
-      stack.appendChild(el);
-      setTimeout(() => {
-        el.style.opacity = '0';
-        setTimeout(() => el.remove(), 250);
-      }, 2800);
+    function updateLots() {
+      tradeLots = Math.max(1, parseInt(document.getElementById("lotInput").value) || 1);
+      document.getElementById("lotDisplay").textContent = `${tradeLots} Lot${tradeLots > 1 ? "s" : ""}`;
+      renderSetups();
     }
+
+    function resetPaperAccount() {
+      paperBalance = 100000; realizedPnl = 0; activeTrades = [];
+      updateTradeStats();
+    }
+
+    function openModal(id) { document.getElementById(id).style.display = "flex"; }
+    function closeModal(id) { document.getElementById(id).style.display = "none"; }
+
+    function renderAll() {
+      populateExpiries();
+      renderAiNews();
+      setFlowScenario("gapfade");
+      updateTradeStats();
+    }
+
+    renderAll();
   </script>
 </body>
 </html>
-```
