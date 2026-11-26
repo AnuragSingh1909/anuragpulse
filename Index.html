@@ -8,7 +8,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="application-name" content="AnuragPulse Pro" />
-  <title>AnuragPulse Pro v9.0 — Supply/Demand Zones & Exclusive RSI-VWAP Signals</title>
+  <title>AnuragPulse Pro v10.0 — Precision Reversal, Auto-Paper & 52W-High Guard</title>
   <link rel="manifest" href="manifest.json" />
   <style>
     :root {
@@ -23,25 +23,25 @@
     body { background: var(--bg-base); color: var(--text-1); padding-bottom: 84px; }
     .topbar {
       position: sticky; top: 0; z-index: 50; background: rgba(6, 10, 18, 0.96); backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border); padding: 10px 14px; display: flex; justify-content: space-between; align-items: center;
+      border-bottom: 1px solid var(--border); padding: 10px 12px; display: flex; justify-content: space-between; align-items: center;
     }
-    .brand { display: flex; align-items: center; gap: 8px; }
+    .brand { display: flex; align-items: center; gap: 7px; }
     .brand-icon {
-      width: 32px; height: 32px; border-radius: 8px; background: linear-gradient(135deg, #2563eb, #10b981);
-      display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px;
+      width: 30px; height: 30px; border-radius: 8px; background: linear-gradient(135deg, #2563eb, #10b981);
+      display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px;
     }
-    .brand h1 { font-size: 14px; font-weight: 700; }
-    .badge { font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 99px; display: inline-flex; align-items: center; gap: 4px; }
+    .brand h1 { font-size: 13px; font-weight: 700; }
+    .badge { font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 99px; display: inline-flex; align-items: center; gap: 4px; }
     .badge-off { background: var(--red-bg); color: var(--red); border: 1px solid rgba(244,63,94,0.3); }
     .badge-live { background: var(--green-bg); color: var(--green); border: 1px solid rgba(16,185,129,0.3); }
-    .top-actions { display: flex; gap: 6px; }
+    .top-actions { display: flex; gap: 5px; }
     .btn-sm {
       border: 1px solid var(--border); background: var(--bg-elevated); color: var(--text-1);
-      padding: 6px 9px; border-radius: 8px; font-size: 11px; font-weight: 600; cursor: pointer;
+      padding: 6px 8px; border-radius: 8px; font-size: 10px; font-weight: 700; cursor: pointer;
     }
     .btn-connect { background: linear-gradient(135deg, #2563eb, #4f46e5); border: none; }
     #alertToast {
-      display: none; position: sticky; top: 53px; z-index: 49; background: linear-gradient(90deg, #059669, #2563eb);
+      display: none; position: sticky; top: 51px; z-index: 49; background: linear-gradient(90deg, #059669, #2563eb);
       color: #fff; padding: 8px 14px; font-size: 11px; font-weight: 700; justify-content: space-between; align-items: center;
     }
     .container { max-width: 680px; margin: 0 auto; padding: 12px; display: flex; flex-direction: column; gap: 12px; }
@@ -85,7 +85,12 @@
     .catalyst-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
     @media (max-width: 460px) { .catalyst-cols { grid-template-columns: 1fr; } }
 
-    /* Signals & Setups */
+    /* Auto-Trigger Bar & Signals */
+    .auto-bar {
+      display: flex; justify-content: space-between; align-items: center; gap: 8px;
+      background: rgba(139,92,246,0.14); border: 1px solid rgba(139,92,246,0.35);
+      border-radius: 10px; padding: 9px 11px; margin-bottom: 10px; font-size: 11px;
+    }
     .seg-tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-bottom: 12px; }
     .seg-tab {
       padding: 7px 2px; text-align: center; border-radius: 8px; font-size: 10px; font-weight: 700;
@@ -107,6 +112,8 @@
     .pill-buy { background: var(--green-bg); color: var(--green); border: 1px solid rgba(16,185,129,0.4); }
     .pill-sell { background: var(--red-bg); color: var(--red); border: 1px solid rgba(244,63,94,0.4); }
     .pill-hedge { background: rgba(139,92,246,0.18); color: #c4b5fd; border: 1px solid rgba(139,92,246,0.4); }
+    .pill-warn { background: var(--amber-bg); color: var(--amber); border: 1px solid rgba(245,158,11,0.4); }
+
     .levels-grid {
       display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px;
       background: var(--bg-card); border-radius: 8px; padding: 8px 4px; margin-bottom: 10px; text-align: center;
@@ -175,23 +182,24 @@
       </div>
     </div>
     <div class="top-actions">
+      <button class="btn-sm" onclick="playTringTring()" title="Test Tring-Tring Bell">🔔 Ring</button>
       <button class="btn-sm" onclick="syncAllFeeds(true)">↻ Sync</button>
       <button class="btn-sm btn-connect" onclick="openAuthModal()">🔑 Setup</button>
     </div>
   </header>
 
   <div id="alertToast">
-    <span id="alertToastMsg">🔔 Signal Alert Triggered!</span>
+    <span id="alertToastMsg">🔔 Tring-Tring! Signal Triggered!</span>
     <button class="btn-sm" style="padding:2px 8px;" onclick="document.getElementById('alertToast').style.display='none'">Dismiss</button>
   </div>
 
   <main class="container">
 
-    <!-- PAGE 1: AERIAL MARKET VIEW & LIVE SELLERS/BUYERS ZONES -->
+    <!-- PAGE 1: AERIAL MARKET VIEW & TIGHT 30-PT SELLERS/BUYERS ZONES -->
     <div id="view-aerial">
       <section class="card">
         <div class="card-header">
-          <span class="step-pill">Page 1 • Aerial Market View & Intraday Zones</span>
+          <span class="step-pill">Page 1 • Aerial View & Precision Reversal Zones</span>
           <span style="font-size:10px;color:var(--text-2);" id="lastTickTime">Waiting for Feed</span>
         </div>
 
@@ -213,17 +221,17 @@
           </div>
         </div>
 
-        <!-- LIVE INTRADAY SELLERS' ZONE VS BUYERS' ZONE -->
+        <!-- TIGHT 30-POINT INSTITUTIONAL REJECTION ZONES -->
         <div class="zone-strip">
           <div class="zone-card-sell">
-            <div style="font-weight:800;color:var(--red);">▼ SELLERS' SUPPLY ZONE</div>
+            <div style="font-weight:800;color:var(--red);">▼ TIGHT SELLERS' ZONE (30 PTS)</div>
             <div style="font-size:13px;font-weight:800;margin-top:2px;" id="sellersZoneVal">-- to --</div>
-            <div style="font-size:10px;color:var(--text-2);margin-top:2px;" id="sellersZoneDist">Only PE allowed inside this zone</div>
+            <div style="font-size:10px;color:var(--text-2);margin-top:2px;" id="sellersZoneDist">Needs Top Reversal + RSI9↓20</div>
           </div>
           <div class="zone-card-buy">
-            <div style="font-weight:800;color:var(--green);">▲ BUYERS' DEMAND ZONE</div>
+            <div style="font-weight:800;color:var(--green);">▲ TIGHT BUYERS' ZONE (VWAP ±15)</div>
             <div style="font-size:13px;font-weight:800;margin-top:2px;" id="buyersZoneVal">-- to --</div>
-            <div style="font-size:10px;color:var(--text-2);margin-top:2px;" id="buyersZoneDist">Only CE allowed inside this zone</div>
+            <div style="font-size:10px;color:var(--text-2);margin-top:2px;" id="buyersZoneDist">Needs Bottom Reversal + RSI9↑20</div>
           </div>
         </div>
 
@@ -234,11 +242,11 @@
 
         <div class="summary-box">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-            <strong class="blue">🧠 Active Zone Verdict (No Simultaneous CE + PE Trap)</strong>
+            <strong class="blue">🧠 Confirmed Reversal & Auto-Trigger Engine</strong>
             <button class="btn-sm" style="padding:2px 7px;font-size:10px;" onclick="openModal('flowModal')">✎ Edit FII/DII</button>
           </div>
           <p id="dynamicTrajectoryText" style="color:var(--text-1);">
-            Connect live feed to detect whether Nifty is inside Sellers' Zone, Buyers' Zone, or No-Trade Mid-Zone.
+            Connect live feed to track tight 30-pt Sellers' & Buyers' zones with 3-step candle + RSI(9×20) reversal confirmation.
           </p>
 
           <div class="event-row">
@@ -258,28 +266,28 @@
         </div>
 
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-          <span style="font-size:10px;font-weight:800;color:var(--text-2);">LIVE INSTITUTIONAL & +2% TO +10% BREAKOUT RADAR:</span>
+          <span style="font-size:10px;font-weight:800;color:var(--text-2);">INSTITUTIONAL STOCKS (WITH 52-WEEK HIGH HEADROOM CHECK):</span>
           <span style="font-size:10px;color:var(--green);" id="fiiDiiBadge">FII: +₹5,673 Cr | DII: -₹2,760 Cr</span>
         </div>
 
         <div class="inst-cols">
           <div class="inst-panel">
-            <div style="font-size:11px;font-weight:800;color:var(--green);margin-bottom:6px;">▲ ACCUMULATING / SURGING</div>
+            <div style="font-size:11px;font-weight:800;color:var(--green);margin-bottom:6px;">▲ ACCUMULATING (WITH HEADROOM)</div>
             <div id="instBuyList"><div style="font-size:11px;color:var(--text-3);">Awaiting live quotes...</div></div>
           </div>
           <div class="inst-panel">
-            <div style="font-size:11px;font-weight:800;color:var(--red);margin-bottom:6px;">▼ DISTRIBUTING / SUPPLY</div>
+            <div style="font-size:11px;font-weight:800;color:var(--red);margin-bottom:6px;">▼ DISTRIBUTING / AT 52W HIGH</div>
             <div id="instSellList"><div style="font-size:11px;color:var(--text-3);">Awaiting live quotes...</div></div>
           </div>
         </div>
       </section>
     </div>
 
-    <!-- PAGE 2: GLOBAL MACRO & CHART WITH DRAWN SELLERS & BUYERS ZONES -->
+    <!-- PAGE 2: GLOBAL MACRO & TIGHT ZONE CHART -->
     <div id="view-global" class="hidden">
       <section class="card">
         <div class="card-header">
-          <span class="step-pill">Intraday Sellers/Buyers Zones & FII USD Chart</span>
+          <span class="step-pill">Precision Zones + Reversal Markers & FII USD Chart</span>
           <div class="toggle-group">
             <button class="tgl-btn active" id="mode-nifty" onclick="setChartMode('NIFTY')">ZONES + VWAP</button>
             <button class="tgl-btn" id="mode-fii" onclick="setChartMode('FII_USD')">FII USD RETURN</button>
@@ -288,12 +296,12 @@
 
         <div class="chart-wrap">
           <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:6px;flex-wrap:wrap;gap:4px;">
-            <span id="chartHeaderStat" style="font-weight:700;color:#60a5fa;">Red Band = Sellers' Zone | Green Band = Buyers' Zone</span>
+            <span id="chartHeaderStat" style="font-weight:700;color:#60a5fa;">Red = Tight Sellers' Band | Green = Tight VWAP Band</span>
             <span id="rsiHeaderStat" style="font-weight:700;color:var(--amber);">RSI(9): -- | RSI(20): --</span>
           </div>
           <canvas id="priceChartCanvas" height="205"></canvas>
           <div style="font-size:9px;color:var(--text-2);margin:6px 0 3px;display:flex;justify-content:space-between;">
-            <span><strong>RSI(9)</strong> (Cyan) vs <strong>RSI(20)</strong> (Amber) — Confirms Zone Reversal</span>
+            <span><strong>RSI(9)</strong> (Cyan) vs <strong>RSI(20)</strong> (Amber) — Confirms Top/Bottom Turn</span>
             <span id="rsiSignalTag" style="font-weight:800;">Scanning...</span>
           </div>
           <canvas id="rsiChartCanvas" height="82"></canvas>
@@ -345,7 +353,7 @@
             <div style="font-size:11px;font-weight:800;color:var(--red);margin-bottom:5px;">▼ NEGATIVE RISKS</div>
             <ul style="font-size:10px;color:var(--text-2);margin-left:14px;line-height:1.45;">
               <li><strong>Brent Crude Near $95:</strong> Pressures INR toward 92.60–92.80, reducing FII USD yield.</li>
-              <li><strong>Sellers' Zone Profit Booking:</strong> Supply zone rejection triggers institutional Put buying.</li>
+              <li><strong>Sellers' Zone Profit Booking:</strong> Confirmed top reversal triggers institutional Put buying.</li>
               <li><strong>BOJ Hike Bets & 09 Dec FOMC:</strong> Rising Japanese & US yields tighten global liquidity.</li>
             </ul>
           </div>
@@ -353,21 +361,30 @@
       </section>
     </div>
 
-    <!-- PAGE 3: EXCLUSIVE ZONE-GATED SIGNALS (NEVER BOTH CE & PE TOGETHER) -->
+    <!-- PAGE 3: CONFIRMED REVERSAL SIGNALS & AUTO-PAPER TRIGGER -->
     <div id="view-opps" class="hidden">
       <section class="card">
         <div class="card-header">
-          <span class="step-pill">Zone-Gated Signals • Exclusive Direction Only</span>
+          <span class="step-pill">Confirmed Reversal Signals • 52W-High Filtered</span>
           <span style="font-size:10px;color:var(--text-2);">Lots: <strong id="lotTag" style="color:#fff;">1</strong></span>
         </div>
 
+        <!-- AUTO-PAPER TRIGGER + MANUAL INTERVENTION CONTROL BAR -->
+        <div class="auto-bar">
+          <div>
+            <strong style="color:#c4b5fd;">⚡ Auto-Trigger Paper Trade</strong>
+            <div style="font-size:10px;color:var(--text-2);">Auto-executes 1st confirmed reversal + rings Tring-Tring (manual exit/edit always active)</div>
+          </div>
+          <button class="btn-sm" id="autoTradeToggleBtn" onclick="toggleAutoPaper()" style="min-width:86px;">OFF (Manual)</button>
+        </div>
+
         <div id="zoneGateSummary" class="gate-banner gate-wait">
-          <span>⏳ Checking Sellers' & Buyers' Zones...</span>
+          <span>⏳ Checking Tight Sellers' & Buyers' Zones...</span>
         </div>
 
         <div class="seg-tabs">
           <button class="seg-tab active" onclick="filterOpps('all', this)">Active Signal</button>
-          <button class="seg-tab" onclick="filterOpps('equity', this)">+2-10% Eq</button>
+          <button class="seg-tab" onclick="filterOpps('equity', this)">Headroom Eq</button>
           <button class="seg-tab" onclick="filterOpps('hedge', this)">Hedges</button>
           <button class="seg-tab" onclick="switchView('global')">View Zones</button>
         </div>
@@ -381,23 +398,23 @@
       <section class="card">
         <div class="card-header">
           <span class="step-pill">Structural Geopolitical Themes & Seasonal Cycles</span>
-          <span style="font-size:10px;color:var(--green);">Low-Supply / High-Demand</span>
+          <span style="font-size:10px;color:var(--green);">52W-High Headroom Checked</span>
         </div>
 
         <div class="summary-box">
-          <strong class="amber">💎 Why Structural & Seasonal Edge Beats Daily Noise:</strong>
-          Institutions accumulate scarce supply-chain monopolies (<strong>Rare Earths, Fluorochemicals for Chip Etching, Semiconductor Packaging</strong>) and seasonal winners <em>weeks before</em> peak demand hits headlines.
+          <strong class="amber">💎 Structural & Seasonal Edge + 52-Week High Guard:</strong>
+          Accumulate scarce supply-chain monopolies (<strong>Rare Earths, Fluorochemicals for Chip Etching, Semiconductor OSAT</strong>) only when they have healthy headroom below their 52-week / all-time high.
         </div>
 
         <div style="font-size:11px;font-weight:800;color:#60a5fa;margin-bottom:6px;">📅 INDIAN MARKET SEASONAL PEAK / TROUGH MAP:</div>
         <div class="event-row" style="margin-bottom:12px;">
           <div class="event-chip">
             <strong class="amber">Oct – Nov (Peak)</strong>
-            <div style="color:var(--text-2);">Deepawali Auto & Consumer Electronics peak (Book profit / rotate out after festive high).</div>
+            <div style="color:var(--text-2);">Deepawali Auto & Electronics peak (Book profit / rotate after festive high).</div>
           </div>
           <div class="event-chip">
             <strong class="green">Nov – Feb (Active Now)</strong>
-            <div style="color:var(--text-2);">Sugar crushing (ISMA output drop), Chemicals/Fluorochemicals, Defence & Capex pre-Budget.</div>
+            <div style="color:var(--text-2);">Sugar crushing, Specialty Fluorochemicals, Defence & Capex pre-Budget.</div>
           </div>
           <div class="event-chip">
             <strong class="blue">Mar – May (Upcoming)</strong>
@@ -405,7 +422,6 @@
           </div>
         </div>
 
-        <div style="font-size:11px;font-weight:800;color:var(--green);margin-bottom:6px;">🔬 RARE EARTH, FLUOROCHEMICAL & SEMICONDUCTOR WATCHLIST (LIVE LTP):</div>
         <div id="themesContainer"></div>
       </section>
     </div>
@@ -450,11 +466,11 @@
       </section>
     </div>
 
-    <!-- PAGE 6: PAPER TRADING & POSITION RISK GUARD -->
+    <!-- PAGE 6: PAPER DESK, AUTO-TRIGGER & MANUAL INTERVENTION -->
     <div id="view-desk" class="hidden">
       <section class="card">
         <div class="card-header">
-          <span class="step-pill">Paper Desk • Profit Protection & Position Guard</span>
+          <span class="step-pill">Paper Desk • Auto-Trigger & Manual Intervention</span>
           <span style="font-size:10px;color:var(--text-2);" id="brokerFutureTag">Broker: Decide Later</span>
         </div>
 
@@ -485,15 +501,18 @@
             </div>
           </div>
           <div style="display:flex;justify-content:space-between;align-items:center;font-size:10px;color:var(--text-2);">
-            <span>Broker: <strong>Decide Later (Upstox / Sahi)</strong></span>
-            <button class="btn-sm" onclick="resetPaper()">Reset ₹1L</button>
+            <span>Auto-Paper: <strong id="deskAutoStatus">OFF</strong></span>
+            <div>
+              <button class="btn-sm" onclick="playTringTring()">🔔 Test Tring-Tring</button>
+              <button class="btn-sm" onclick="resetPaper()">Reset ₹1L</button>
+            </div>
           </div>
         </div>
 
         <div style="font-size:11px;font-weight:800;color:var(--amber);margin-bottom:6px;">🔔 ACTIVE AUTO-ALERTS (<span id="alertCount">0</span>)</div>
         <div id="alertsList" style="margin-bottom:12px;"></div>
 
-        <div style="font-size:11px;font-weight:800;color:#60a5fa;margin-bottom:6px;">📊 PAPER POSITIONS (LIVE TICK SYNCED)</div>
+        <div style="font-size:11px;font-weight:800;color:#60a5fa;margin-bottom:6px;">📊 PAPER POSITIONS (LIVE TICK + MANUAL SL/EXIT)</div>
         <div id="positionsList"></div>
       </section>
     </div>
@@ -562,6 +581,22 @@
     </div>
   </div>
 
+  <!-- MANUAL INTERVENTION SL/TARGET MODAL -->
+  <div class="modal-bg" id="editPosModal">
+    <div class="modal-box">
+      <h3 style="font-size:15px;margin-bottom:8px;">🛠️ Manual Intervention (Modify SL / Target)</h3>
+      <input type="hidden" id="editPosId" />
+      <label style="font-size:11px;color:var(--text-2);">Stop Loss Price (₹)</label>
+      <input type="number" step="0.1" id="editPosSl" style="margin:4px 0 10px;" />
+      <label style="font-size:11px;color:var(--text-2);">Target 1 Price (₹)</label>
+      <input type="number" step="0.1" id="editPosT1" style="margin:4px 0 12px;" />
+      <div style="display:flex;gap:8px;">
+        <button class="btn-paper" style="flex:1;" onclick="saveManualPosEdit()">Update Position</button>
+        <button class="btn-sm" onclick="closeModal('editPosModal')">Cancel</button>
+      </div>
+    </div>
+  </div>
+
   <!-- ALGO MODAL -->
   <div class="modal-bg" id="algoModal">
     <div class="modal-box">
@@ -575,9 +610,9 @@
   </div>
 
   <script>
-    const STORE_KEY = "anuragpulse_v9_state";
-    const LEGACY_KEYS = ["anuragpulse_v8_state", "anuragpulse_v7_state", "anuragpulse_v6_state"];
-    const QUOTE_CACHE_KEY = "anuragpulse_v9_quotes";
+    const STORE_KEY = "anuragpulse_v10_state";
+    const LEGACY_KEYS = ["anuragpulse_v9_state", "anuragpulse_v8_state", "anuragpulse_v7_state"];
+    const QUOTE_CACHE_KEY = "anuragpulse_v10_quotes";
 
     let appState = {
       accountId: "",
@@ -586,6 +621,8 @@
       brokerChoice: "Decide Later (Paper Only)",
       lots: 1,
       protMode: "balanced",
+      autoPaperEnabled: false,
+      lastAutoSignalId: "",
       fiiCash: 5673,
       diiCash: -2760,
       usdInr: 92.47,
@@ -606,9 +643,9 @@
       sellersZoneHigh: null,
       buyersZoneLow: null,
       buyersZoneHigh: null,
-      activeZone: "MID_CHOP", // "SELLERS_ZONE" | "BUYERS_ZONE" | "MID_CHOP"
-      rsiCrossDown: false,
-      rsiCrossUp: false
+      activeZone: "MID_CHOP",
+      confirmedTopReversal: false,    // Inside tight Sellers' Zone + Red reversal candle + RSI9 < RSI20
+      confirmedBottomReversal: false  // Inside tight Buyers' Zone + Green reversal candle + RSI9 > RSI20
     };
     let chartMode = "NIFTY";
     let pollTimer = null;
@@ -622,31 +659,89 @@
       VIX: "NSE_INDEX|India VIX"
     };
 
+    // Includes 52-Week High reference fallback if Upstox quote lacks year_high
     const WATCHLIST_STOCKS = [
-      { sym: "INFY", key: "NSE_EQ|INE009A01021", sector: "IT Services (17% Tariff Cap)" },
-      { sym: "TCS", key: "NSE_EQ|INE467B01029", sector: "IT Services" },
-      { sym: "HCLTECH", key: "NSE_EQ|INE860A01027", sector: "IT Services" },
-      { sym: "ICICIBANK", key: "NSE_EQ|INE090A01021", sector: "Private Bank" },
-      { sym: "HDFCBANK", key: "NSE_EQ|INE040A01034", sector: "Private Bank" },
-      { sym: "TATASTEEL", key: "NSE_EQ|INE081A01020", sector: "Metals" },
-      { sym: "GMDCLTD", key: "NSE_EQ|INE131A01031", sector: "Rare Earth & Fluorspar" },
-      { sym: "SRF", key: "NSE_EQ|INE647A01010", sector: "Fluorochemicals & Ref Gas" },
-      { sym: "NAVINFLUOR", key: "NSE_EQ|INE048G01026", sector: "Specialty Fluorochemicals" },
-      { sym: "CGPOWER", key: "NSE_EQ|INE067A01029", sector: "Semiconductor OSAT & Power" },
-      { sym: "BEL", key: "NSE_EQ|INE263A01024", sector: "Defence Electronics" },
-      { sym: "DIXON", key: "NSE_EQ|INE935N01020", sector: "Electronics Mfg (Seasonal)" }
+      { sym: "INFY", key: "NSE_EQ|INE009A01021", sector: "IT Services (17% Tariff Cap)", ref52High: 1995 },
+      { sym: "TCS", key: "NSE_EQ|INE467B01029", sector: "IT Services", ref52High: 4592 },
+      { sym: "HCLTECH", key: "NSE_EQ|INE860A01027", sector: "IT Services", ref52High: 1965 },
+      { sym: "ICICIBANK", key: "NSE_EQ|INE090A01021", sector: "Private Bank", ref52High: 1365 },
+      { sym: "HDFCBANK", key: "NSE_EQ|INE040A01034", sector: "Private Bank", ref52High: 1880 },
+      { sym: "TATASTEEL", key: "NSE_EQ|INE081A01020", sector: "Metals", ref52High: 184 },
+      { sym: "GMDCLTD", key: "NSE_EQ|INE131A01031", sector: "Rare Earth & Fluorspar", ref52High: 465 },
+      { sym: "SRF", key: "NSE_EQ|INE647A01010", sector: "Fluorochemicals & Ref Gas", ref52High: 2790 },
+      { sym: "NAVINFLUOR", key: "NSE_EQ|INE048G01026", sector: "Specialty Fluorochemicals", ref52High: 4380 },
+      { sym: "CGPOWER", key: "NSE_EQ|INE067A01029", sector: "Semiconductor OSAT & Power", ref52High: 874 },
+      { sym: "BEL", key: "NSE_EQ|INE263A01024", sector: "Defence Electronics", ref52High: 340 },
+      { sym: "DIXON", key: "NSE_EQ|INE935N01020", sector: "Electronics Mfg (Seasonal)", ref52High: 17850 }
     ];
 
     const STRUCTURAL_THEMES = [
-      { sym: "GMDCLTD", key: "NSE_EQ|INE131A01031", theme: "RARE EARTH & FLUORSPAR", lotSize: 25, thesis: "Ambadungar Rare Earth project with BARC & NMDC; Q2 FY27 PBT +51% YoY." },
-      { sym: "NAVINFLUOR", key: "NSE_EQ|INE048G01026", theme: "CHIP ETCHING FLUOROCHEMICALS", lotSize: 15, thesis: "High-purity hydrofluoric & specialty fluorochemicals for semiconductor wafer cleaning." },
-      { sym: "SRF", key: "NSE_EQ|INE647A01010", theme: "SPECIALTY FLUOROCHEMICALS", lotSize: 15, thesis: "Global supply-chain shift away from China in fluoropolymers & Q3-Q4 cooling demand." },
-      { sym: "CGPOWER", key: "NSE_EQ|INE067A01029", theme: "SEMICONDUCTOR OSAT", lotSize: 25, thesis: "Zero-debt semiconductor OSAT facility execution + transformer order book." },
-      { sym: "DIXON", key: "NSE_EQ|INE935N01020", theme: "SEASONAL POST-DIWALI DIP", lotSize: 10, thesis: "Peaks in Oct-Nov Deepawali demand; accumulate on Nov-Dec dips before Q4 PLI ramp." }
+      { sym: "GMDCLTD", key: "NSE_EQ|INE131A01031", ref52High: 465, theme: "RARE EARTH & FLUORSPAR", lotSize: 25, thesis: "Ambadungar Rare Earth project with BARC & NMDC; Q2 FY27 PBT +51% YoY." },
+      { sym: "NAVINFLUOR", key: "NSE_EQ|INE048G01026", ref52High: 4380, theme: "CHIP ETCHING FLUOROCHEMICALS", lotSize: 15, thesis: "High-purity hydrofluoric & specialty fluorochemicals for semiconductor wafer cleaning." },
+      { sym: "SRF", key: "NSE_EQ|INE647A01010", ref52High: 2790, theme: "SPECIALTY FLUOROCHEMICALS", lotSize: 15, thesis: "Global supply-chain shift away from China in fluoropolymers & Q3-Q4 cooling demand." },
+      { sym: "CGPOWER", key: "NSE_EQ|INE067A01029", ref52High: 874, theme: "SEMICONDUCTOR OSAT", lotSize: 25, thesis: "Zero-debt semiconductor OSAT facility execution + transformer order book." },
+      { sym: "DIXON", key: "NSE_EQ|INE935N01020", ref52High: 17850, theme: "SEASONAL POST-DIWALI DIP", lotSize: 10, thesis: "Peaks in Oct-Nov Deepawali demand; accumulate on Nov-Dec dips before Q4 PLI ramp." }
     ];
+
+    // --- CLASSIC TELEPHONE "TRING-TRING" RINGTONE (WEB AUDIO API) ---
+    function playTringTring() {
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        const ctx = new AudioCtx();
+        const now = ctx.currentTime;
+
+        // Two double-bell bursts ("Tring-Tring ... Tring-Tring")
+        [0, 0.55].forEach(offset => {
+          const osc1 = ctx.createOscillator();
+          const osc2 = ctx.createOscillator();
+          const lfo = ctx.createOscillator();
+          const lfoGain = ctx.createGain();
+          const mainGain = ctx.createGain();
+
+          osc1.type = "triangle";
+          osc2.type = "sine";
+          osc1.frequency.setValueAtTime(1180, now + offset);
+          osc2.frequency.setValueAtTime(1480, now + offset);
+
+          // 22 Hz rapid clapper hammer modulation for authentic bell tring
+          lfo.frequency.setValueAtTime(22, now + offset);
+          lfoGain.gain.setValueAtTime(0.45, now + offset);
+
+          mainGain.gain.setValueAtTime(0.01, now + offset);
+          mainGain.gain.linearRampToValueAtTime(0.35, now + offset + 0.03);
+          mainGain.gain.setValueAtTime(0.35, now + offset + 0.36);
+          mainGain.gain.exponentialRampToValueAtTime(0.001, now + offset + 0.42);
+
+          lfo.connect(lfoGain);
+          lfoGain.connect(mainGain.gain);
+          osc1.connect(mainGain);
+          osc2.connect(mainGain);
+          mainGain.connect(ctx.destination);
+
+          osc1.start(now + offset);
+          osc2.start(now + offset);
+          lfo.start(now + offset);
+
+          osc1.stop(now + offset + 0.43);
+          osc2.stop(now + offset + 0.43);
+          lfo.stop(now + offset + 0.43);
+        });
+      } catch (e) {}
+    }
 
     function normKey(k) { return (k || "").replace(":", "|").trim(); }
     function getQ(k) { return liveQuotes[normKey(k)] || liveQuotes[k] || null; }
+
+    function get52WHeadroom(q, fallbackHigh) {
+      const high52 = q?.high52 || fallbackHigh;
+      if (!q || !q.ltp || !high52) return { high52: null, pctFromHigh: null, nearTop: false };
+      const pctFromHigh = +(((high52 - q.ltp) / high52) * 100).toFixed(1);
+      return {
+        high52,
+        pctFromHigh,
+        nearTop: pctFromHigh <= 1.5 // Within 1.5% of 52-week / All-Time High -> weak further momentum
+      };
+    }
 
     function loadState() {
       try {
@@ -671,6 +766,7 @@
       document.getElementById("brokerFutureTag").textContent = `Broker: ${appState.brokerChoice}`;
       document.getElementById("usdRateDisplay").textContent = appState.usdInr.toFixed(2);
       document.getElementById("fiiDiiBadge").textContent = `FII: ${appState.fiiCash >= 0 ? "+" : ""}₹${appState.fiiCash} Cr | DII: ${appState.diiCash >= 0 ? "+" : ""}₹${appState.diiCash} Cr`;
+      updateAutoTradeUI();
 
       if (appState.accountId) document.getElementById("acctLabel").textContent = `(${appState.accountId})`;
 
@@ -687,6 +783,34 @@
 
     function saveState() {
       try { localStorage.setItem(STORE_KEY, JSON.stringify(appState)); } catch (e) {}
+    }
+
+    function toggleAutoPaper() {
+      appState.autoPaperEnabled = !appState.autoPaperEnabled;
+      saveState();
+      updateAutoTradeUI();
+      if (appState.autoPaperEnabled) {
+        playTringTring();
+        evaluateAutoPaperTrigger();
+      }
+    }
+
+    function updateAutoTradeUI() {
+      const btn = document.getElementById("autoTradeToggleBtn");
+      const deskStat = document.getElementById("deskAutoStatus");
+      if (appState.autoPaperEnabled) {
+        btn.textContent = "ON (AUTO)";
+        btn.style.background = "var(--green-bg)";
+        btn.style.color = "var(--green)";
+        btn.style.borderColor = "var(--green)";
+        if (deskStat) { deskStat.textContent = "ON (Auto-Trigger Armed)"; deskStat.style.color = "var(--green)"; }
+      } else {
+        btn.textContent = "OFF (Manual)";
+        btn.style.background = "var(--bg-elevated)";
+        btn.style.color = "var(--text-1)";
+        btn.style.borderColor = "var(--border)";
+        if (deskStat) { deskStat.textContent = "OFF (Manual Only)"; deskStat.style.color = "var(--amber)"; }
+      }
     }
 
     function savePrefs() {
@@ -810,6 +934,7 @@
                 ltp: q.last_price,
                 open: q.ohlc?.open || q.last_price,
                 close: prev,
+                high52: q["52_week_high"] || q.year_high || null,
                 chg: +(q.last_price - prev).toFixed(2),
                 pct: prev > 0 ? +(((q.last_price - prev) / prev) * 100).toFixed(2) : 0,
                 vol: q.volume || 0
@@ -862,7 +987,7 @@
       return res;
     }
 
-    // --- COMPUTE REAL INTRADAY SELLERS' SUPPLY ZONE & BUYERS' DEMAND ZONE ---
+    // --- TIGHT 30-PT ZONES + CONFIRMED TOP/BOTTOM REVERSAL ENGINE ---
     async function fetchIntradayCandlesAndZones() {
       if (!appState.accessToken) return;
       try {
@@ -871,7 +996,7 @@
           headers: { "Authorization": `Bearer ${appState.accessToken}`, "Accept": "application/json" }
         });
         const json = await res.json();
-        if (json.status === "success" && Array.isArray(json.data?.candles) && json.data.candles.length > 0) {
+        if (json.status === "success" && Array.isArray(json.data?.candles) && json.data.candles.length > 3) {
           intradayCandles = [...json.data.candles].reverse();
           let cumPV = 0, cumVol = 0;
           const closes = [];
@@ -893,33 +1018,44 @@
           const rsi9Arr = computeRsiSeries(closes, 9);
           const rsi20Arr = computeRsiSeries(closes, 20);
           const lastIdx = closes.length - 1;
-          const prevIdx = Math.max(0, lastIdx - 1);
+          const prevIdx = lastIdx - 1;
 
           const latestClose = closes[lastIdx];
+          const prevLow = lows[prevIdx];
+          const prevHigh = highs[prevIdx];
           const latestVwap = vwapSeries[lastIdx];
-          const dayHigh = Math.max(...highs);
-          const dayLow = Math.min(...lows);
-          const range = Math.max(40, dayHigh - dayLow);
 
-          // Intraday Sellers' Supply Zone (Top 22% of intraday range / Swing High resistance)
-          const sellersZoneHigh = +(dayHigh + range * 0.08).toFixed(1);
-          const sellersZoneLow = +(dayHigh - range * 0.22).toFixed(1);
+          // Recent 45-min swing high for tight 30-pt Sellers' Supply Zone
+          const recentHigh = Math.max(...highs.slice(-45));
+          const sellersZoneHigh = +(recentHigh + 10).toFixed(1);
+          const sellersZoneLow = +(recentHigh - 20).toFixed(1);
 
-          // Intraday Buyers' Demand Zone (VWAP & Bottom 22% of intraday range)
-          const buyersZoneHigh = +(Math.max(latestVwap, dayLow + range * 0.22)).toFixed(1);
-          const buyersZoneLow = +(dayLow - range * 0.08).toFixed(1);
+          // Tight 30-pt Buyers' Demand Zone centered directly on VWAP
+          const buyersZoneHigh = +(latestVwap + 15).toFixed(1);
+          const buyersZoneLow = +(latestVwap - 15).toFixed(1);
 
           const r9 = rsi9Arr[lastIdx];
           const r20 = rsi20Arr[lastIdx];
           const pr9 = rsi9Arr[prevIdx];
           const pr20 = rsi20Arr[prevIdx];
 
-          const rsiCrossDown = r9 !== null && r20 !== null && r9 < r20 && (pr9 >= pr20 || r20 > 55);
-          const rsiCrossUp = r9 !== null && r20 !== null && r9 > r20 && (pr9 <= pr20 || r20 < 45);
+          // 3-Step Confirmed Top Reversal:
+          // (1) Price in tight Sellers' Zone + (2) Bearish reversal close below prior candle low + (3) RSI(9) crosses below RSI(20)
+          const inSellersZone = latestClose >= sellersZoneLow && latestClose <= sellersZoneHigh;
+          const topCandleTurn = latestClose < prevLow;
+          const rsiBearCross = r9 !== null && r20 !== null && r9 < r20 && (pr9 >= pr20 || r20 > 58);
+          const confirmedTopReversal = inSellersZone && topCandleTurn && rsiBearCross;
+
+          // 3-Step Confirmed Bottom Reversal:
+          // (1) Price in tight Buyers' VWAP Zone + (2) Bullish reversal close above prior candle high + (3) RSI(9) crosses above RSI(20)
+          const inBuyersZone = latestClose >= buyersZoneLow && latestClose <= buyersZoneHigh;
+          const bottomCandleTurn = latestClose > prevHigh;
+          const rsiBullCross = r9 !== null && r20 !== null && r9 > r20 && (pr9 <= pr20 || r20 < 42);
+          const confirmedBottomReversal = inBuyersZone && bottomCandleTurn && rsiBullCross;
 
           let activeZone = "MID_CHOP";
-          if (latestClose >= sellersZoneLow) activeZone = "SELLERS_ZONE";
-          else if (latestClose <= buyersZoneHigh) activeZone = "BUYERS_ZONE";
+          if (inSellersZone) activeZone = "SELLERS_ZONE";
+          else if (inBuyersZone) activeZone = "BUYERS_ZONE";
 
           techState = {
             vwap: latestVwap,
@@ -933,15 +1069,30 @@
             buyersZoneLow,
             buyersZoneHigh,
             activeZone,
-            rsiCrossDown,
-            rsiCrossUp
+            confirmedTopReversal,
+            confirmedBottomReversal
           };
 
           document.getElementById("vwapRsiQuick").textContent = `VWAP: ${latestVwap} | RSI(9/20): ${r9 ?? "--"}/${r20 ?? "--"}`;
           drawCharts();
+          evaluateAutoPaperTrigger();
           renderAll();
         }
       } catch (e) {}
+    }
+
+    function evaluateAutoPaperTrigger() {
+      if (!appState.autoPaperEnabled) return;
+      const opps = buildDynamicOpportunities();
+      const confirmed = opps.find(o => o.isConfirmedReversal);
+      if (!confirmed) return;
+
+      const sigStamp = `${confirmed.id}_${Math.floor(Date.now() / 600000)}`; // Once per 10-min window
+      if (appState.lastAutoSignalId === sigStamp) return;
+
+      appState.lastAutoSignalId = sigStamp;
+      paperTradeSingle(confirmed.title, confirmed.side, confirmed.ltp, confirmed.lotSize, confirmed.key, confirmed.t1, confirmed.t2, confirmed.sl);
+      notifyUser(`🔔 TRING-TRING! AUTO-EXECUTED ${confirmed.title} @ ₹${confirmed.ltp}`);
     }
 
     function setChartMode(mode) {
@@ -981,27 +1132,27 @@
       const toX = i => 10 + (i / (prices.length - 1)) * (w - 20);
       const toY = v => 185 - ((v - minV) / span) * 162;
 
-      // DRAW RED SELLERS' SUPPLY ZONE BAND
+      // TIGHT RED SELLERS' SUPPLY BAND (30 PTS)
       const ySHigh = toY(sHigh);
       const ySLow = toY(sLow);
-      ctx.fillStyle = "rgba(244, 63, 94, 0.18)";
-      ctx.fillRect(10, ySHigh, w - 20, Math.max(6, ySLow - ySHigh));
+      ctx.fillStyle = "rgba(244, 63, 94, 0.24)";
+      ctx.fillRect(10, ySHigh, w - 20, Math.max(5, ySLow - ySHigh));
       ctx.fillStyle = "#fda4af";
       ctx.font = "bold 9px sans-serif";
-      ctx.fillText(`SELLERS' SUPPLY ZONE (${sLow.toFixed(1)} - ${sHigh.toFixed(1)})`, 14, ySHigh + 10);
+      ctx.fillText(`TIGHT SELLERS' ZONE (${sLow.toFixed(1)}–${sHigh.toFixed(1)})`, 14, Math.max(12, ySHigh - 3));
 
-      // DRAW GREEN BUYERS' DEMAND ZONE BAND
+      // TIGHT GREEN BUYERS' VWAP BAND (30 PTS)
       const yBHigh = toY(bHigh);
       const yBLow = toY(bLow);
-      ctx.fillStyle = "rgba(16, 185, 129, 0.18)";
-      ctx.fillRect(10, yBHigh, w - 20, Math.max(6, yBLow - yBHigh));
+      ctx.fillStyle = "rgba(16, 185, 129, 0.24)";
+      ctx.fillRect(10, yBHigh, w - 20, Math.max(5, yBLow - yBHigh));
       ctx.fillStyle = "#6ee7b7";
-      ctx.fillText(`BUYERS' DEMAND ZONE (${bLow.toFixed(1)} - ${bHigh.toFixed(1)})`, 14, yBLow - 4);
+      ctx.fillText(`TIGHT BUYERS' VWAP ZONE (${bLow.toFixed(1)}–${bHigh.toFixed(1)})`, 14, Math.min(200, yBLow + 10));
 
-      // VWAP Line (Amber Dashed)
+      // VWAP Line
       if (vwaps.length === prices.length) {
         ctx.strokeStyle = "#f59e0b";
-        ctx.lineWidth = 1.6;
+        ctx.lineWidth = 1.5;
         ctx.setLineDash([4, 3]);
         ctx.beginPath();
         vwaps.forEach((v, i) => i === 0 ? ctx.moveTo(toX(i), toY(v)) : ctx.lineTo(toX(i), toY(v)));
@@ -1044,14 +1195,14 @@
 
       document.getElementById("rsiHeaderStat").textContent = `RSI(9): ${techState.rsi9 ?? "--"} | RSI(20): ${techState.rsi20 ?? "--"}`;
       const tag = document.getElementById("rsiSignalTag");
-      if (techState.activeZone === "SELLERS_ZONE") {
-        tag.textContent = techState.rsiCrossDown ? "🔴 SELLERS' ZONE + RSI9 < RSI20 → PUT ACTIVE" : "🔴 IN SELLERS' ZONE — WAIT FOR RSI9 < RSI20";
+      if (techState.confirmedTopReversal) {
+        tag.textContent = "🔴 TOP REVERSAL CONFIRMED → PUT TRIGGERED";
         tag.style.color = "var(--red)";
-      } else if (techState.activeZone === "BUYERS_ZONE") {
-        tag.textContent = techState.rsiCrossUp ? "🟢 BUYERS' ZONE + RSI9 > RSI20 → CALL ACTIVE" : "🟢 IN BUYERS' ZONE — WAIT FOR RSI9 > RSI20";
+      } else if (techState.confirmedBottomReversal) {
+        tag.textContent = "🟢 BOTTOM REVERSAL CONFIRMED → CALL TRIGGERED";
         tag.style.color = "var(--green)";
       } else {
-        tag.textContent = "⏳ NO-TRADE MID ZONE (WAIT FOR RED OR GREEN BAND)";
+        tag.textContent = "⏳ WAITING FOR TIGHT ZONE + CANDLE & RSI REVERSAL";
         tag.style.color = "var(--amber)";
       }
     }
@@ -1134,8 +1285,8 @@
         if (n) {
           const distSell = +(techState.sellersZoneLow - n.ltp).toFixed(1);
           const distBuy = +(n.ltp - techState.buyersZoneHigh).toFixed(1);
-          document.getElementById("sellersZoneDist").textContent = distSell <= 0 ? "ACTIVE NOW — Inside Sellers' Zone" : `${distSell} pts away from Sellers' Zone`;
-          document.getElementById("buyersZoneDist").textContent = distBuy <= 0 ? "ACTIVE NOW — Inside Buyers' Zone" : `${distBuy} pts away from Buyers' Zone`;
+          document.getElementById("sellersZoneDist").textContent = distSell <= 0 ? "INSIDE ZONE — Checking Top Reversal" : `${distSell} pts away`;
+          document.getElementById("buyersZoneDist").textContent = distBuy <= 0 ? "INSIDE ZONE — Checking Bottom Reversal" : `${distBuy} pts away`;
         }
       }
 
@@ -1144,41 +1295,48 @@
         document.getElementById("fiiRatioBox").textContent = `$${fiiUsdPts} USD pts (INR ${appState.usdInr.toFixed(2)})`;
         if (sx) document.getElementById("liveSensexBox").textContent = `${sx.ltp.toLocaleString("en-IN")} (${sx.pct}%)`;
 
-        if (techState.activeZone === "SELLERS_ZONE") {
-          document.getElementById("dynamicTrajectoryText").innerHTML = techState.rsiCrossDown
-            ? `<strong>🔴 SELLERS' SUPPLY ZONE + RSI(9) < RSI(20) CONFIRMED:</strong> Only <strong>PUT (PE)</strong> buying is active. Call buying is blocked.`
-            : `<strong>🔴 INSIDE SELLERS' ZONE (${techState.sellersZoneLow}–${techState.sellersZoneHigh}):</strong> Wait for RSI(9) to cross below RSI(20) to trigger Put entry.`;
-        } else if (techState.activeZone === "BUYERS_ZONE") {
-          document.getElementById("dynamicTrajectoryText").innerHTML = techState.rsiCrossUp
-            ? `<strong>🟢 BUYERS' DEMAND ZONE + RSI(9) > RSI(20) CONFIRMED:</strong> Only <strong>CALL (CE)</strong> buying is active. Put buying is blocked.`
-            : `<strong>🟢 INSIDE BUYERS' ZONE (${techState.buyersZoneLow}–${techState.buyersZoneHigh}):</strong> Wait for RSI(9) to cross above RSI(20) to trigger Call entry.`;
+        if (techState.confirmedTopReversal) {
+          document.getElementById("dynamicTrajectoryText").innerHTML = `<strong>🔴 CONFIRMED TOP REVERSAL:</strong> Nifty rejected tight Sellers' Zone (${techState.sellersZoneLow}–${techState.sellersZoneHigh}) with bearish candle + RSI(9) < RSI(20). <strong>29 Dec Put (PE)</strong> signal triggered.`;
+        } else if (techState.confirmedBottomReversal) {
+          document.getElementById("dynamicTrajectoryText").innerHTML = `<strong>🟢 CONFIRMED BOTTOM REVERSAL:</strong> Nifty bounced off tight Buyers' VWAP Zone (${techState.buyersZoneLow}–${techState.buyersZoneHigh}) with bullish candle + RSI(9) > RSI(20). <strong>29 Dec Call (CE)</strong> signal triggered.`;
         } else {
-          document.getElementById("dynamicTrajectoryText").innerHTML = `<strong>⏳ NO-TRADE MID-ZONE (Nifty ${n.ltp}):</strong> Price is between Sellers' Zone (<strong>${techState.sellersZoneLow ?? "--"}</strong>) and Buyers' Zone (<strong>${techState.buyersZoneHigh ?? "--"}</strong>). Naked CE and PE signals are held until price reaches either band.`;
+          document.getElementById("dynamicTrajectoryText").innerHTML = `<strong>⏳ NO CONFIRMED REVERSAL YET (Nifty ${n.ltp}):</strong> Waiting for price to hit tight Sellers' Zone (<strong>${techState.sellersZoneLow ?? "--"}</strong>) or Buyers' VWAP Zone (<strong>${techState.buyersZoneHigh ?? "--"}</strong>) AND print a confirmed candle + RSI(9×20) turn.`;
         }
       }
 
-      const ranked = WATCHLIST_STOCKS.map(s => ({ ...s, q: getQ(s.key) })).filter(x => x.q);
+      // Rank stocks with 52-Week High / ATH exhaustion filter
+      const ranked = WATCHLIST_STOCKS.map(s => {
+        const q = getQ(s.key);
+        const hw = get52WHeadroom(q, s.ref52High);
+        return { ...s, q, hw };
+      }).filter(x => x.q);
+
       if (ranked.length > 0) {
-        const buyers = [...ranked].filter(x => x.q.pct >= 0).sort((a, b) => b.q.pct - a.q.pct);
-        const sellers = [...ranked].filter(x => x.q.pct < 0).sort((a, b) => a.q.pct - b.q.pct);
+        const buyers = [...ranked].filter(x => x.q.pct >= 0 && !x.hw.nearTop).sort((a, b) => b.q.pct - a.q.pct);
+        const sellersOrAtHigh = [...ranked].filter(x => x.q.pct < 0 || x.hw.nearTop).sort((a, b) => a.q.pct - b.q.pct);
 
         document.getElementById("instBuyList").innerHTML = buyers.length ? buyers.map(s => `
           <div class="inst-item">
-            <div><strong>${s.sym}</strong> <span class="green" style="font-size:10px;">+${s.q.pct}% ${s.q.pct >= 2 ? "🔥" : ""}</span><div style="font-size:10px;color:var(--text-2);">${s.sector}</div></div>
-            <div style="text-align:right;"><div style="font-weight:800;">₹${s.q.ltp}</div><div style="font-size:9px;color:var(--green);">Live LTP</div></div>
+            <div>
+              <strong>${s.sym}</strong> <span class="green" style="font-size:10px;">+${s.q.pct}%</span>
+              <div style="font-size:10px;color:var(--text-2);">${s.hw.pctFromHigh}% below 52W High (₹${s.hw.high52})</div>
+            </div>
+            <div style="text-align:right;"><div style="font-weight:800;">₹${s.q.ltp}</div><div style="font-size:9px;color:var(--green);">Room to Run</div></div>
           </div>
-        `).join("") : `<div style="font-size:11px;color:var(--text-3);">No positive movers</div>`;
+        `).join("") : `<div style="font-size:11px;color:var(--text-3);">No green movers with 52W headroom</div>`;
 
-        document.getElementById("instSellList").innerHTML = sellers.length ? sellers.map(s => `
+        document.getElementById("instSellList").innerHTML = sellersOrAtHigh.length ? sellersOrAtHigh.map(s => `
           <div class="inst-item">
-            <div><strong>${s.sym}</strong> <span class="red" style="font-size:10px;">${s.q.pct}%</span><div style="font-size:10px;color:var(--text-2);">${s.sector}</div></div>
-            <div style="text-align:right;"><div style="font-weight:800;">₹${s.q.ltp}</div><div style="font-size:9px;color:var(--red);">Live LTP</div></div>
+            <div>
+              <strong>${s.sym}</strong> <span class="${s.hw.nearTop ? "amber" : "red"}" style="font-size:10px;">${s.hw.nearTop ? "⚠️ AT 52W/ATH" : s.q.pct + "%"}</span>
+              <div style="font-size:10px;color:var(--text-2);">${s.hw.nearTop ? `Near 1Y High ₹${s.hw.high52} — Momentum Weak` : s.sector}</div>
+            </div>
+            <div style="text-align:right;"><div style="font-weight:800;">₹${s.q.ltp}</div><div style="font-size:9px;color:var(--red);">Avoid Long</div></div>
           </div>
-        `).join("") : `<div style="font-size:11px;color:var(--text-3);">All tracked stocks green</div>`;
+        `).join("") : `<div style="font-size:11px;color:var(--text-3);">No stocks at 52W ceiling</div>`;
       }
     }
 
-    // --- STRICT EXCLUSIVE SIGNAL BUILDER (NEVER EMITS BOTH PE AND CE TOGETHER) ---
     function buildDynamicOpportunities() {
       const n = getQ(INDEX_KEYS.NIFTY);
       const list = [];
@@ -1186,62 +1344,62 @@
       if (n && decOptionChain.length > 0) {
         const atmStrike = Math.round(n.ltp / 100) * 100;
 
-        if (techState.activeZone === "SELLERS_ZONE") {
-          // ONLY EMIT PUT SIGNAL WHEN IN SELLERS' SUPPLY ZONE
+        // 1. ONLY EMIT PUT WHEN CONFIRMED TOP REVERSAL IN TIGHT SELLERS' ZONE
+        if (techState.confirmedTopReversal) {
           const putStrike = atmStrike - 200;
           const putRow = decOptionChain.find(r => r.strike_price === putStrike) || decOptionChain[0];
           const pe = putRow?.put_options?.market_data;
           const peKey = putRow?.put_options?.instrument_key;
           if (pe && pe.ltp) {
             list.push({
-              id: "exclusive_supply_pe",
+              id: "confirmed_top_pe",
               seg: "option_signal",
-              title: `NIFTY 29 DEC 2026 ${putRow.strike_price} PE (Sellers' Zone Put)`,
+              isConfirmedReversal: true,
+              title: `NIFTY 29 DEC 2026 ${putRow.strike_price} PE (Confirmed Top Reversal)`,
               key: peKey,
               side: "BUY",
-              badge: "SELLERS' ZONE PE",
+              badge: "CONFIRMED TOP PE",
               lotSize: 65,
               ltp: pe.ltp,
               entry: pe.ltp,
               t1: +(pe.ltp * 1.25).toFixed(1),
               t2: +(pe.ltp * 1.50).toFixed(1),
               sl: +(pe.ltp * 0.85).toFixed(1),
-              gateType: techState.rsiCrossDown ? "GO_SELL" : "WAIT",
-              gateText: techState.rsiCrossDown
-                ? `🔴 CONFIRMED PUT SIGNAL: Inside Sellers' Zone (${techState.sellersZoneLow}) + RSI(9) < RSI(20)`
-                : `⏳ IN SELLERS' ZONE — READY PUT WHEN RSI(9) CROSSES BELOW RSI(20)`,
-              reason: "Exclusive bearish setup triggered because Nifty entered the Sellers' Supply Zone."
+              gateType: "GO_SELL",
+              gateText: `🔴 TOP REVERSAL CONFIRMED: Sellers' Zone + Red Candle + RSI(9) ${techState.rsi9} < RSI(20) ${techState.rsi20}`,
+              reason: "3-factor reversal confirmed from tight Sellers' Supply Zone."
             });
           }
-        } else if (techState.activeZone === "BUYERS_ZONE") {
-          // ONLY EMIT CALL SIGNAL WHEN IN BUYERS' DEMAND ZONE
+        }
+
+        // 2. ONLY EMIT CALL WHEN CONFIRMED BOTTOM REVERSAL IN TIGHT BUYERS' VWAP ZONE
+        if (techState.confirmedBottomReversal) {
           const callRow = decOptionChain.find(r => r.strike_price === atmStrike) || decOptionChain[0];
           const ce = callRow?.call_options?.market_data;
           const ceKey = callRow?.call_options?.instrument_key;
           if (ce && ce.ltp) {
             list.push({
-              id: "exclusive_demand_ce",
+              id: "confirmed_bottom_ce",
               seg: "option_signal",
-              title: `NIFTY 29 DEC 2026 ${callRow.strike_price} CE (Buyers' Zone Call)`,
+              isConfirmedReversal: true,
+              title: `NIFTY 29 DEC 2026 ${callRow.strike_price} CE (Confirmed Bottom Reversal)`,
               key: ceKey,
               side: "BUY",
-              badge: "BUYERS' ZONE CE",
+              badge: "CONFIRMED BOTTOM CE",
               lotSize: 65,
               ltp: ce.ltp,
               entry: ce.ltp,
               t1: +(ce.ltp * 1.22).toFixed(1),
               t2: +(ce.ltp * 1.45).toFixed(1),
               sl: +(ce.ltp * 0.85).toFixed(1),
-              gateType: techState.rsiCrossUp ? "GO_BUY" : "WAIT",
-              gateText: techState.rsiCrossUp
-                ? `🟢 CONFIRMED CALL SIGNAL: Inside Buyers' Zone (${techState.buyersZoneHigh}) + RSI(9) > RSI(20)`
-                : `⏳ IN BUYERS' ZONE — READY CALL WHEN RSI(9) CROSSES ABOVE RSI(20)`,
-              reason: "Exclusive bullish setup triggered because Nifty entered the Buyers' Demand / VWAP Zone."
+              gateType: "GO_BUY",
+              gateText: `🟢 BOTTOM REVERSAL CONFIRMED: Buyers' VWAP Zone + Green Candle + RSI(9) ${techState.rsi9} > RSI(20) ${techState.rsi20}`,
+              reason: "3-factor reversal confirmed off tight Buyers' VWAP Zone."
             });
           }
         }
 
-        // Hedged Spread (always available as risk-capped positional swing)
+        // 3. Hedged Spread
         const longRow = decOptionChain.find(r => r.strike_price === atmStrike);
         const shortRow = decOptionChain.find(r => r.strike_price === atmStrike + 300);
         const l1 = longRow?.call_options?.market_data?.ltp;
@@ -1251,6 +1409,7 @@
           list.push({
             id: "hedge_bcs",
             seg: "hedge",
+            isConfirmedReversal: false,
             isSpread: true,
             leg1: { symbol: `NIFTY 29 DEC ${atmStrike} CE`, side: "BUY", ltp: l1, key: longRow.call_options.instrument_key },
             leg2: { symbol: `NIFTY 29 DEC ${atmStrike + 300} CE`, side: "SELL", ltp: l2, key: shortRow.call_options.instrument_key },
@@ -1266,37 +1425,40 @@
             sl: +(netDebit * 0.78).toFixed(1),
             gateType: "GO_BUY",
             gateText: `🛡️ RISK-CAPPED POSITIONAL HEDGE (MAX LOSS ₹${netDebit}/pt)`,
-            reason: "Safe positional spread when Nifty is in the mid-zone between Sellers' and Buyers' bands."
+            reason: "Safe positional spread while waiting for tight intraday reversal zones."
           });
         }
       }
 
-      // Surging Equities
-      const movers = WATCHLIST_STOCKS.map(s => ({ ...s, q: getQ(s.key) }))
-        .filter(x => x.q && x.q.pct >= 0.8)
-        .sort((a, b) => b.q.pct - a.q.pct)
-        .slice(0, 3);
+      // 4. Equities WITH 52-Week / ATH Exhaustion Check
+      const movers = WATCHLIST_STOCKS.map(s => {
+        const q = getQ(s.key);
+        const hw = get52WHeadroom(q, s.ref52High);
+        return { ...s, q, hw };
+      }).filter(x => x.q && x.q.pct >= 0.7).sort((a, b) => b.q.pct - a.q.pct).slice(0, 4);
 
       movers.forEach(m => {
         const ltp = m.q.ltp;
         const pullbackEntry = +(m.q.open + (ltp - m.q.open) * 0.45).toFixed(2);
-        const atZone = ltp <= pullbackEntry * 1.004;
         list.push({
           id: `eq_${m.sym}`,
           seg: "equity",
-          title: `${m.sym} (+${m.q.pct}% Daily Breakout)`,
+          isConfirmedReversal: false,
+          title: `${m.sym} (+${m.q.pct}% • ${m.hw.pctFromHigh}% below 52W High ₹${m.hw.high52})`,
           key: m.key,
           side: "BUY",
-          badge: "SURGING EQUITY",
+          badge: m.hw.nearTop ? "⚠️ AT 52W/ATH HIGH" : "HEADROOM EQUITY",
           lotSize: 25,
           ltp: ltp,
           entry: pullbackEntry,
           t1: +(pullbackEntry * 1.022).toFixed(2),
           t2: +(pullbackEntry * 1.045).toFixed(2),
           sl: +(pullbackEntry * 0.988).toFixed(2),
-          gateType: atZone ? "GO_BUY" : "WAIT",
-          gateText: atZone ? `🟢 AT BUYERS' PULLBACK ZONE (₹${pullbackEntry})` : `⏳ EXTENDED — SET ALERT FOR PULLBACK TO ₹${pullbackEntry}`,
-          reason: `Catalyst: ${m.sector}.`
+          gateType: m.hw.nearTop ? "WAIT" : "GO_BUY",
+          gateText: m.hw.nearTop
+            ? `⚠️ ALREADY AT 1Y / ALL-TIME HIGH (₹${m.hw.high52}) — FURTHER MOMENTUM WEAK`
+            : `🟢 ${m.hw.pctFromHigh}% UPSIDE HEADROOM TO 52W HIGH (₹${m.hw.high52})`,
+          reason: `Sector: ${m.sector}.`
         });
       });
 
@@ -1312,27 +1474,27 @@
 
     function renderOpportunities() {
       const gateBar = document.getElementById("zoneGateSummary");
-      if (techState.activeZone === "SELLERS_ZONE") {
+      if (techState.confirmedTopReversal) {
         gateBar.className = "gate-banner gate-go-sell";
-        gateBar.innerHTML = `<span>🔴 ACTIVE ZONE: SELLERS' SUPPLY (${techState.sellersZoneLow}–${techState.sellersZoneHigh}) → ONLY PUT SIGNALS SHOWN</span>`;
-      } else if (techState.activeZone === "BUYERS_ZONE") {
+        gateBar.innerHTML = `<span>🔴 CONFIRMED TOP REVERSAL AT ${techState.sellersZoneLow}–${techState.sellersZoneHigh} → BUY PUT ACTIVE</span>`;
+      } else if (techState.confirmedBottomReversal) {
         gateBar.className = "gate-banner gate-go-buy";
-        gateBar.innerHTML = `<span>🟢 ACTIVE ZONE: BUYERS' DEMAND (${techState.buyersZoneLow}–${techState.buyersZoneHigh}) → ONLY CALL SIGNALS SHOWN</span>`;
+        gateBar.innerHTML = `<span>🟢 CONFIRMED BOTTOM REVERSAL AT ${techState.buyersZoneLow}–${techState.buyersZoneHigh} → BUY CALL ACTIVE</span>`;
       } else {
         gateBar.className = "gate-banner gate-wait";
-        gateBar.innerHTML = `<span>🚫 NO-TRADE MID-ZONE: Naked CE & PE hidden until Nifty enters Sellers' (${techState.sellersZoneLow ?? "--"}) or Buyers' (${techState.buyersZoneHigh ?? "--"}) Zone</span>`;
+        gateBar.innerHTML = `<span>⏳ NO CONFIRMED REVERSAL YET — Waiting for tight Sellers' (${techState.sellersZoneLow ?? "--"}) or Buyers' (${techState.buyersZoneHigh ?? "--"}) turn</span>`;
       }
 
       const allOpps = buildDynamicOpportunities();
       const container = document.getElementById("oppsContainer");
       const list = allOpps.filter(o => currentOppFilter === "all" || o.seg === currentOppFilter);
       if (list.length === 0) {
-        container.innerHTML = `<div style="text-align:center;color:var(--text-2);font-size:12px;padding:18px;">No naked option signal active in mid-zone. Tap <strong>View Zones</strong> to see red Sellers' & green Buyers' bands on chart.</div>`;
+        container.innerHTML = `<div style="text-align:center;color:var(--text-2);font-size:12px;padding:18px;">No confirmed top or bottom reversal active right now. Auto-Paper will ring Tring-Tring as soon as a tight zone reversal confirms.</div>`;
         return;
       }
 
       container.innerHTML = list.map(o => {
-        const pillCls = o.seg === "hedge" ? "pill-hedge" : (o.badge.includes("PE") ? "pill-sell" : "pill-buy");
+        const pillCls = o.badge.includes("52W") ? "pill-warn" : (o.seg === "hedge" ? "pill-hedge" : (o.badge.includes("PE") ? "pill-sell" : "pill-buy"));
         const gateCls = o.gateType === "GO_BUY" ? "gate-go-buy" : (o.gateType === "GO_SELL" ? "gate-go-sell" : "gate-wait");
         return `
           <div class="setup-card">
@@ -1346,13 +1508,13 @@
             </div>
             <div class="levels-grid">
               <div class="ltp-box"><div class="lvl-k blue">LIVE LTP</div><div class="lvl-v blue">₹${o.ltp}</div></div>
-              <div><div class="lvl-k">ZONE ENTRY</div><div class="lvl-v">₹${o.entry}</div></div>
+              <div><div class="lvl-k">ENTRY</div><div class="lvl-v">₹${o.entry}</div></div>
               <div><div class="lvl-k">TARGET 1</div><div class="lvl-v green">₹${o.t1}</div></div>
               <div><div class="lvl-k">TARGET 2</div><div class="lvl-v green">₹${o.t2}</div></div>
               <div><div class="lvl-k">STOP LOSS</div><div class="lvl-v red">₹${o.sl}</div></div>
             </div>
             <div class="action-grid">
-              <button class="btn-paper" onclick="executeOppPaper('${o.id}')">▶ Paper Trade (${appState.lots}L)</button>
+              <button class="btn-paper" onclick="executeOppPaper('${o.id}')">▶ Manual Paper (${appState.lots}L)</button>
               <button class="btn-alert" onclick="armOppAlert('${o.id}')">🔔 Alert</button>
               <button class="btn-algo" onclick="openOppAlgo('${o.id}')">{ } Algo</button>
             </div>
@@ -1364,6 +1526,7 @@
     function renderThemes() {
       document.getElementById("themesContainer").innerHTML = STRUCTURAL_THEMES.map(t => {
         const q = getQ(t.key);
+        const hw = get52WHeadroom(q, t.ref52High);
         const ltp = q ? q.ltp : null;
         const pct = q ? q.pct : null;
         const entry = ltp ? +(ltp * 0.992).toFixed(2) : null;
@@ -1373,6 +1536,9 @@
 
         return `
           <div class="setup-card">
+            <div class="gate-banner ${hw.nearTop ? "gate-wait" : "gate-go-buy"}">
+              <span>${ltp ? (hw.nearTop ? `⚠️ AT 52W/ATH HIGH (₹${hw.high52}) — WAIT FOR DIP` : `🟢 ${hw.pctFromHigh}% HEADROOM TO 52W HIGH (₹${hw.high52})`) : "Awaiting live LTP..."}</span>
+            </div>
             <div class="setup-top">
               <div>
                 <div class="setup-title">${t.sym} ${pct !== null ? `<span class="${pct >= 0 ? "green" : "red"}">(${pct >= 0 ? "+" : ""}${pct}%)</span>` : ""}</div>
@@ -1410,7 +1576,7 @@
       if (!q || !q.ltp) { alert("Connect live Upstox feed first."); return; }
       const target = +(q.ltp * 0.992).toFixed(2);
       appState.alerts.unshift({ id: Date.now(), symbol: t.sym, key: normKey(t.key), targetPrice: target, triggered: false });
-      saveState(); renderDesk();
+      saveState(); renderDesk(); playTringTring();
       alert(`Accumulation Alert set for ${t.sym} at ₹${target}`);
     }
 
@@ -1441,6 +1607,25 @@
       saveState(); renderDesk(); switchView("desk");
     }
 
+    function openManualEditModal(id) {
+      const p = appState.positions.find(x => x.id === id);
+      if (!p) return;
+      document.getElementById("editPosId").value = p.id;
+      document.getElementById("editPosSl").value = p.sl;
+      document.getElementById("editPosT1").value = p.t1;
+      openModal("editPosModal");
+    }
+
+    function saveManualPosEdit() {
+      const id = parseInt(document.getElementById("editPosId").value);
+      const p = appState.positions.find(x => x.id === id);
+      if (!p) return;
+      p.sl = parseFloat(document.getElementById("editPosSl").value) || p.sl;
+      p.t1 = parseFloat(document.getElementById("editPosT1").value) || p.t1;
+      p.guardStatus = `🛠️ Manual SL ₹${p.sl} / T1 ₹${p.t1}`;
+      saveState(); closeModal("editPosModal"); renderDesk();
+    }
+
     function armOppAlert(id) {
       const opp = buildDynamicOpportunities().find(x => x.id === id);
       if (!opp) return;
@@ -1448,19 +1633,20 @@
       appState.alerts.unshift({
         id: Date.now(), symbol: opp.title, key: normKey(opp.key), targetPrice: opp.entry, triggered: false
       });
-      saveState(); renderDesk();
-      alert(`Auto-Alert armed for ${opp.title} at ₹${opp.entry}`);
+      saveState(); renderDesk(); playTringTring();
+      alert(`Tring-Tring Alert armed for ${opp.title} at ₹${opp.entry}`);
     }
 
     function openOppAlgo(id) {
       const opp = buildDynamicOpportunities().find(x => x.id === id);
       if (!opp) return;
       document.getElementById("algoJsonBox").value = JSON.stringify({
-        strategy: "AnuragPulse_v9_ZoneExclusive",
+        strategy: "AnuragPulse_v10_TightReversal",
         account_id: appState.accountId,
-        active_zone: techState.activeZone,
         sellers_zone: [techState.sellersZoneLow, techState.sellersZoneHigh],
         buyers_zone: [techState.buyersZoneLow, techState.buyersZoneHigh],
+        top_reversal: techState.confirmedTopReversal,
+        bottom_reversal: techState.confirmedBottomReversal,
         symbol: opp.title, side: opp.side, quantity: appState.lots * opp.lotSize,
         entry: opp.entry, target_1: opp.t1, target_2: opp.t2, stop_loss: opp.sl
       }, null, 2);
@@ -1480,7 +1666,7 @@
         if (!q || !q.ltp) return;
         if (Math.abs(q.ltp - a.targetPrice) / a.targetPrice <= 0.004) {
           a.triggered = true;
-          notifyUser(`🔔 ZONE ALERT HIT: ${a.symbol} @ ₹${q.ltp}`);
+          notifyUser(`🔔 TRING-TRING! ALERT HIT: ${a.symbol} @ ₹${q.ltp}`);
         }
       });
 
@@ -1511,13 +1697,14 @@
           p.status = hitT2 ? "CLOSED (TARGET 2 HIT)" : (pnl >= 0 ? "CLOSED (PROFIT LOCKED)" : "CLOSED (SL HIT)");
           appState.realizedPnl += pnl;
           appState.paperCapital += pnl;
-          notifyUser(`✅ ${p.status}: ${p.symbol} (${pnl >= 0 ? "+" : ""}₹${pnl.toFixed(1)})`);
+          notifyUser(`🔔 TRING-TRING! ${p.status}: ${p.symbol} (${pnl >= 0 ? "+" : ""}₹${pnl.toFixed(1)})`);
         }
       });
       saveState();
     }
 
     function notifyUser(msg) {
+      playTringTring();
       document.getElementById("alertToastMsg").textContent = msg;
       document.getElementById("alertToast").style.display = "flex";
       if ("Notification" in window && Notification.permission === "granted") {
@@ -1529,7 +1716,7 @@
       const p = appState.positions.find(x => x.id === id);
       if (!p || p.status !== "OPEN") return;
       const pnl = (p.side === "BUY" ? (p.ltp - p.entry) : (p.entry - p.ltp)) * p.qty;
-      p.status = "CLOSED (MANUAL)";
+      p.status = "CLOSED (MANUAL EXIT)";
       appState.realizedPnl += pnl;
       appState.paperCapital += pnl;
       saveState(); renderDesk();
@@ -1581,9 +1768,9 @@
                   <span>T1: <strong class="green">₹${p.t1}</strong></span>
                   <span>T2: <strong class="green">₹${p.t2}</strong></span>
                 </div>
-                <div style="display:flex;justify-content:space-between;align-items:center;">
+                <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;">
                   <span class="guard-tag">${p.guardStatus}</span>
-                  ${p.status === "OPEN" ? `<button class="btn-sm" style="background:var(--red-bg);color:var(--red);" onclick="exitPosition(${p.id})">Exit</button>` : ""}
+                  ${p.status === "OPEN" ? `<div><button class="btn-sm" onclick="openManualEditModal(${p.id})">✎ SL/T1</button> <button class="btn-sm" style="background:var(--red-bg);color:var(--red);" onclick="exitPosition(${p.id})">Exit</button></div>` : ""}
                 </div>
               </div>
             `;
