@@ -8,7 +8,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="application-name" content="AnuragPulse Pro" />
-  <title>AnuragPulse Pro v7.0 — Global Macro, FII Chart & RSI-VWAP Terminal</title>
+  <title>AnuragPulse Pro v8.0 — Institutional Supply/Demand, FII USD & Structural Themes</title>
   <link rel="manifest" href="manifest.json" />
   <style>
     :root {
@@ -44,7 +44,7 @@
       display: none; position: sticky; top: 53px; z-index: 49; background: linear-gradient(90deg, #059669, #2563eb);
       color: #fff; padding: 8px 14px; font-size: 11px; font-weight: 700; justify-content: space-between; align-items: center;
     }
-    .container { max-width: 660px; margin: 0 auto; padding: 12px; display: flex; flex-direction: column; gap: 12px; }
+    .container { max-width: 680px; margin: 0 auto; padding: 12px; display: flex; flex-direction: column; gap: 12px; }
     .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 14px; }
     .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; gap: 8px; flex-wrap: wrap; }
     .step-pill { background: rgba(59,130,246,0.18); color: #60a5fa; font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 6px; text-transform: uppercase; }
@@ -69,7 +69,7 @@
     .inst-item { display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 11px; }
     .inst-item:last-child { border-bottom: none; }
 
-    /* Chart & Global Overview */
+    /* Chart & Global */
     .chart-wrap { background: var(--bg-input); border: 1px solid var(--border); border-radius: 12px; padding: 10px; margin-bottom: 10px; }
     canvas { width: 100%; display: block; border-radius: 8px; }
     .toggle-group { display: flex; gap: 4px; background: var(--bg-input); padding: 3px; border-radius: 8px; border: 1px solid var(--border); }
@@ -82,7 +82,7 @@
     .catalyst-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
     @media (max-width: 460px) { .catalyst-cols { grid-template-columns: 1fr; } }
 
-    /* Opportunity Cards & RSI-VWAP Gate */
+    /* Signals & Setups */
     .seg-tabs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-bottom: 12px; }
     .seg-tab {
       padding: 7px 2px; text-align: center; border-radius: 8px; font-size: 10px; font-weight: 700;
@@ -98,7 +98,8 @@
       display: flex; justify-content: space-between; align-items: center;
     }
     .gate-wait { background: var(--amber-bg); color: var(--amber); border: 1px solid rgba(245,158,11,0.35); }
-    .gate-go { background: var(--green-bg); color: var(--green); border: 1px solid rgba(16,185,129,0.45); }
+    .gate-go-buy { background: var(--green-bg); color: var(--green); border: 1px solid rgba(16,185,129,0.45); }
+    .gate-go-sell { background: var(--red-bg); color: var(--red); border: 1px solid rgba(244,63,94,0.45); }
     .pill { font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 6px; white-space: nowrap; }
     .pill-buy { background: var(--green-bg); color: var(--green); border: 1px solid rgba(16,185,129,0.4); }
     .pill-sell { background: var(--red-bg); color: var(--red); border: 1px solid rgba(244,63,94,0.4); }
@@ -141,17 +142,17 @@
       background: rgba(139,92,246,0.18); color: #c4b5fd; border: 1px solid rgba(139,92,246,0.35);
     }
 
-    /* 5-Tab Bottom Navigation */
+    /* 6-Tab Bottom Navigation */
     .bottom-nav {
-      position: fixed; bottom: 0; left: 0; right: 0; z-index: 50; background: rgba(14, 22, 40, 0.96); backdrop-filter: blur(12px);
-      border-top: 1px solid var(--border); display: grid; grid-template-columns: repeat(5, 1fr); padding: 6px 2px;
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 50; background: rgba(14, 22, 40, 0.97); backdrop-filter: blur(12px);
+      border-top: 1px solid var(--border); display: grid; grid-template-columns: repeat(6, 1fr); padding: 6px 1px;
     }
     .nav-btn {
       background: none; border: none; color: var(--text-2); font-size: 9px; font-weight: 700;
-      display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 4px 1px; cursor: pointer;
+      display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 4px 1px; cursor: pointer;
     }
     .nav-btn.active { color: #60a5fa; }
-    .nav-ico { font-size: 15px; }
+    .nav-ico { font-size: 14px; }
     .modal-bg {
       display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.82); z-index: 100;
       align-items: center; justify-content: center; padding: 16px;
@@ -173,7 +174,7 @@
     </div>
     <div class="top-actions">
       <button class="btn-sm" onclick="syncAllFeeds(true)">↻ Sync</button>
-      <button class="btn-sm btn-connect" onclick="openAuthModal()">🔑 Setup Feed</button>
+      <button class="btn-sm btn-connect" onclick="openAuthModal()">🔑 Setup</button>
     </div>
   </header>
 
@@ -188,8 +189,8 @@
     <div id="view-aerial">
       <section class="card">
         <div class="card-header">
-          <span class="step-pill">Page 1 • Aerial Market View & Volatility</span>
-          <span style="font-size:10px;color:var(--text-2);" id="lastTickTime">Waiting for Upstox Feed</span>
+          <span class="step-pill">Page 1 • Aerial Market View & Institutional Footprint</span>
+          <span style="font-size:10px;color:var(--text-2);" id="lastTickTime">Waiting for Feed</span>
         </div>
 
         <div class="aerial-grid">
@@ -206,7 +207,7 @@
           <div class="metric-box">
             <div class="metric-lbl">INDIA VIX / USD-INR</div>
             <div class="metric-val amber" id="liveVix">--</div>
-            <div class="metric-sub" id="vixRegime">INR: ₹92.60</div>
+            <div class="metric-sub" id="vixRegime">USD/INR: ₹92.47</div>
           </div>
         </div>
 
@@ -217,20 +218,20 @@
 
         <div class="summary-box">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-            <strong class="blue">🧠 Dynamic AI Market Trajectory & Sensex Expiry Radar</strong>
+            <strong class="blue">🧠 Two-Sided Institutional Behavior & Supply/Demand Radar</strong>
             <button class="btn-sm" style="padding:2px 7px;font-size:10px;" onclick="openModal('flowModal')">✎ Edit FII/DII</button>
           </div>
           <p style="color:var(--text-2);">
-            <strong>Today (26 Nov Sensex Monthly Expiry):</strong> Institutions started rolling over Sensex derivatives yesterday while buying IT/Banks (+₹5,673 Cr FII cash) on the 17% US bilateral tariff cap. Watch post-2:00 PM expiry pin-risk near 84,500 Sensex / 25,950 Nifty.
+            <strong>Institutional Pattern (26 Nov Sensex Expiry):</strong> Institutions priced in the 17% US tariff cap early—pumping Sensex +600 pts & Nifty near 25,900+ on IT/Banks, then initiating rollover selling into afternoon resistance (Nifty cooling toward ~25,830).
           </p>
           <p id="dynamicTrajectoryText" style="color:var(--text-1);margin-top:5px;">
-            Connect live Upstox feed to track VWAP bounce & RSI(9) × RSI(20) crossover confirmation.
+            Connect live feed to detect Supply Zone Top-Down RSI(9×20) Put entries vs. Demand Zone Bounce Call entries.
           </p>
 
           <div class="event-row">
             <div class="event-chip">
               <strong class="amber">Tonight (26 Nov)</strong>
-              <div style="color:var(--text-2);">US Thanksgiving Holiday (NYSE Closed)</div>
+              <div style="color:var(--text-2);">US Thanksgiving (NYSE Closed)</div>
             </div>
             <div class="event-chip">
               <strong class="green">30 Nov (3:00 PM)</strong>
@@ -244,31 +245,31 @@
         </div>
 
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-          <span style="font-size:10px;font-weight:800;color:var(--text-2);">LIVE INSTITUTIONAL STOCK FLOWS (RANKED BY REAL % CHG):</span>
+          <span style="font-size:10px;font-weight:800;color:var(--text-2);">LIVE INSTITUTIONAL & +2% TO +10% BREAKOUT RADAR:</span>
           <span style="font-size:10px;color:var(--green);" id="fiiDiiBadge">FII: +₹5,673 Cr | DII: -₹2,760 Cr</span>
         </div>
 
         <div class="inst-cols">
           <div class="inst-panel">
-            <div style="font-size:11px;font-weight:800;color:var(--green);margin-bottom:6px;">▲ ACCUMULATING (BUYING)</div>
+            <div style="font-size:11px;font-weight:800;color:var(--green);margin-bottom:6px;">▲ ACCUMULATING / SURGING</div>
             <div id="instBuyList"><div style="font-size:11px;color:var(--text-3);">Awaiting live quotes...</div></div>
           </div>
           <div class="inst-panel">
-            <div style="font-size:11px;font-weight:800;color:var(--red);margin-bottom:6px;">▼ DISTRIBUTING (SELLING)</div>
+            <div style="font-size:11px;font-weight:800;color:var(--red);margin-bottom:6px;">▼ DISTRIBUTING / SUPPLY</div>
             <div id="instSellList"><div style="font-size:11px;color:var(--text-3);">Awaiting live quotes...</div></div>
           </div>
         </div>
       </section>
     </div>
 
-    <!-- PAGE 2: GLOBAL MACRO & FII NIFTY/USDINR + VWAP + RSI(9/20) CHART -->
+    <!-- PAGE 2: GLOBAL MACRO & FII USD-RETURN / CURRENCY EROSION CHART -->
     <div id="view-global" class="hidden">
       <section class="card">
         <div class="card-header">
-          <span class="step-pill">FII Lens • Nifty + VWAP & Nifty/USDINR Chart</span>
+          <span class="step-pill">FII Currency-Adjusted Return & RSI Chart</span>
           <div class="toggle-group">
             <button class="tgl-btn active" id="mode-nifty" onclick="setChartMode('NIFTY')">NIFTY + VWAP</button>
-            <button class="tgl-btn" id="mode-fii" onclick="setChartMode('FII_USD')">NIFTY ÷ USDINR</button>
+            <button class="tgl-btn" id="mode-fii" onclick="setChartMode('FII_USD')">FII USD RETURN</button>
           </div>
         </div>
 
@@ -277,94 +278,136 @@
             <span id="chartHeaderStat" style="font-weight:700;color:#60a5fa;">Intraday Candles + VWAP</span>
             <span id="rsiHeaderStat" style="font-weight:700;color:var(--amber);">RSI(9): -- | RSI(20): --</span>
           </div>
-          <canvas id="priceChartCanvas" height="190"></canvas>
+          <canvas id="priceChartCanvas" height="185"></canvas>
           <div style="font-size:9px;color:var(--text-2);margin:6px 0 3px;display:flex;justify-content:space-between;">
-            <span><strong>RSI(9)</strong> (Cyan) vs <strong>RSI(20)</strong> (Amber) Momentum Crossover</span>
+            <span><strong>RSI(9)</strong> (Cyan) vs <strong>RSI(20)</strong> (Amber) — Top-Down = Put | Bottom-Up = Call</span>
             <span id="rsiSignalTag" style="font-weight:800;">Scanning...</span>
           </div>
-          <canvas id="rsiChartCanvas" height="85"></canvas>
+          <canvas id="rsiChartCanvas" height="82"></canvas>
         </div>
 
-        <!-- GLOBAL MARKET OVERVIEW -->
-        <div class="card-header" style="margin-top:6px;">
-          <span class="step-pill">Global Overview • Why Global Cues Rule FIIs</span>
-          <button class="btn-sm" style="padding:3px 7px;font-size:10px;" onclick="openModal('usdModal')">USD/INR: ₹<span id="usdRateDisplay">92.60</span></button>
+        <!-- FII USD CONVERSION & TAX DRAG ANALYZER -->
+        <div class="summary-box" style="border-color:rgba(139,92,246,0.35);">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+            <strong style="color:#c4b5fd;">💱 FII Real USD Return & Tax Erosion Model</strong>
+            <button class="btn-sm" style="padding:2px 7px;font-size:10px;" onclick="openModal('usdModal')">USD/INR: ₹<span id="usdRateDisplay">92.47</span></button>
+          </div>
+          <div id="fiiUsdAnalyticsText" style="color:var(--text-2);">
+            When INR weakens (e.g., 92.20 → 92.60+), a +1.0% Nifty INR gain shrinks after USD conversion + 20% STCG / 12.5% LTCG Indian capital gains tax—triggering FII hedging or outflows when USD/INR spikes.
+          </div>
         </div>
 
         <div class="global-grid">
           <div class="metric-box">
-            <div class="metric-lbl">US MARKETS (WALL STREET)</div>
+            <div class="metric-lbl">US WALL STREET & TARIFFS</div>
             <div class="metric-val" style="font-size:12px;">Dow +0.31% • QQQ -0.65%</div>
-            <div class="metric-sub">NYSE Closed Tonight (Thanksgiving); half-day Fri.</div>
+            <div class="metric-sub">NYSE Closed (Thanksgiving); 17% India tariff cap boosts IT.</div>
           </div>
           <div class="metric-box">
-            <div class="metric-lbl">USD/INR & FII DOLLAR RETURN</div>
-            <div class="metric-val amber" id="fiiRatioBox" style="font-size:12px;">Ratio: -- (INR 92.60)</div>
-            <div class="metric-sub">Rising INR/USD erodes FII equity gains.</div>
+            <div class="metric-lbl">FII DOLLAR-ADJUSTED NIFTY</div>
+            <div class="metric-val amber" id="fiiRatioBox" style="font-size:12px;">-- USD pts</div>
+            <div class="metric-sub">Tracks true FII return after INR/USD conversion.</div>
           </div>
           <div class="metric-box">
-            <div class="metric-lbl">BRENT CRUDE & TARIFFS</div>
-            <div class="metric-val red" style="font-size:12px;">Brent ~$95.20/bbl</div>
-            <div class="metric-sub">17% US tariff cap boosts IT; $95 oil pressures INR.</div>
+            <div class="metric-lbl">BRENT CRUDE & OPEC+</div>
+            <div class="metric-val red" style="font-size:12px;">Brent ~$94.70–$95.20</div>
+            <div class="metric-sub">Middle East tension ahead of 29 Nov OPEC+ meeting.</div>
           </div>
           <div class="metric-box">
-            <div class="metric-lbl">SENSEX MONTHLY EXPIRY</div>
-            <div class="metric-val blue" id="liveSensexBox" style="font-size:12px;">26 Nov Rollover</div>
-            <div class="metric-sub">Contracts rolling to Dec; watch 2:30 PM unwind.</div>
+            <div class="metric-lbl">SENSEX EXPIRY ROLLOVER</div>
+            <div class="metric-val blue" id="liveSensexBox" style="font-size:12px;">26 Nov Monthly</div>
+            <div class="metric-sub">Watch post-2 PM rollover selling from supply zone.</div>
           </div>
         </div>
 
         <div class="catalyst-cols">
           <div class="inst-panel" style="border-color:rgba(16,185,129,0.3);">
-            <div style="font-size:11px;font-weight:800;color:var(--green);margin-bottom:5px;">▲ POSITIVE CATALYSTS (WHAT'S NEXT)</div>
+            <div style="font-size:11px;font-weight:800;color:var(--green);margin-bottom:5px;">▲ POSITIVE CATALYSTS</div>
             <ul style="font-size:10px;color:var(--text-2);margin-left:14px;line-height:1.45;">
-              <li><strong>US 17% Bilateral Tariff Cap:</strong> Gives India an edge over China/EU (20%+), fueling IT & export inflows.</li>
-              <li><strong>30 Nov MSCI Rebalance:</strong> Passive FII buying expected in final 30 mins on Monday.</li>
-              <li><strong>US Thanksgiving Pause:</strong> No negative Wall Street overnight shock tonight.</li>
+              <li><strong>US 17% Bilateral Tariff Cap:</strong> Beats 25% fallback rate; fuels IT & export stocks.</li>
+              <li><strong>30 Nov MSCI Rebalance:</strong> Passive FII inflows expected Monday 3:00–3:30 PM.</li>
+              <li><strong>Silver/Commodity Base:</strong> Silver jumped +3% on MCX after steep correction.</li>
             </ul>
           </div>
           <div class="inst-panel" style="border-color:rgba(244,63,94,0.3);">
-            <div style="font-size:11px;font-weight:800;color:var(--red);margin-bottom:5px;">▼ NEGATIVE RISKS (WATCH CLOSELY)</div>
+            <div style="font-size:11px;font-weight:800;color:var(--red);margin-bottom:5px;">▼ NEGATIVE RISKS</div>
             <ul style="font-size:10px;color:var(--text-2);margin-left:14px;line-height:1.45;">
-              <li><strong>Brent Crude Above $95/bbl:</strong> Widens India's import bill & pushes USD/INR toward 92.80+.</li>
-              <li><strong>Sensex Expiry Unwind (2–3:30 PM):</strong> Rollover completion can cause sharp late-day dip.</li>
-              <li><strong>09 Dec US FOMC:</strong> Sticky US inflation keeps December Fed rate-hike risk alive.</li>
+              <li><strong>Brent Crude Near $95:</strong> Pressures INR toward 92.60–92.80, reducing FII USD yield.</li>
+              <li><strong>High-Zone Profit Booking:</strong> Supply zone near 25,950–26,050 triggers institutional Put buying.</li>
+              <li><strong>BOJ Hike Bets & 09 Dec FOMC:</strong> Rising Japanese & US yields tighten global liquidity.</li>
             </ul>
           </div>
         </div>
       </section>
     </div>
 
-    <!-- PAGE 3: MULTI-ASSET OPPORTUNITIES (VWAP + RSI 9/20 BOUNCE GATED) -->
+    <!-- PAGE 3: TWO-SIDED SUPPLY/DEMAND SIGNALS (CALLS + PUTS + SURGING EQUITIES) -->
     <div id="view-opps" class="hidden">
       <section class="card">
         <div class="card-header">
-          <span class="step-pill">High-Probability Scanner • VWAP + RSI(9×20) Gate</span>
+          <span class="step-pill">Supply & Demand Scanner • Next-Month (29 Dec)</span>
           <span style="font-size:10px;color:var(--text-2);">Lots: <strong id="lotTag" style="color:#fff;">1</strong></span>
         </div>
 
         <div class="summary-box" style="margin-bottom:10px;">
-          <strong class="green">🎯 90% Bounce Entry Rule Active:</strong> Setups no longer chase tops. Entry triggers <strong>only when price pulls back near VWAP support AND RSI(9) crosses above RSI(20) from below</strong>.
+          <strong class="blue">⚖️ Two-Sided Institutional Playbook:</strong><br/>
+          • <strong>At Upper Supply Zone (`RSI 9` crosses `RSI 20` Top-to-Down):</strong> Low-cost <strong>29 Dec Put (`PE`)</strong> captures institutional profit booking.<br/>
+          • <strong>At VWAP Demand Zone (`RSI 9` crosses `RSI 20` Bottom-to-Top):</strong> <strong>29 Dec Call (`CE`) / Bull Spread</strong> captures institutional bounce.
         </div>
 
         <div class="seg-tabs">
           <button class="seg-tab active" onclick="filterOpps('all', this)">All</button>
-          <button class="seg-tab" onclick="filterOpps('options', this)">Dec/Jan Opt</button>
-          <button class="seg-tab" onclick="filterOpps('equity', this)">Surging Eq</button>
-          <button class="seg-tab" onclick="filterOpps('commodity', this)">Commodity</button>
-          <button class="seg-tab" onclick="filterOpps('hedge', this)">Hedge/Swing</button>
+          <button class="seg-tab" onclick="filterOpps('put_supply', this)">Supply Puts</button>
+          <button class="seg-tab" onclick="filterOpps('call_demand', this)">Demand Calls</button>
+          <button class="seg-tab" onclick="filterOpps('equity', this)">+2-10% Eq</button>
+          <button class="seg-tab" onclick="filterOpps('hedge', this)">Hedges</button>
         </div>
 
         <div id="oppsContainer"></div>
       </section>
     </div>
 
-    <!-- PAGE 4: LIVE OPTION CHAIN -->
+    <!-- PAGE 4: STRUCTURAL THEMES (RARE EARTH, FLUOROCHEMICALS, CHIPS & SEASONAL CYCLES) -->
+    <div id="view-themes" class="hidden">
+      <section class="card">
+        <div class="card-header">
+          <span class="step-pill">Structural Geopolitical Themes & Seasonal Cycles</span>
+          <span style="font-size:10px;color:var(--green);">Low-Supply / High-Demand</span>
+        </div>
+
+        <div class="summary-box">
+          <strong class="amber">💎 Why Structural & Seasonal Edge Beats Daily Noise:</strong>
+          Institutions accumulate scarce supply-chain monopolies (<strong>Rare Earths, Fluorochemicals for Chip Etching, Semiconductor Packaging</strong>) and seasonal winners <em>weeks before</em> peak demand hits headlines.
+        </div>
+
+        <!-- SEASONAL CYCLE CALENDAR -->
+        <div style="font-size:11px;font-weight:800;color:#60a5fa;margin-bottom:6px;">📅 INDIAN MARKET SEASONAL PEAK / TROUGH MAP:</div>
+        <div class="event-row" style="margin-bottom:12px;">
+          <div class="event-chip">
+            <strong class="amber">Oct – Nov (Peak)</strong>
+            <div style="color:var(--text-2);">Deepawali Auto & Consumer Electronics peak (Book profit / rotate out after festive high).</div>
+          </div>
+          <div class="event-chip">
+            <strong class="green">Nov – Feb (Active Now)</strong>
+            <div style="color:var(--text-2);">Sugar crushing (ISMA output drop), Chemicals/Fluorochemicals, Defence & Capex pre-Budget.</div>
+          </div>
+          <div class="event-chip">
+            <strong class="blue">Mar – May (Upcoming)</strong>
+            <div style="color:var(--text-2);">Cooling/AC, Power Grid/Transformers & Q4 IT/Banking dividend accumulation.</div>
+          </div>
+        </div>
+
+        <div style="font-size:11px;font-weight:800;color:var(--green);margin-bottom:6px;">🔬 RARE EARTH, FLUOROCHEMICAL & SEMICONDUCTOR WATCHLIST (LIVE LTP):</div>
+        <div id="themesContainer"></div>
+      </section>
+    </div>
+
+    <!-- PAGE 5: LIVE OPTION CHAIN -->
     <div id="view-chain" class="hidden">
       <section class="card">
         <div class="card-header">
           <span class="step-pill">Live Upstox Option Chain (Dec / Jan)</span>
-          <span style="font-size:10px;color:var(--green);">No Near-Expiry Risk</span>
+          <span style="font-size:10px;color:var(--green);">Low-Investment OTM/ATM</span>
         </div>
 
         <div class="oc-controls">
@@ -399,7 +442,7 @@
       </section>
     </div>
 
-    <!-- PAGE 5: PAPER TRADING & PROFIT PROTECTION -->
+    <!-- PAGE 6: PAPER TRADING & PROFIT PROTECTION -->
     <div id="view-desk" class="hidden">
       <section class="card">
         <div class="card-header">
@@ -449,12 +492,14 @@
 
   </main>
 
+  <!-- 6-TAB BOTTOM NAVIGATION -->
   <nav class="bottom-nav">
     <button class="nav-btn active" id="nav-aerial" onclick="switchView('aerial')"><span class="nav-ico">🛰️</span><span>Aerial</span></button>
-    <button class="nav-btn" id="nav-global" onclick="switchView('global')"><span class="nav-ico">🌐</span><span>Global/Chart</span></button>
+    <button class="nav-btn" id="nav-global" onclick="switchView('global')"><span class="nav-ico">🌐</span><span>Global/USD</span></button>
     <button class="nav-btn" id="nav-opps" onclick="switchView('opps')"><span class="nav-ico">🎯</span><span>Signals</span></button>
-    <button class="nav-btn" id="nav-chain" onclick="switchView('chain')"><span class="nav-ico">⛓️</span><span>Dec/Jan</span></button>
-    <button class="nav-btn" id="nav-desk" onclick="switchView('desk')"><span class="nav-ico">🛡️</span><span>Desk (<span id="posCount">0</span>)</span></button>
+    <button class="nav-btn" id="nav-themes" onclick="switchView('themes')"><span class="nav-ico">💎</span><span>Themes</span></button>
+    <button class="nav-btn" id="nav-chain" onclick="switchView('chain')"><span class="nav-ico">⛓️</span><span>Chain</span></button>
+    <button class="nav-btn" id="nav-desk" onclick="switchView('desk')"><span class="nav-ico">🛡️</span><span>Desk(<span id="posCount">0</span>)</span></button>
   </nav>
 
   <!-- AUTH MODAL -->
@@ -501,10 +546,10 @@
   <div class="modal-bg" id="usdModal">
     <div class="modal-box">
       <h3 style="font-size:15px;margin-bottom:8px;">Update Live USD/INR Rate</h3>
-      <label style="font-size:11px;color:var(--text-2);">USD/INR Exchange Rate (Default: 92.60)</label>
-      <input type="number" step="0.01" id="inUsdInr" value="92.60" style="margin:4px 0 12px;" />
+      <label style="font-size:11px;color:var(--text-2);">USD/INR Exchange Rate (Current: 92.47)</label>
+      <input type="number" step="0.01" id="inUsdInr" value="92.47" style="margin:4px 0 12px;" />
       <div style="display:flex;gap:8px;">
-        <button class="btn-paper" style="flex:1;" onclick="saveUsdRate()">Apply to FII Ratio</button>
+        <button class="btn-paper" style="flex:1;" onclick="saveUsdRate()">Apply to FII USD Model</button>
         <button class="btn-sm" onclick="closeModal('usdModal')">Close</button>
       </div>
     </div>
@@ -523,9 +568,9 @@
   </div>
 
   <script>
-    const STORE_KEY = "anuragpulse_v7_state";
-    const LEGACY_KEYS = ["anuragpulse_v6_state", "anuragpulse_v5_state"];
-    const QUOTE_CACHE_KEY = "anuragpulse_v7_quotes";
+    const STORE_KEY = "anuragpulse_v8_state";
+    const LEGACY_KEYS = ["anuragpulse_v7_state", "anuragpulse_v6_state", "anuragpulse_v5_state"];
+    const QUOTE_CACHE_KEY = "anuragpulse_v8_quotes";
 
     let appState = {
       accountId: "",
@@ -536,7 +581,7 @@
       protMode: "balanced",
       fiiCash: 5673,
       diiCash: -2760,
-      usdInr: 92.60,
+      usdInr: 92.47,
       paperCapital: 100000,
       realizedPnl: 0,
       positions: [],
@@ -545,8 +590,14 @@
 
     let liveQuotes = {};
     let decOptionChain = [];
-    let intradayCandles = []; // [timestamp, open, high, low, close, volume]
-    let techState = { vwap: null, rsi9: null, rsi20: null, prevRsi9: null, prevRsi20: null, bounceConfirmed: false };
+    let intradayCandles = [];
+    let techState = {
+      vwap: null,
+      rsi9: null,
+      rsi20: null,
+      demandBounceConfirmed: false, // RSI 9 crosses above RSI 20 from below near VWAP/Demand
+      supplyTopConfirmed: false     // RSI 9 crosses below RSI 20 from top near Supply/Resistance
+    };
     let chartMode = "NIFTY";
     let pollTimer = null;
     let isFetching = false;
@@ -559,16 +610,58 @@
       VIX: "NSE_INDEX|India VIX"
     };
 
+    // Core Watchlist + Structural Geopolitical / Seasonal Stocks
     const WATCHLIST_STOCKS = [
-      { sym: "INFY", key: "NSE_EQ|INE009A01021", sector: "IT Services" },
+      { sym: "INFY", key: "NSE_EQ|INE009A01021", sector: "IT Services (17% Tariff Cap)" },
       { sym: "TCS", key: "NSE_EQ|INE467B01029", sector: "IT Services" },
       { sym: "HCLTECH", key: "NSE_EQ|INE860A01027", sector: "IT Services" },
       { sym: "ICICIBANK", key: "NSE_EQ|INE090A01021", sector: "Private Bank" },
       { sym: "HDFCBANK", key: "NSE_EQ|INE040A01034", sector: "Private Bank" },
-      { sym: "AXISBANK", key: "NSE_EQ|INE238A01034", sector: "Private Bank" },
       { sym: "TATASTEEL", key: "NSE_EQ|INE081A01020", sector: "Metals" },
-      { sym: "SUNPHARMA", key: "NSE_EQ|INE044A01036", sector: "Pharma" },
-      { sym: "ITC", key: "NSE_EQ|INE154A01025", sector: "FMCG" }
+      { sym: "GMDCLTD", key: "NSE_EQ|INE131A01031", sector: "Rare Earth & Fluorspar" },
+      { sym: "SRF", key: "NSE_EQ|INE647A01010", sector: "Fluorochemicals & Ref Gas" },
+      { sym: "NAVINFLUOR", key: "NSE_EQ|INE048G01026", sector: "Specialty Fluorochemicals" },
+      { sym: "CGPOWER", key: "NSE_EQ|INE067A01029", sector: "Semiconductor OSAT & Power" },
+      { sym: "BEL", key: "NSE_EQ|INE263A01024", sector: "Defence Electronics" },
+      { sym: "DIXON", key: "NSE_EQ|INE935N01020", sector: "Electronics Mfg (Seasonal)" }
+    ];
+
+    const STRUCTURAL_THEMES = [
+      {
+        sym: "GMDCLTD",
+        key: "NSE_EQ|INE131A01031",
+        theme: "RARE EARTH & FLUORSPAR MONOPOLY",
+        lotSize: 25,
+        thesis: "Developing India's Ambadungar Rare Earth project with BARC tech & NMDC tie-up; Q2 FY27 PBT jumped +51% YoY. Directly benefits from ₹7,280 Cr permanent magnet scheme."
+      },
+      {
+        sym: "NAVINFLUOR",
+        key: "NSE_EQ|INE048G01026",
+        theme: "FLUOROCHEMICALS & CHIP ETCHING GASES",
+        lotSize: 15,
+        thesis: "High-purity hydrofluoric & specialty fluorochemicals are essential low-supply inputs for semiconductor wafer cleaning and EV battery electrolytes."
+      },
+      {
+        sym: "SRF",
+        key: "NSE_EQ|INE647A01010",
+        theme: "SPECIALTY FLUOROCHEMICALS",
+        lotSize: 15,
+        thesis: "Global supply-chain diversification away from China in fluoropolymers & semiconductor-grade refrigerants; seasonal Q3–Q4 cooling demand ramp-up."
+      },
+      {
+        sym: "CGPOWER",
+        key: "NSE_EQ|INE067A01029",
+        theme: "SEMICONDUCTOR OSAT & GRID EQUIPMENT",
+        lotSize: 25,
+        thesis: "Zero-debt semiconductor OSAT facility execution + strong industrial/transformer order book."
+      },
+      {
+        sym: "DIXON",
+        key: "NSE_EQ|INE935N01020",
+        theme: "SEASONAL ELECTRONICS CYCLE (POST-DIWALI DIP)",
+        lotSize: 10,
+        thesis: "Peaks seasonally in Oct–Nov during Deepawali electronics demand; accumulate on post-festive Nov–Dec pullbacks ahead of Q4 PLI shipments."
+      }
     ];
 
     function normKey(k) { return (k || "").replace(":", "|").trim(); }
@@ -681,7 +774,6 @@
       if (!document.hidden && appState.accessToken) syncAllFeeds(true);
     });
 
-    // --- LIVE QUOTES + INTRADAY CANDLES (VWAP & RSI 9/20) ---
     async function syncAllFeeds(fullSync = false) {
       if (!appState.accessToken || isFetching) return;
       isFetching = true;
@@ -767,7 +859,6 @@
       }
     }
 
-    // --- COMPUTE REAL VWAP + RSI(9) & RSI(20) FROM INTRADAY CANDLES ---
     function computeRsiSeries(closes, period) {
       const res = new Array(closes.length).fill(null);
       if (closes.length <= period) return res;
@@ -799,7 +890,6 @@
         });
         const json = await res.json();
         if (json.status === "success" && Array.isArray(json.data?.candles) && json.data.candles.length > 0) {
-          // Upstox returns newest candle first; reverse to chronological order
           intradayCandles = [...json.data.candles].reverse();
           let cumPV = 0, cumVol = 0;
           const closes = [];
@@ -807,7 +897,7 @@
 
           intradayCandles.forEach(c => {
             const tp = (c[2] + c[3] + c[4]) / 3;
-            const vol = c[5] > 0 ? c[5] : 1; // Index candles may have 0 vol; equal-weight TWAP/VWAP fallback
+            const vol = c[5] > 0 ? c[5] : 1;
             cumPV += tp * vol;
             cumVol += vol;
             vwapSeries.push(+(cumPV / cumVol).toFixed(2));
@@ -826,10 +916,13 @@
           const pr9 = rsi9Arr[prevIdx];
           const pr20 = rsi20Arr[prevIdx];
 
-          // 90% Bounce Condition: Price within 0.25% of VWAP (or reclaiming VWAP) AND RSI(9) crosses above RSI(20) from below
-          const nearVwap = Math.abs(latestClose - latestVwap) / latestVwap <= 0.0025 || latestClose >= latestVwap;
-          const rsiBullCross = r9 !== null && r20 !== null && r9 > r20 && (pr9 <= pr20 || r9 - r20 <= 6);
-          const confirmed = nearVwap && rsiBullCross;
+          // Two-sided RSI(9) x RSI(20) Confirmation:
+          // 1. Demand Zone Bottom-Up Crossover -> Call / Long
+          const nearVwap = Math.abs(latestClose - latestVwap) / latestVwap <= 0.003;
+          const demandBounceConfirmed = nearVwap && r9 !== null && r20 !== null && r9 > r20 && pr9 <= pr20;
+
+          // 2. Supply Zone Top-Down Crossover -> Put / Profit Booking
+          const supplyTopConfirmed = r9 !== null && r20 !== null && r9 < r20 && (pr9 >= pr20 || (r20 > 55 && r9 < r20));
 
           techState = {
             vwap: latestVwap,
@@ -838,16 +931,15 @@
             rsi20Arr,
             rsi9: r9,
             rsi20: r20,
-            bounceConfirmed: confirmed
+            demandBounceConfirmed,
+            supplyTopConfirmed
           };
 
           document.getElementById("vwapRsiQuick").textContent = `VWAP: ${latestVwap} | RSI(9/20): ${r9 ?? "--"}/${r20 ?? "--"}`;
           drawCharts();
           renderOpportunities();
         }
-      } catch (e) {
-        console.warn("Intraday candle fetch:", e.message);
-      }
+      } catch (e) {}
     }
 
     function setChartMode(mode) {
@@ -864,16 +956,17 @@
 
       const dpr = window.devicePixelRatio || 1;
       const w = pCanvas.parentElement.clientWidth - 20;
-      pCanvas.width = w * dpr; pCanvas.height = 190 * dpr;
-      rCanvas.width = w * dpr; rCanvas.height = 85 * dpr;
+      pCanvas.width = w * dpr; pCanvas.height = 185 * dpr;
+      rCanvas.width = w * dpr; rCanvas.height = 82 * dpr;
 
       const ctx = pCanvas.getContext("2d");
       ctx.scale(dpr, dpr);
-      ctx.clearRect(0, 0, w, 190);
+      ctx.clearRect(0, 0, w, 185);
 
       const div = chartMode === "FII_USD" ? appState.usdInr : 1;
       const prices = intradayCandles.map(c => c[4] / div);
       const vwaps = (techState.vwapSeries || []).map(v => v / div);
+      const baseUsd = prices[0] || 1;
 
       const allVals = [...prices, ...vwaps];
       const minV = Math.min(...allVals);
@@ -881,17 +974,15 @@
       const span = (maxV - minV) || 1;
 
       const toX = i => 10 + (i / (prices.length - 1)) * (w - 20);
-      const toY = v => 172 - ((v - minV) / span) * 150;
+      const toY = v => 168 - ((v - minV) / span) * 146;
 
-      // Grid lines
       ctx.strokeStyle = "rgba(148,163,184,0.12)";
       ctx.lineWidth = 1;
       [0.25, 0.5, 0.75].forEach(f => {
-        const y = 22 + f * 150;
+        const y = 22 + f * 146;
         ctx.beginPath(); ctx.moveTo(10, y); ctx.lineTo(w - 10, y); ctx.stroke();
       });
 
-      // VWAP Line (Amber Dashed)
       if (vwaps.length === prices.length) {
         ctx.strokeStyle = "#f59e0b";
         ctx.lineWidth = 1.6;
@@ -902,7 +993,6 @@
         ctx.setLineDash([]);
       }
 
-      // Price Line (Emerald / Blue)
       ctx.strokeStyle = chartMode === "FII_USD" ? "#a78bfa" : "#10b981";
       ctx.lineWidth = 2;
       ctx.beginPath();
@@ -911,51 +1001,53 @@
 
       const lastP = prices[prices.length - 1];
       const lastW = vwaps[vwaps.length - 1];
+      const usdPctRet = (((lastP - baseUsd) / baseUsd) * 100).toFixed(2);
+      const afterTaxUsd = (parseFloat(usdPctRet) * 0.80).toFixed(2); // Net of 20% STCG tax
+
       document.getElementById("chartHeaderStat").textContent = chartMode === "FII_USD"
-        ? `FII View (Nifty÷INR): ${lastP.toFixed(2)} | VWAP: ${lastW?.toFixed(2)}`
+        ? `FII USD Index: $${lastP.toFixed(2)} (${usdPctRet}% USD | Net Tax: ${afterTaxUsd}%)`
         : `Nifty: ${lastP.toFixed(2)} | VWAP: ${lastW?.toFixed(2)}`;
 
-      // RSI(9) vs RSI(20) Sub-Chart
+      // RSI Sub-chart
       const rCtx = rCanvas.getContext("2d");
       rCtx.scale(dpr, dpr);
-      rCtx.clearRect(0, 0, w, 85);
+      rCtx.clearRect(0, 0, w, 82);
 
       const r9 = techState.rsi9Arr || [];
       const r20 = techState.rsi20Arr || [];
-      const rY = v => 75 - (v / 100) * 65;
+      const rY = v => 72 - (v / 100) * 62;
 
-      // 70 / 30 bounds
       rCtx.strokeStyle = "rgba(148,163,184,0.18)";
       [30, 50, 70].forEach(lvl => {
         rCtx.beginPath(); rCtx.moveTo(10, rY(lvl)); rCtx.lineTo(w - 10, rY(lvl)); rCtx.stroke();
       });
 
-      // RSI 20 (Amber)
       rCtx.strokeStyle = "#f59e0b";
       rCtx.lineWidth = 1.5;
       rCtx.beginPath();
-      let started20 = false;
-      r20.forEach((v, i) => {
-        if (v === null) return;
-        if (!started20) { rCtx.moveTo(toX(i), rY(v)); started20 = true; } else rCtx.lineTo(toX(i), rY(v));
-      });
+      let s20 = false;
+      r20.forEach((v, i) => { if (v !== null) { if (!s20) { rCtx.moveTo(toX(i), rY(v)); s20 = true; } else rCtx.lineTo(toX(i), rY(v)); } });
       rCtx.stroke();
 
-      // RSI 9 (Cyan)
       rCtx.strokeStyle = "#38bdf8";
       rCtx.lineWidth = 1.8;
       rCtx.beginPath();
-      let started9 = false;
-      r9.forEach((v, i) => {
-        if (v === null) return;
-        if (!started9) { rCtx.moveTo(toX(i), rY(v)); started9 = true; } else rCtx.lineTo(toX(i), rY(v));
-      });
+      let s9 = false;
+      r9.forEach((v, i) => { if (v !== null) { if (!s9) { rCtx.moveTo(toX(i), rY(v)); s9 = true; } else rCtx.lineTo(toX(i), rY(v)); } });
       rCtx.stroke();
 
       document.getElementById("rsiHeaderStat").textContent = `RSI(9): ${techState.rsi9 ?? "--"} | RSI(20): ${techState.rsi20 ?? "--"}`;
       const tag = document.getElementById("rsiSignalTag");
-      tag.textContent = techState.bounceConfirmed ? "🟢 CONFIRMED BOUNCE (RSI9 > RSI20 + VWAP)" : "⏳ WAITING FOR VWAP + RSI9 CROSS";
-      tag.style.color = techState.bounceConfirmed ? "var(--green)" : "var(--amber)";
+      if (techState.supplyTopConfirmed) {
+        tag.textContent = "🔴 TOP-DOWN CROSS (RSI9 < RSI20) → SUPPLY PUT ZONE";
+        tag.style.color = "var(--red)";
+      } else if (techState.demandBounceConfirmed) {
+        tag.textContent = "🟢 BOTTOM-UP CROSS (RSI9 > RSI20) → DEMAND CALL ZONE";
+        tag.style.color = "var(--green)";
+      } else {
+        tag.textContent = "⏳ MONITORING SUPPLY/DEMAND CROSSOVER";
+        tag.style.color = "var(--amber)";
+      }
     }
 
     async function fetchLiveOptionChain() {
@@ -1031,13 +1123,18 @@
       document.getElementById("vixRegime").textContent = `USD/INR: ₹${appState.usdInr.toFixed(2)}`;
 
       if (n) {
-        const fiiRatio = (n.ltp / appState.usdInr).toFixed(2);
-        document.getElementById("fiiRatioBox").textContent = `Ratio: ${fiiRatio} (INR ${appState.usdInr.toFixed(2)})`;
+        const fiiUsdPts = (n.ltp / appState.usdInr).toFixed(2);
+        document.getElementById("fiiRatioBox").textContent = `$${fiiUsdPts} USD pts (INR ${appState.usdInr.toFixed(2)})`;
         if (sx) document.getElementById("liveSensexBox").textContent = `${sx.ltp.toLocaleString("en-IN")} (${sx.pct}%)`;
 
-        document.getElementById("dynamicTrajectoryText").innerHTML = techState.bounceConfirmed
-          ? `<strong>🟢 HIGH-PROBABILITY BOUNCE TRIGGERED:</strong> Nifty (${n.ltp}) is holding VWAP (${techState.vwap}) with RSI(9) (${techState.rsi9}) crossing above RSI(20) (${techState.rsi20}). Next-month <strong>29 Dec 2026</strong> Calls/Spreads are active.`
-          : `<strong>⏳ PATIENCE / WAIT FOR VWAP PULLBACK:</strong> Nifty (${n.ltp}) vs VWAP (${techState.vwap ?? "--"}) • RSI(9): ${techState.rsi9 ?? "--"} / RSI(20): ${techState.rsi20 ?? "--"}. Do not chase extended highs; wait for pullback to VWAP + RSI(9) crossover.`;
+        const supplyZone = Math.round((n.high || n.ltp) / 50) * 50 + 50;
+        const demandZone = techState.vwap || Math.round((n.low || n.ltp) / 50) * 50;
+
+        document.getElementById("dynamicTrajectoryText").innerHTML = techState.supplyTopConfirmed
+          ? `<strong>🔴 SUPPLY ZONE REJECTION (RSI 9 < RSI 20 Top-Down):</strong> Institutions booking profits near <strong>${supplyZone}</strong> supply. Low-cost <strong>29 Dec Put (PE)</strong> signal is active in Signals tab.`
+          : techState.demandBounceConfirmed
+          ? `<strong>🟢 DEMAND ZONE BOUNCE (RSI 9 > RSI 20 Bottom-Up):</strong> Confirmed bounce off VWAP (<strong>${demandZone}</strong>). <strong>29 Dec Call (CE)</strong> signal is active.`
+          : `<strong>⚖️ KEY INSTITUTIONAL LEVELS TODAY:</strong> Upper Supply Profit-Booking Zone: <strong>${supplyZone}</strong> (Buy 29 Dec PE on RSI 9↓20) • Lower VWAP Demand Zone: <strong>${demandZone}</strong> (Buy 29 Dec CE on RSI 9↑20).`;
       }
 
       const ranked = WATCHLIST_STOCKS.map(s => ({ ...s, q: getQ(s.key) })).filter(x => x.q);
@@ -1047,7 +1144,7 @@
 
         document.getElementById("instBuyList").innerHTML = buyers.length ? buyers.map(s => `
           <div class="inst-item">
-            <div><strong>${s.sym}</strong> <span class="green" style="font-size:10px;">+${s.q.pct}%</span><div style="font-size:10px;color:var(--text-2);">${s.sector}</div></div>
+            <div><strong>${s.sym}</strong> <span class="green" style="font-size:10px;">+${s.q.pct}% ${s.q.pct >= 2 ? "🔥" : ""}</span><div style="font-size:10px;color:var(--text-2);">${s.sector}</div></div>
             <div style="text-align:right;"><div style="font-weight:800;">₹${s.q.ltp}</div><div style="font-size:9px;color:var(--green);">Live LTP</div></div>
           </div>
         `).join("") : `<div style="font-size:11px;color:var(--text-3);">No positive movers</div>`;
@@ -1064,101 +1161,124 @@
     function buildDynamicOpportunities() {
       const n = getQ(INDEX_KEYS.NIFTY);
       const list = [];
-      const gateConfirmed = techState.bounceConfirmed;
 
       if (n && decOptionChain.length > 0) {
         const atmStrike = Math.round(n.ltp / 100) * 100;
-        const row = decOptionChain.find(r => r.strike_price === atmStrike) || decOptionChain[0];
-        const ce = row?.call_options?.market_data;
-        const ceKey = row?.call_options?.instrument_key;
-        if (ce && ce.ltp) {
-          // Entry anchored to VWAP pullback rather than chasing current high
-          const vwapDiscount = techState.vwap && n.ltp > techState.vwap ? Math.min(0.08, (n.ltp - techState.vwap) / n.ltp * 12) : 0.02;
-          const vwapEntry = +(ce.ltp * (1 - vwapDiscount)).toFixed(1);
+        const otmPutStrike = atmStrike - 200; // Lower capital OTM Put for high R:R from Supply Zone
+
+        // 1. SUPPLY ZONE PUT (Top-Down RSI 9 x RSI 20 Crossover)
+        const putRow = decOptionChain.find(r => r.strike_price === otmPutStrike) || decOptionChain[0];
+        const pe = putRow?.put_options?.market_data;
+        const peKey = putRow?.put_options?.instrument_key;
+        if (pe && pe.ltp) {
+          const supplyTriggerEntry = +(pe.ltp * 1.03).toFixed(1);
           list.push({
-            id: "live_dec_ce",
-            seg: "options",
-            title: `NIFTY 29 DEC 2026 ${row.strike_price} CE`,
-            key: ceKey,
+            id: "supply_dec_pe",
+            seg: "put_supply",
+            title: `NIFTY 29 DEC 2026 ${putRow.strike_price} PE (Low-Cost Supply Put)`,
+            key: peKey,
             side: "BUY",
-            badge: "NEXT-MONTH OPTION",
+            badge: "SUPPLY PUT",
             lotSize: 65,
-            ltp: ce.ltp,
-            entry: vwapEntry,
-            t1: +(vwapEntry * 1.20).toFixed(1),
-            t2: +(vwapEntry * 1.40).toFixed(1),
-            sl: +(vwapEntry * 0.86).toFixed(1),
-            gateConfirmed,
-            gateText: gateConfirmed
-              ? `🟢 90% BOUNCE ACTIVE: Price at VWAP (${techState.vwap}) & RSI(9) ${techState.rsi9} > RSI(20) ${techState.rsi20}`
-              : `⏳ WAIT FOR VWAP (${techState.vwap ?? "--"}) PULLBACK + RSI(9) CROSSOVER BEFORE ENTRY`,
-            reason: "34-day Dec expiry avoids Sensex expiry volatility today. Enter at VWAP pullback level, not market high."
+            ltp: pe.ltp,
+            entry: techState.supplyTopConfirmed ? pe.ltp : supplyTriggerEntry,
+            t1: +(pe.ltp * 1.28).toFixed(1),
+            t2: +(pe.ltp * 1.55).toFixed(1),
+            sl: +(pe.ltp * 0.84).toFixed(1),
+            gateType: techState.supplyTopConfirmed ? "GO_SELL" : "WAIT",
+            gateText: techState.supplyTopConfirmed
+              ? `🔴 CONFIRMED TOP-DOWN CROSS (RSI9 ${techState.rsi9} < RSI20 ${techState.rsi20}) — BUY PUT AT SUPPLY`
+              : `⏳ TRIGGER LEVEL: BUY PE IF NIFTY REJECTS SUPPLY & RSI(9) CROSSES RSI(20) TOP-TO-DOWN`,
+            reason: `Low-investment OTM Put (₹${(pe.ltp * 65).toFixed(0)}/lot) designed to capture institutional profit-booking from upper resistance.`
           });
         }
-      }
 
-      const movers = WATCHLIST_STOCKS.map(s => ({ ...s, q: getQ(s.key) }))
-        .filter(x => x.q && x.q.pct > 0.5)
-        .sort((a, b) => b.q.pct - a.q.pct)
-        .slice(0, 3);
+        // 2. DEMAND ZONE CALL (Bottom-Up RSI 9 x RSI 20 Crossover at VWAP)
+        const callRow = decOptionChain.find(r => r.strike_price === atmStrike) || decOptionChain[0];
+        const ce = callRow?.call_options?.market_data;
+        const ceKey = callRow?.call_options?.instrument_key;
+        if (ce && ce.ltp) {
+          const vwapPullbackEntry = +(ce.ltp * 0.94).toFixed(1);
+          list.push({
+            id: "demand_dec_ce",
+            seg: "call_demand",
+            title: `NIFTY 29 DEC 2026 ${callRow.strike_price} CE (VWAP Demand Call)`,
+            key: ceKey,
+            side: "BUY",
+            badge: "DEMAND CALL",
+            lotSize: 65,
+            ltp: ce.ltp,
+            entry: techState.demandBounceConfirmed ? ce.ltp : vwapPullbackEntry,
+            t1: +(vwapPullbackEntry * 1.22).toFixed(1),
+            t2: +(vwapPullbackEntry * 1.45).toFixed(1),
+            sl: +(vwapPullbackEntry * 0.85).toFixed(1),
+            gateType: techState.demandBounceConfirmed ? "GO_BUY" : "WAIT",
+            gateText: techState.demandBounceConfirmed
+              ? `🟢 CONFIRMED VWAP BOUNCE (RSI9 ${techState.rsi9} > RSI20 ${techState.rsi20}) — BUY CALL`
+              : `⏳ TRIGGER LEVEL: WAIT FOR PULLBACK TO VWAP (${techState.vwap ?? "--"}) + RSI(9) ↑ RSI(20)`,
+            reason: "Enters only at VWAP demand support after RSI(9) crosses above RSI(20) from below."
+          });
+        }
 
-      movers.forEach(m => {
-        const ltp = m.q.ltp;
-        const pullbackEntry = +(m.q.open + (ltp - m.q.open) * 0.45).toFixed(2);
-        list.push({
-          id: `eq_${m.sym}`,
-          seg: "equity",
-          title: `${m.sym} (+${m.q.pct}% Institutional Surge)`,
-          key: m.key,
-          side: "BUY",
-          badge: "SURGING EQUITY",
-          lotSize: 25,
-          ltp: ltp,
-          entry: pullbackEntry,
-          t1: +(pullbackEntry * 1.018).toFixed(2),
-          t2: +(pullbackEntry * 1.035).toFixed(2),
-          sl: +(pullbackEntry * 0.988).toFixed(2),
-          gateConfirmed: ltp <= pullbackEntry * 1.003,
-          gateText: ltp <= pullbackEntry * 1.003
-            ? `🟢 AT VWAP/PULLBACK ENTRY ZONE (₹${pullbackEntry})`
-            : `⏳ EXTENDED ABOVE VWAP — SET ALERT FOR PULLBACK TO ₹${pullbackEntry}`,
-          reason: `Leading ${m.sector} accumulation on 17% US tariff cap relief.`
-        });
-      });
-
-      if (n && decOptionChain.length >= 2) {
-        const atmStrike = Math.round(n.ltp / 100) * 100;
-        const otmStrike = atmStrike + 300;
-        const longRow = decOptionChain.find(r => r.strike_price === atmStrike);
-        const shortRow = decOptionChain.find(r => r.strike_price === otmStrike);
-        const l1 = longRow?.call_options?.market_data?.ltp;
-        const l2 = shortRow?.call_options?.market_data?.ltp;
+        // 3. 2-LEG HEDGED SPREAD
+        const otmCallRow = decOptionChain.find(r => r.strike_price === atmStrike + 300);
+        const l1 = ce?.ltp;
+        const l2 = otmCallRow?.call_options?.market_data?.ltp;
         if (l1 && l2) {
           const netDebit = +(l1 - l2).toFixed(1);
           list.push({
             id: "hedge_bcs",
             seg: "hedge",
             isSpread: true,
-            leg1: { symbol: `NIFTY 29 DEC ${atmStrike} CE`, side: "BUY", ltp: l1, key: longRow.call_options.instrument_key },
-            leg2: { symbol: `NIFTY 29 DEC ${otmStrike} CE`, side: "SELL", ltp: l2, key: shortRow.call_options.instrument_key },
-            title: `2-LEG BULL CALL SPREAD (${atmStrike} / ${otmStrike} CE • 29 DEC)`,
-            key: longRow.call_options.instrument_key,
+            leg1: { symbol: `NIFTY 29 DEC ${atmStrike} CE`, side: "BUY", ltp: l1, key: ceKey },
+            leg2: { symbol: `NIFTY 29 DEC ${atmStrike + 300} CE`, side: "SELL", ltp: l2, key: otmCallRow.call_options.instrument_key },
+            title: `2-LEG BULL CALL SPREAD (${atmStrike} / ${atmStrike + 300} CE • 29 DEC)`,
+            key: ceKey,
             side: "BUY",
-            badge: "HEDGED SWING",
+            badge: "LOW-RISK HEDGE",
             lotSize: 65,
             ltp: netDebit,
             entry: +(netDebit * 0.95).toFixed(1),
             t1: +(netDebit * 1.25).toFixed(1),
             t2: +(netDebit * 1.50).toFixed(1),
             sl: +(netDebit * 0.78).toFixed(1),
-            gateConfirmed,
-            gateText: gateConfirmed
-              ? `🟢 HEDGED BOUNCE CONFIRMED — MAX RISK CAPPED AT ₹${netDebit}`
-              : `⏳ DEPLOY ON VWAP DIP TO LOCK LOWER NET DEBIT`,
-            reason: `Caps max loss to ₹${netDebit}/pt ahead of 30 Nov MSCI rebalance & 04 Dec RBI policy.`
+            gateType: techState.demandBounceConfirmed ? "GO_BUY" : "WAIT",
+            gateText: `🛡️ MAX RISK CAPPED AT ₹${netDebit}/pt • DEPLOY ON VWAP DIP`,
+            reason: "Eliminates naked overnight gap risk ahead of 30 Nov MSCI rebalance & 04 Dec RBI policy."
           });
         }
       }
+
+      // 4. +2% TO +10% SURGING UNDERVALUED / CATALYST EQUITIES
+      const movers = WATCHLIST_STOCKS.map(s => ({ ...s, q: getQ(s.key) }))
+        .filter(x => x.q && x.q.pct >= 0.8)
+        .sort((a, b) => b.q.pct - a.q.pct)
+        .slice(0, 4);
+
+      movers.forEach(m => {
+        const ltp = m.q.ltp;
+        const pullbackEntry = +(m.q.open + (ltp - m.q.open) * 0.45).toFixed(2);
+        const atZone = ltp <= pullbackEntry * 1.004;
+        list.push({
+          id: `eq_${m.sym}`,
+          seg: "equity",
+          title: `${m.sym} (+${m.q.pct}% Daily Breakout)`,
+          key: m.key,
+          side: "BUY",
+          badge: "SURGING EQUITY",
+          lotSize: 25,
+          ltp: ltp,
+          entry: pullbackEntry,
+          t1: +(pullbackEntry * 1.022).toFixed(2),
+          t2: +(pullbackEntry * 1.045).toFixed(2),
+          sl: +(pullbackEntry * 0.988).toFixed(2),
+          gateType: atZone ? "GO_BUY" : "WAIT",
+          gateText: atZone
+            ? `🟢 AT PULLBACK ENTRY ZONE (₹${pullbackEntry})`
+            : `⏳ SURGING (+${m.q.pct}%) — SET ALERT FOR PULLBACK TO ₹${pullbackEntry}`,
+          reason: `Catalyst: ${m.sector}. High institutional volume accumulation.`
+        });
+      });
 
       return list;
     }
@@ -1174,15 +1294,16 @@
       const allOpps = buildDynamicOpportunities();
       const container = document.getElementById("oppsContainer");
       if (allOpps.length === 0) {
-        container.innerHTML = `<div style="text-align:center;color:var(--text-2);font-size:12px;padding:18px;">Connect your Upstox live feed first—all VWAP + RSI(9/20) signals build strictly from live market quotes.</div>`;
+        container.innerHTML = `<div style="text-align:center;color:var(--text-2);font-size:12px;padding:18px;">Connect your Upstox live feed first—all Supply Puts, Demand Calls, and +2-10% surging equities compute strictly from live market quotes.</div>`;
         return;
       }
       const list = allOpps.filter(o => currentOppFilter === "all" || o.seg === currentOppFilter);
       container.innerHTML = list.map(o => {
-        const pillCls = o.seg === "hedge" ? "pill-hedge" : (o.side === "BUY" ? "pill-buy" : "pill-sell");
+        const pillCls = o.seg === "hedge" ? "pill-hedge" : (o.seg === "put_supply" ? "pill-sell" : "pill-buy");
+        const gateCls = o.gateType === "GO_BUY" ? "gate-go-buy" : (o.gateType === "GO_SELL" ? "gate-go-sell" : "gate-wait");
         return `
           <div class="setup-card">
-            <div class="gate-banner ${o.gateConfirmed ? "gate-go" : "gate-wait"}">
+            <div class="gate-banner ${gateCls}">
               <span>${o.gateText}</span>
             </div>
             <div class="setup-top">
@@ -1194,7 +1315,7 @@
             </div>
             <div class="levels-grid">
               <div class="ltp-box"><div class="lvl-k blue">LIVE LTP</div><div class="lvl-v blue">₹${o.ltp}</div></div>
-              <div><div class="lvl-k">VWAP ENTRY</div><div class="lvl-v">₹${o.entry}</div></div>
+              <div><div class="lvl-k">TRIGGER ENTRY</div><div class="lvl-v">₹${o.entry}</div></div>
               <div><div class="lvl-k">TARGET 1</div><div class="lvl-v green">₹${o.t1}</div></div>
               <div><div class="lvl-k">TARGET 2</div><div class="lvl-v green">₹${o.t2}</div></div>
               <div><div class="lvl-k">STOP LOSS</div><div class="lvl-v red">₹${o.sl}</div></div>
@@ -1207,6 +1328,60 @@
           </div>
         `;
       }).join("");
+    }
+
+    function renderThemes() {
+      document.getElementById("themesContainer").innerHTML = STRUCTURAL_THEMES.map(t => {
+        const q = getQ(t.key);
+        const ltp = q ? q.ltp : null;
+        const pct = q ? q.pct : null;
+        const entry = ltp ? +(ltp * 0.992).toFixed(2) : null;
+        const t1 = ltp ? +(ltp * 1.045).toFixed(2) : null;
+        const t2 = ltp ? +(ltp * 1.090).toFixed(2) : null;
+        const sl = ltp ? +(ltp * 0.965).toFixed(2) : null;
+
+        return `
+          <div class="setup-card">
+            <div class="setup-top">
+              <div>
+                <div class="setup-title">${t.sym} ${pct !== null ? `<span class="${pct >= 0 ? "green" : "red"}">(${pct >= 0 ? "+" : ""}${pct}%)</span>` : ""}</div>
+                <div class="setup-sub">${t.thesis}</div>
+              </div>
+              <span class="pill pill-hedge">${t.theme}</span>
+            </div>
+            <div class="levels-grid">
+              <div class="ltp-box"><div class="lvl-k blue">LIVE LTP</div><div class="lvl-v blue">${ltp ? "₹" + ltp : "--"}</div></div>
+              <div><div class="lvl-k">ACCUM ZONE</div><div class="lvl-v">${entry ? "₹" + entry : "--"}</div></div>
+              <div><div class="lvl-k">TARGET 1</div><div class="lvl-v green">${t1 ? "₹" + t1 : "--"}</div></div>
+              <div><div class="lvl-k">TARGET 2</div><div class="lvl-v green">${t2 ? "₹" + t2 : "--"}</div></div>
+              <div><div class="lvl-k">STOP LOSS</div><div class="lvl-v red">${sl ? "₹" + sl : "--"}</div></div>
+            </div>
+            <div class="action-grid">
+              <button class="btn-paper" onclick="paperThemeStock('${t.sym}')">▶ Paper Swing (${appState.lots}L)</button>
+              <button class="btn-alert" onclick="alertThemeStock('${t.sym}')">🔔 Alert</button>
+              <button class="btn-algo" onclick="switchView('opps')">📊 Signals</button>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function paperThemeStock(sym) {
+      const t = STRUCTURAL_THEMES.find(x => x.sym === sym);
+      const q = t ? getQ(t.key) : null;
+      if (!q || !q.ltp) { alert("Connect live Upstox feed first."); return; }
+      paperTradeSingle(`${t.sym} (${t.theme})`, "BUY", q.ltp, t.lotSize, t.key, +(q.ltp * 1.045).toFixed(2), +(q.ltp * 1.09).toFixed(2), +(q.ltp * 0.965).toFixed(2));
+    }
+
+    function alertThemeStock(sym) {
+      const t = STRUCTURAL_THEMES.find(x => x.sym === sym);
+      const q = t ? getQ(t.key) : null;
+      if (!q || !q.ltp) { alert("Connect live Upstox feed first."); return; }
+      const target = +(q.ltp * 0.992).toFixed(2);
+      appState.alerts.unshift({ id: Date.now(), symbol: t.sym, key: normKey(t.key), targetPrice: target, triggered: false });
+      saveState();
+      renderDesk();
+      alert(`Accumulation Alert set for ${t.sym} at ₹${target}`);
     }
 
     function executeOppPaper(id) {
@@ -1247,22 +1422,24 @@
       });
       saveState();
       renderDesk();
-      alert(`Auto-Alert armed for ${opp.title} at VWAP Entry ₹${opp.entry}`);
+      alert(`Auto-Alert armed for ${opp.title} at Trigger Entry ₹${opp.entry}`);
     }
 
     function openOppAlgo(id) {
       const opp = buildDynamicOpportunities().find(x => x.id === id);
       if (!opp) return;
       document.getElementById("algoJsonBox").value = JSON.stringify({
-        strategy: "AnuragPulse_v7_VWAP_RSI",
+        strategy: "AnuragPulse_v8_SupplyDemand",
         account_id: appState.accountId,
         broker_target: appState.brokerChoice,
         instrument_key: opp.key,
         symbol: opp.title,
         side: opp.side,
         quantity: appState.lots * opp.lotSize,
-        entry_vwap: opp.entry, target_1: opp.t1, target_2: opp.t2, stop_loss: opp.sl,
-        rsi9: techState.rsi9, rsi20: techState.rsi20, bounce_confirmed: techState.bounceConfirmed
+        trigger_entry: opp.entry, target_1: opp.t1, target_2: opp.t2, stop_loss: opp.sl,
+        rsi9: techState.rsi9, rsi20: techState.rsi20,
+        supply_put_confirmed: techState.supplyTopConfirmed,
+        demand_call_confirmed: techState.demandBounceConfirmed
       }, null, 2);
       openModal("algoModal");
     }
@@ -1281,7 +1458,7 @@
         if (!q || !q.ltp) return;
         if (Math.abs(q.ltp - a.targetPrice) / a.targetPrice <= 0.004) {
           a.triggered = true;
-          notifyUser(`🔔 VWAP BOUNCE LEVEL REACHED: ${a.symbol} @ ₹${q.ltp}`);
+          notifyUser(`🔔 TRIGGER LEVEL REACHED: ${a.symbol} @ ₹${q.ltp}`);
         }
       });
 
@@ -1401,7 +1578,7 @@
     }
 
     function saveUsdRate() {
-      appState.usdInr = Math.max(50, parseFloat(document.getElementById("inUsdInr").value) || 92.60);
+      appState.usdInr = Math.max(50, parseFloat(document.getElementById("inUsdInr").value) || 92.47);
       document.getElementById("usdRateDisplay").textContent = appState.usdInr.toFixed(2);
       saveState();
       closeModal("usdModal");
@@ -1415,7 +1592,7 @@
     }
 
     function switchView(v) {
-      ["aerial", "global", "opps", "chain", "desk"].forEach(id => {
+      ["aerial", "global", "opps", "themes", "chain", "desk"].forEach(id => {
         document.getElementById(`view-${id}`).classList.add("hidden");
         document.getElementById(`nav-${id}`).classList.remove("active");
       });
@@ -1430,6 +1607,7 @@
     function renderAll() {
       renderAerial();
       renderOpportunities();
+      renderThemes();
       renderDesk();
     }
 
