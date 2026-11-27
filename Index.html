@@ -3,74 +3,100 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta name="theme-color" content="#060a12" />
+  <meta name="theme-color" content="#0b1120" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="application-name" content="AnuragPulse Pro" />
-  <title>AnuragPulse Pro v10.0 — Precision Reversal, Auto-Paper & 52W-High Guard</title>
+  <title>AnuragPulse Pro v11.0 — Smart Money Liquidity, Full Greeks & AI Opinion</title>
   <link rel="manifest" href="manifest.json" />
   <style>
     :root {
-      --bg-base: #060a12; --bg-card: #0e1628; --bg-elevated: #19243c; --bg-input: #080d18;
-      --border: rgba(148, 163, 184, 0.16); --text-1: #f8fafc; --text-2: #94a3b8; --text-3: #64748b;
-      --green: #10b981; --green-bg: rgba(16, 185, 129, 0.14);
-      --red: #f43f5e; --red-bg: rgba(244, 63, 94, 0.14);
-      --amber: #f59e0b; --amber-bg: rgba(245, 158, 11, 0.14);
-      --blue: #3b82f6; --purple: #8b5cf6;
+      --bg-base: #0b1120;
+      --bg-card: #131c31;
+      --bg-elevated: #1e293b;
+      --bg-input: #0f172a;
+      --border: rgba(148, 163, 184, 0.26);
+      --text-1: #f8fafc;
+      --text-2: #cbd5e1;
+      --text-3: #94a3b8;
+      --green: #10b981;
+      --green-bg: rgba(16, 185, 129, 0.18);
+      --red: #fb7185;
+      --red-bg: rgba(244, 63, 94, 0.18);
+      --amber: #fbbf24;
+      --amber-bg: rgba(245, 158, 11, 0.18);
+      --blue: #60a5fa;
+      --purple: #c084fc;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { background: var(--bg-base); color: var(--text-1); padding-bottom: 84px; }
+    body { background: var(--bg-base); color: var(--text-1); padding-bottom: 86px; }
     .topbar {
-      position: sticky; top: 0; z-index: 50; background: rgba(6, 10, 18, 0.96); backdrop-filter: blur(12px);
+      position: sticky; top: 0; z-index: 50; background: rgba(11, 17, 32, 0.97); backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border); padding: 10px 12px; display: flex; justify-content: space-between; align-items: center;
     }
     .brand { display: flex; align-items: center; gap: 7px; }
     .brand-icon {
       width: 30px; height: 30px; border-radius: 8px; background: linear-gradient(135deg, #2563eb, #10b981);
-      display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px;
+      display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; color: #fff;
     }
-    .brand h1 { font-size: 13px; font-weight: 700; }
-    .badge { font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 99px; display: inline-flex; align-items: center; gap: 4px; }
-    .badge-off { background: var(--red-bg); color: var(--red); border: 1px solid rgba(244,63,94,0.3); }
-    .badge-live { background: var(--green-bg); color: var(--green); border: 1px solid rgba(16,185,129,0.3); }
+    .brand h1 { font-size: 13px; font-weight: 800; }
+    .badge { font-size: 9px; font-weight: 700; padding: 2px 7px; border-radius: 99px; display: inline-flex; align-items: center; gap: 4px; }
+    .badge-off { background: var(--red-bg); color: var(--red); border: 1px solid rgba(251,113,133,0.4); }
+    .badge-live { background: var(--green-bg); color: var(--green); border: 1px solid rgba(16,185,129,0.4); }
     .top-actions { display: flex; gap: 5px; }
     .btn-sm {
       border: 1px solid var(--border); background: var(--bg-elevated); color: var(--text-1);
       padding: 6px 8px; border-radius: 8px; font-size: 10px; font-weight: 700; cursor: pointer;
     }
-    .btn-connect { background: linear-gradient(135deg, #2563eb, #4f46e5); border: none; }
+    .btn-connect { background: linear-gradient(135deg, #2563eb, #4f46e5); border: none; color: #fff; }
     #alertToast {
       display: none; position: sticky; top: 51px; z-index: 49; background: linear-gradient(90deg, #059669, #2563eb);
       color: #fff; padding: 8px 14px; font-size: 11px; font-weight: 700; justify-content: space-between; align-items: center;
     }
-    .container { max-width: 680px; margin: 0 auto; padding: 12px; display: flex; flex-direction: column; gap: 12px; }
-    .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 14px; }
+    .container { max-width: 700px; margin: 0 auto; padding: 12px; display: flex; flex-direction: column; gap: 12px; }
+    .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 14px; box-shadow: 0 4px 16px rgba(0,0,0,0.28); }
     .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; gap: 8px; flex-wrap: wrap; }
-    .step-pill { background: rgba(59,130,246,0.18); color: #60a5fa; font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 6px; text-transform: uppercase; }
+    .step-pill { background: rgba(59,130,246,0.22); color: #93c5fd; font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 6px; text-transform: uppercase; }
     .aerial-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 8px; }
     .metric-box { background: var(--bg-input); border: 1px solid var(--border); border-radius: 10px; padding: 9px; }
-    .metric-lbl { font-size: 9px; color: var(--text-2); font-weight: 700; text-transform: uppercase; }
-    .metric-val { font-size: 14px; font-weight: 800; margin-top: 2px; }
+    .metric-lbl { font-size: 9px; color: var(--text-3); font-weight: 700; text-transform: uppercase; }
+    .metric-val { font-size: 14px; font-weight: 800; margin-top: 2px; color: var(--text-1); }
     .metric-sub { font-size: 10px; font-weight: 600; margin-top: 2px; color: var(--text-2); }
     .health-bar {
       display: flex; justify-content: space-between; align-items: center; background: var(--bg-input);
       border: 1px solid var(--border); border-radius: 8px; padding: 6px 10px; font-size: 10px; margin-bottom: 10px;
     }
     .zone-strip { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
-    .zone-card-sell { background: var(--red-bg); border: 1px solid rgba(244,63,94,0.35); border-radius: 10px; padding: 9px; font-size: 11px; }
-    .zone-card-buy { background: var(--green-bg); border: 1px solid rgba(16,185,129,0.35); border-radius: 10px; padding: 9px; font-size: 11px; }
+    .zone-card-sell { background: rgba(244,63,94,0.14); border: 1px solid rgba(251,113,133,0.45); border-radius: 10px; padding: 9px; font-size: 11px; }
+    .zone-card-buy { background: rgba(16,185,129,0.14); border: 1px solid rgba(16,185,129,0.45); border-radius: 10px; padding: 9px; font-size: 11px; }
     .summary-box {
-      background: var(--bg-input); border: 1px solid rgba(59,130,246,0.3); border-radius: 10px;
-      padding: 10px 12px; font-size: 11px; line-height: 1.45; margin-bottom: 10px;
+      background: var(--bg-input); border: 1px solid rgba(96,165,250,0.35); border-radius: 10px;
+      padding: 10px 12px; font-size: 11px; line-height: 1.48; margin-bottom: 10px; color: var(--text-2);
     }
     .event-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 8px; }
-    .event-chip { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 7px; font-size: 10px; }
+    .event-chip { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 8px; padding: 7px; font-size: 10px; }
     .inst-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     @media (max-width: 440px) { .inst-cols { grid-template-columns: 1fr; } }
     .inst-panel { background: var(--bg-input); border: 1px solid var(--border); border-radius: 10px; padding: 10px; }
-    .inst-item { display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 11px; }
+    .inst-item { padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 11px; }
     .inst-item:last-child { border-bottom: none; }
+    .inst-item-top { display: flex; justify-content: space-between; align-items: center; }
+
+    /* Colorful 52-Week Range Bar with Current, Target & SL Arrows */
+    .range52-wrap { margin-top: 8px; padding-top: 4px; }
+    .range52-labels { display: flex; justify-content: space-between; font-size: 9px; color: var(--text-3); margin-bottom: 11px; font-weight: 700; }
+    .range52-bar {
+      position: relative; height: 8px; border-radius: 99px;
+      background: linear-gradient(90deg, #f43f5e 0%, #f59e0b 45%, #10b981 85%, #3b82f6 100%);
+      margin: 4px 0 12px;
+    }
+    .marker-pin {
+      position: absolute; transform: translateX(-50%); font-size: 9px; font-weight: 900; line-height: 1; white-space: nowrap;
+    }
+    .pin-cur { top: -12px; color: #38bdf8; }
+    .pin-sl { bottom: -12px; color: #fb7185; }
+    .pin-tgt { bottom: -12px; color: #34d399; }
 
     /* Chart & Global */
     .chart-wrap { background: var(--bg-input); border: 1px solid var(--border); border-radius: 12px; padding: 10px; margin-bottom: 10px; }
@@ -80,7 +106,7 @@
       padding: 4px 8px; border-radius: 6px; font-size: 10px; font-weight: 700; border: none;
       background: transparent; color: var(--text-2); cursor: pointer;
     }
-    .tgl-btn.active { background: var(--blue); color: #fff; }
+    .tgl-btn.active { background: var(--blue); color: #0b1120; font-weight: 800; }
     .global-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 10px; }
     .catalyst-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
     @media (max-width: 460px) { .catalyst-cols { grid-template-columns: 1fr; } }
@@ -88,7 +114,7 @@
     /* Auto-Trigger Bar & Signals */
     .auto-bar {
       display: flex; justify-content: space-between; align-items: center; gap: 8px;
-      background: rgba(139,92,246,0.14); border: 1px solid rgba(139,92,246,0.35);
+      background: rgba(192,132,252,0.14); border: 1px solid rgba(192,132,252,0.4);
       border-radius: 10px; padding: 9px 11px; margin-bottom: 10px; font-size: 11px;
     }
     .seg-tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-bottom: 12px; }
@@ -96,23 +122,23 @@
       padding: 7px 2px; text-align: center; border-radius: 8px; font-size: 10px; font-weight: 700;
       background: var(--bg-input); border: 1px solid var(--border); color: var(--text-2); cursor: pointer;
     }
-    .seg-tab.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+    .seg-tab.active { background: var(--blue); color: #0b1120; border-color: var(--blue); font-weight: 800; }
     .setup-card { background: var(--bg-input); border: 1px solid var(--border); border-radius: 12px; padding: 12px; margin-bottom: 10px; }
     .setup-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 8px; }
-    .setup-title { font-size: 13px; font-weight: 800; }
+    .setup-title { font-size: 13px; font-weight: 800; color: var(--text-1); }
     .setup-sub { font-size: 11px; color: var(--text-2); margin-top: 3px; line-height: 1.35; }
     .gate-banner {
       padding: 8px 10px; border-radius: 8px; font-size: 10px; font-weight: 800; margin-bottom: 8px;
       display: flex; justify-content: space-between; align-items: center;
     }
-    .gate-wait { background: var(--amber-bg); color: var(--amber); border: 1px solid rgba(245,158,11,0.35); }
+    .gate-wait { background: var(--amber-bg); color: var(--amber); border: 1px solid rgba(251,191,36,0.4); }
     .gate-go-buy { background: var(--green-bg); color: var(--green); border: 1px solid rgba(16,185,129,0.45); }
-    .gate-go-sell { background: var(--red-bg); color: var(--red); border: 1px solid rgba(244,63,94,0.45); }
+    .gate-go-sell { background: var(--red-bg); color: var(--red); border: 1px solid rgba(251,113,133,0.45); }
     .pill { font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 6px; white-space: nowrap; }
-    .pill-buy { background: var(--green-bg); color: var(--green); border: 1px solid rgba(16,185,129,0.4); }
-    .pill-sell { background: var(--red-bg); color: var(--red); border: 1px solid rgba(244,63,94,0.4); }
-    .pill-hedge { background: rgba(139,92,246,0.18); color: #c4b5fd; border: 1px solid rgba(139,92,246,0.4); }
-    .pill-warn { background: var(--amber-bg); color: var(--amber); border: 1px solid rgba(245,158,11,0.4); }
+    .pill-buy { background: var(--green-bg); color: var(--green); border: 1px solid rgba(16,185,129,0.45); }
+    .pill-sell { background: var(--red-bg); color: var(--red); border: 1px solid rgba(251,113,133,0.45); }
+    .pill-hedge { background: rgba(192,132,252,0.18); color: #d8b4fe; border: 1px solid rgba(192,132,252,0.45); }
+    .pill-warn { background: var(--amber-bg); color: var(--amber); border: 1px solid rgba(251,191,36,0.45); }
 
     .levels-grid {
       display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px;
@@ -120,54 +146,69 @@
     }
     .lvl-k { font-size: 9px; color: var(--text-3); font-weight: 700; }
     .lvl-v { font-size: 11px; font-weight: 800; margin-top: 2px; }
-    .ltp-box { background: rgba(59,130,246,0.16); border-radius: 6px; padding: 2px 0; }
+    .ltp-box { background: rgba(96,165,250,0.18); border-radius: 6px; padding: 2px 0; }
     .action-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 6px; }
     .btn-paper {
       background: linear-gradient(135deg, #059669, #10b981); color: #fff; border: none;
       padding: 9px 6px; border-radius: 8px; font-size: 11px; font-weight: 800; cursor: pointer;
     }
     .btn-alert {
-      background: var(--amber-bg); color: var(--amber); border: 1px solid rgba(245,158,11,0.35);
+      background: var(--amber-bg); color: var(--amber); border: 1px solid rgba(251,191,36,0.4);
       padding: 9px 4px; border-radius: 8px; font-size: 10px; font-weight: 800; cursor: pointer;
     }
     .btn-algo {
-      background: rgba(139,92,246,0.18); color: #c4b5fd; border: 1px solid rgba(139,92,246,0.35);
+      background: rgba(192,132,252,0.18); color: #d8b4fe; border: 1px solid rgba(192,132,252,0.4);
       padding: 9px 4px; border-radius: 8px; font-size: 10px; font-weight: 800; cursor: pointer;
     }
+
+    /* Option Chain with Full Greeks & Investor Pick Highlight */
     .oc-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
     select, input[type="number"], input[type="text"], input[type="password"] {
       width: 100%; background: var(--bg-input); color: var(--text-1); border: 1px solid var(--border);
       border-radius: 8px; padding: 8px 10px; font-size: 12px; font-weight: 600;
     }
-    table.oc-table { width: 100%; border-collapse: collapse; font-size: 11px; text-align: center; }
-    table.oc-table th { background: var(--bg-elevated); color: var(--text-2); padding: 6px 3px; font-weight: 700; }
-    table.oc-table td { padding: 7px 3px; border-bottom: 1px solid var(--border); }
-    .atm-row { background: rgba(59, 130, 246, 0.16); font-weight: 800; }
-    .oc-btn { padding: 3px 6px; border-radius: 5px; font-size: 10px; font-weight: 700; border: none; cursor: pointer; }
-    .pos-card { background: var(--bg-input); border: 1px solid rgba(59,130,246,0.35); border-radius: 12px; padding: 12px; margin-bottom: 10px; }
+    table.oc-table { width: 100%; border-collapse: collapse; font-size: 10px; text-align: center; }
+    table.oc-table th { background: var(--bg-elevated); color: var(--text-2); padding: 6px 2px; font-weight: 800; }
+    table.oc-table td { padding: 7px 2px; border-bottom: 1px solid var(--border); }
+    .atm-row { background: rgba(96, 165, 250, 0.16); font-weight: 800; }
+    .inst-pick-row { background: rgba(16, 185, 129, 0.14); border-left: 3px solid #10b981; border-right: 3px solid #10b981; }
+    .inst-star { display: inline-block; background: #10b981; color: #06281e; font-size: 8px; font-weight: 900; padding: 1px 4px; border-radius: 4px; margin-top: 2px; }
+    .greek-mini { font-size: 8.5px; color: var(--text-3); line-height: 1.25; }
+    .oc-btn { padding: 3px 5px; border-radius: 5px; font-size: 9.5px; font-weight: 800; border: none; cursor: pointer; }
+
+    /* Positions */
+    .pos-card { background: var(--bg-input); border: 1px solid rgba(96,165,250,0.4); border-radius: 12px; padding: 12px; margin-bottom: 10px; }
     .prog-track { height: 7px; background: var(--bg-elevated); border-radius: 99px; overflow: hidden; margin: 8px 0; }
     .prog-fill { height: 100%; background: linear-gradient(90deg, #3b82f6, #10b981); transition: width 0.3s; }
     .guard-tag {
       display: inline-block; font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 6px;
-      background: rgba(139,92,246,0.18); color: #c4b5fd; border: 1px solid rgba(139,92,246,0.35);
+      background: rgba(192,132,252,0.18); color: #d8b4fe; border: 1px solid rgba(192,132,252,0.4);
     }
 
+    /* AI Opinion Box */
+    .ai-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+    .ai-result-card {
+      background: var(--bg-input); border: 1px solid rgba(16,185,129,0.4); border-radius: 12px;
+      padding: 12px; font-size: 11px; line-height: 1.5; color: var(--text-2);
+    }
+
+    /* 7-Tab Bottom Navigation */
     .bottom-nav {
-      position: fixed; bottom: 0; left: 0; right: 0; z-index: 50; background: rgba(14, 22, 40, 0.97); backdrop-filter: blur(12px);
-      border-top: 1px solid var(--border); display: grid; grid-template-columns: repeat(6, 1fr); padding: 6px 1px;
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 50; background: rgba(19, 28, 49, 0.98); backdrop-filter: blur(12px);
+      border-top: 1px solid var(--border); display: grid; grid-template-columns: repeat(7, 1fr); padding: 6px 1px;
     }
     .nav-btn {
-      background: none; border: none; color: var(--text-2); font-size: 9px; font-weight: 700;
-      display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 4px 1px; cursor: pointer;
+      background: none; border: none; color: var(--text-3); font-size: 8.5px; font-weight: 700;
+      display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 4px 0; cursor: pointer;
     }
-    .nav-btn.active { color: #60a5fa; }
-    .nav-ico { font-size: 14px; }
+    .nav-btn.active { color: var(--blue); }
+    .nav-ico { font-size: 13px; }
     .modal-bg {
       display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.82); z-index: 100;
       align-items: center; justify-content: center; padding: 16px;
     }
     .modal-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 16px; width: 100%; max-width: 430px; }
-    .green { color: var(--green); } .red { color: var(--red); } .amber { color: var(--amber); } .blue { color: #60a5fa; }
+    .green { color: var(--green); } .red { color: var(--red); } .amber { color: var(--amber); } .blue { color: var(--blue); }
     .hidden { display: none !important; }
   </style>
 </head>
@@ -177,12 +218,12 @@
     <div class="brand">
       <div class="brand-icon">AP</div>
       <div>
-        <h1>AnuragPulse Pro <span style="font-size:10px;color:#60a5fa;" id="acctLabel"></span></h1>
+        <h1>AnuragPulse Pro <span style="font-size:10px;color:var(--blue);" id="acctLabel"></span></h1>
         <span id="connBadge" class="badge badge-off">● DISCONNECTED (TAP SETUP)</span>
       </div>
     </div>
     <div class="top-actions">
-      <button class="btn-sm" onclick="playTringTring()" title="Test Tring-Tring Bell">🔔 Ring</button>
+      <button class="btn-sm" onclick="playTringTring()" title="Test Vintage Bell">🔔 Bell</button>
       <button class="btn-sm" onclick="syncAllFeeds(true)">↻ Sync</button>
       <button class="btn-sm btn-connect" onclick="openAuthModal()">🔑 Setup</button>
     </div>
@@ -195,11 +236,11 @@
 
   <main class="container">
 
-    <!-- PAGE 1: AERIAL MARKET VIEW & TIGHT 30-PT SELLERS/BUYERS ZONES -->
+    <!-- PAGE 1: AERIAL MARKET VIEW & SMART MONEY LIQUIDITY ZONES -->
     <div id="view-aerial">
       <section class="card">
         <div class="card-header">
-          <span class="step-pill">Page 1 • Aerial View & Precision Reversal Zones</span>
+          <span class="step-pill">Page 1 • Smart Money Liquidity & Macro Aerial</span>
           <span style="font-size:10px;color:var(--text-2);" id="lastTickTime">Waiting for Feed</span>
         </div>
 
@@ -210,49 +251,52 @@
             <div class="metric-sub" id="liveNiftyChg">Connect feed for LTP</div>
           </div>
           <div class="metric-box">
-            <div class="metric-lbl">BANK NIFTY / SENSEX</div>
+            <div class="metric-lbl">SENSEX / BANK NIFTY</div>
             <div class="metric-val" id="liveBnf">--</div>
-            <div class="metric-sub" id="liveBnfChg">Sensex Expiry</div>
+            <div class="metric-sub" id="liveBnfChg">Syncing...</div>
           </div>
           <div class="metric-box">
             <div class="metric-lbl">INDIA VIX / USD-INR</div>
             <div class="metric-val amber" id="liveVix">--</div>
-            <div class="metric-sub" id="vixRegime">USD/INR: ₹92.47</div>
+            <div class="metric-sub" id="vixRegime">USD/INR: ₹92.62</div>
           </div>
         </div>
 
-        <!-- TIGHT 30-POINT INSTITUTIONAL REJECTION ZONES -->
+        <!-- SMART MONEY STRUCTURAL ZONES (STOP-LOSS HUNT & ORDER BLOCKS) -->
         <div class="zone-strip">
           <div class="zone-card-sell">
-            <div style="font-weight:800;color:var(--red);">▼ TIGHT SELLERS' ZONE (30 PTS)</div>
-            <div style="font-size:13px;font-weight:800;margin-top:2px;" id="sellersZoneVal">-- to --</div>
-            <div style="font-size:10px;color:var(--text-2);margin-top:2px;" id="sellersZoneDist">Needs Top Reversal + RSI9↓20</div>
+            <div style="font-weight:800;color:var(--red);">▼ ACTUAL SELLERS' ORDER BLOCK</div>
+            <div style="font-size:13px;font-weight:800;margin-top:2px;" id="sellersZoneVal">25,910 – 25,960</div>
+            <div style="font-size:10px;color:var(--text-2);margin-top:2px;" id="sellersZoneDist">Sell / Buy PE just below upper limit after SL sweep</div>
           </div>
           <div class="zone-card-buy">
-            <div style="font-weight:800;color:var(--green);">▲ TIGHT BUYERS' ZONE (VWAP ±15)</div>
-            <div style="font-size:13px;font-weight:800;margin-top:2px;" id="buyersZoneVal">-- to --</div>
-            <div style="font-size:10px;color:var(--text-2);margin-top:2px;" id="buyersZoneDist">Needs Bottom Reversal + RSI9↑20</div>
+            <div style="font-weight:800;color:var(--green);">▲ ACTUAL BUYERS' ORDER BLOCK</div>
+            <div style="font-size:13px;font-weight:800;margin-top:2px;" id="buyersZoneVal">25,520 – 25,585</div>
+            <div style="font-size:10px;color:var(--text-2);margin-top:2px;" id="buyersZoneDist">Buy CE after SL sweep below temporary low</div>
           </div>
         </div>
 
         <div class="health-bar">
           <span id="feedHealthText" style="color:var(--text-2);">Feed Health: Idle</span>
-          <span id="vwapRsiQuick" style="color:#60a5fa;font-weight:700;">VWAP & RSI(9/20): Syncing...</span>
+          <span id="vwapRsiQuick" style="color:var(--blue);font-weight:700;">VWAP & RSI(9/20): Syncing...</span>
         </div>
 
         <div class="summary-box">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-            <strong class="blue">🧠 Confirmed Reversal & Auto-Trigger Engine</strong>
+            <strong class="blue">🧠 Smart Money Concept (SMC) & Macro Liquidity Read</strong>
             <button class="btn-sm" style="padding:2px 7px;font-size:10px;" onclick="openModal('flowModal')">✎ Edit FII/DII</button>
           </div>
-          <p id="dynamicTrajectoryText" style="color:var(--text-1);">
-            Connect live feed to track tight 30-pt Sellers' & Buyers' zones with 3-step candle + RSI(9×20) reversal confirmation.
+          <p id="smcMacroNote">
+            <strong>Why Nifty Dipped Below Intraday VWAP Today (27 Nov):</strong> After surging on monthly Nifty/Sensex expiries, Wall Street's Thanksgiving holiday / thin Black Friday session keeps FIIs on the sidelines while Brent Crude spiked above $96.50 and INR weakened to ₹92.62. Institutions are hunting retail stop-losses below temporary VWAP support before the <strong>30 Nov MSCI Rebalance</strong>.
+          </p>
+          <p id="dynamicTrajectoryText" style="color:var(--text-1);margin-top:5px;">
+            Connect live Upstox feed to track Smart Money SL sweeps into Actual Buyers' (25,520–25,585) or Sellers' (25,910–25,960) zones.
           </p>
 
           <div class="event-row">
             <div class="event-chip">
-              <strong class="amber">Tonight (26 Nov)</strong>
-              <div style="color:var(--text-2);">US Thanksgiving (NYSE Closed)</div>
+              <strong class="amber">Today / Weekend</strong>
+              <div style="color:var(--text-2);">US Black Friday Half-Day & Thin FII Desk</div>
             </div>
             <div class="event-chip">
               <strong class="green">30 Nov (3:00 PM)</strong>
@@ -266,62 +310,62 @@
         </div>
 
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-          <span style="font-size:10px;font-weight:800;color:var(--text-2);">INSTITUTIONAL STOCKS (WITH 52-WEEK HIGH HEADROOM CHECK):</span>
+          <span style="font-size:10px;font-weight:800;color:var(--text-2);">INSTITUTIONAL MOVERS & 52-WEEK RANGE BAR (WITH TARGET & SL ARROWS):</span>
           <span style="font-size:10px;color:var(--green);" id="fiiDiiBadge">FII: +₹5,673 Cr | DII: -₹2,760 Cr</span>
         </div>
 
         <div class="inst-cols">
           <div class="inst-panel">
-            <div style="font-size:11px;font-weight:800;color:var(--green);margin-bottom:6px;">▲ ACCUMULATING (WITH HEADROOM)</div>
+            <div style="font-size:11px;font-weight:800;color:var(--green);margin-bottom:6px;">▲ GAINERS / ACCUMULATING</div>
             <div id="instBuyList"><div style="font-size:11px;color:var(--text-3);">Awaiting live quotes...</div></div>
           </div>
           <div class="inst-panel">
-            <div style="font-size:11px;font-weight:800;color:var(--red);margin-bottom:6px;">▼ DISTRIBUTING / AT 52W HIGH</div>
+            <div style="font-size:11px;font-weight:800;color:var(--red);margin-bottom:6px;">▼ DECLINERS / AT 52W HIGH</div>
             <div id="instSellList"><div style="font-size:11px;color:var(--text-3);">Awaiting live quotes...</div></div>
           </div>
         </div>
       </section>
     </div>
 
-    <!-- PAGE 2: GLOBAL MACRO & TIGHT ZONE CHART -->
+    <!-- PAGE 2: GLOBAL MACRO & SMC LIQUIDITY ZONES + FII USD CHART -->
     <div id="view-global" class="hidden">
       <section class="card">
         <div class="card-header">
-          <span class="step-pill">Precision Zones + Reversal Markers & FII USD Chart</span>
+          <span class="step-pill">SMC Liquidity Zones & FII USD Return Chart</span>
           <div class="toggle-group">
-            <button class="tgl-btn active" id="mode-nifty" onclick="setChartMode('NIFTY')">ZONES + VWAP</button>
+            <button class="tgl-btn active" id="mode-nifty" onclick="setChartMode('NIFTY')">SMC ZONES</button>
             <button class="tgl-btn" id="mode-fii" onclick="setChartMode('FII_USD')">FII USD RETURN</button>
           </div>
         </div>
 
         <div class="chart-wrap">
           <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:6px;flex-wrap:wrap;gap:4px;">
-            <span id="chartHeaderStat" style="font-weight:700;color:#60a5fa;">Red = Tight Sellers' Band | Green = Tight VWAP Band</span>
+            <span id="chartHeaderStat" style="font-weight:700;color:var(--blue);">Red = Sellers' Block | Green = Buyers' Block | Dashed = Temp Liquidity</span>
             <span id="rsiHeaderStat" style="font-weight:700;color:var(--amber);">RSI(9): -- | RSI(20): --</span>
           </div>
-          <canvas id="priceChartCanvas" height="205"></canvas>
+          <canvas id="priceChartCanvas" height="215"></canvas>
           <div style="font-size:9px;color:var(--text-2);margin:6px 0 3px;display:flex;justify-content:space-between;">
-            <span><strong>RSI(9)</strong> (Cyan) vs <strong>RSI(20)</strong> (Amber) — Confirms Top/Bottom Turn</span>
+            <span><strong>RSI(9)</strong> (Cyan) vs <strong>RSI(20)</strong> (Amber) — Confirms Post-SL-Hunt Reversal</span>
             <span id="rsiSignalTag" style="font-weight:800;">Scanning...</span>
           </div>
           <canvas id="rsiChartCanvas" height="82"></canvas>
         </div>
 
-        <div class="summary-box" style="border-color:rgba(139,92,246,0.35);">
+        <div class="summary-box" style="border-color:rgba(192,132,252,0.4);">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-            <strong style="color:#c4b5fd;">💱 FII Real USD Return & Tax Erosion Model</strong>
-            <button class="btn-sm" style="padding:2px 7px;font-size:10px;" onclick="openModal('usdModal')">USD/INR: ₹<span id="usdRateDisplay">92.47</span></button>
+            <strong style="color:var(--purple);">💱 FII Real USD Return & Tax Erosion Model</strong>
+            <button class="btn-sm" style="padding:2px 7px;font-size:10px;" onclick="openModal('usdModal')">USD/INR: ₹<span id="usdRateDisplay">92.62</span></button>
           </div>
-          <div style="color:var(--text-2);">
-            When INR weakens (92.20 → 92.60+), a +1.0% Nifty INR gain shrinks after USD conversion + 20% STCG / 12.5% LTCG Indian capital gains tax—triggering FII hedging or outflows when USD/INR spikes.
+          <div>
+            Rupee slipped to ₹92.62 today as Brent Crude rebounded above $96.50. When INR weakens, FIIs see their USD-denominated gains shrink (plus 20% STCG / 12.5% LTCG tax drag), prompting short-term hedging during US holidays.
           </div>
         </div>
 
         <div class="global-grid">
           <div class="metric-box">
-            <div class="metric-lbl">US WALL STREET & TARIFFS</div>
-            <div class="metric-val" style="font-size:12px;">Dow +0.31% • QQQ -0.65%</div>
-            <div class="metric-sub">NYSE Closed (Thanksgiving); 17% India tariff cap boosts IT.</div>
+            <div class="metric-lbl">US HOLIDAY & TARIFF OVERHANG</div>
+            <div class="metric-val" style="font-size:12px;">Thanksgiving / Black Friday</div>
+            <div class="metric-sub">Thin US FII desk + renewed US tariff worries hit IT stocks (-2%).</div>
           </div>
           <div class="metric-box">
             <div class="metric-lbl">FII DOLLAR-ADJUSTED NIFTY</div>
@@ -329,136 +373,109 @@
             <div class="metric-sub">Tracks true FII return after INR/USD conversion.</div>
           </div>
           <div class="metric-box">
-            <div class="metric-lbl">BRENT CRUDE & OPEC+</div>
-            <div class="metric-val red" style="font-size:12px;">Brent ~$94.70–$95.20</div>
-            <div class="metric-sub">Middle East tension ahead of 29 Nov OPEC+ meeting.</div>
+            <div class="metric-lbl">BRENT CRUDE & GOLD</div>
+            <div class="metric-val red" style="font-size:12px;">Brent $96.50 • Gold $3,629</div>
+            <div class="metric-sub">Middle East strikes lift oil & bullion; Metals & Gold lenders gain.</div>
           </div>
           <div class="metric-box">
-            <div class="metric-lbl">SENSEX EXPIRY ROLLOVER</div>
-            <div class="metric-val blue" id="liveSensexBox" style="font-size:12px;">26 Nov Monthly</div>
-            <div class="metric-sub">Rollover selling emerges inside Sellers' Supply Zone.</div>
-          </div>
-        </div>
-
-        <div class="catalyst-cols">
-          <div class="inst-panel" style="border-color:rgba(16,185,129,0.3);">
-            <div style="font-size:11px;font-weight:800;color:var(--green);margin-bottom:5px;">▲ POSITIVE CATALYSTS</div>
-            <ul style="font-size:10px;color:var(--text-2);margin-left:14px;line-height:1.45;">
-              <li><strong>US 17% Bilateral Tariff Cap:</strong> Beats 25% fallback rate; fuels IT & export stocks.</li>
-              <li><strong>30 Nov MSCI Rebalance:</strong> Passive FII inflows expected Monday 3:00–3:30 PM.</li>
-              <li><strong>Silver/Commodity Base:</strong> Silver jumped +3% on MCX after steep correction.</li>
-            </ul>
-          </div>
-          <div class="inst-panel" style="border-color:rgba(244,63,94,0.3);">
-            <div style="font-size:11px;font-weight:800;color:var(--red);margin-bottom:5px;">▼ NEGATIVE RISKS</div>
-            <ul style="font-size:10px;color:var(--text-2);margin-left:14px;line-height:1.45;">
-              <li><strong>Brent Crude Near $95:</strong> Pressures INR toward 92.60–92.80, reducing FII USD yield.</li>
-              <li><strong>Sellers' Zone Profit Booking:</strong> Confirmed top reversal triggers institutional Put buying.</li>
-              <li><strong>BOJ Hike Bets & 09 Dec FOMC:</strong> Rising Japanese & US yields tighten global liquidity.</li>
-            </ul>
+            <div class="metric-lbl">POST-EXPIRY SHORT COVERING</div>
+            <div class="metric-val blue" id="liveSensexBox" style="font-size:12px;">Sensex -600 pts</div>
+            <div class="metric-sub">Post-expiry digestion before 30 Nov MSCI inflows.</div>
           </div>
         </div>
       </section>
     </div>
 
-    <!-- PAGE 3: CONFIRMED REVERSAL SIGNALS & AUTO-PAPER TRIGGER -->
+    <!-- PAGE 3: CONFIRMED SMC REVERSAL SIGNALS -->
     <div id="view-opps" class="hidden">
       <section class="card">
         <div class="card-header">
-          <span class="step-pill">Confirmed Reversal Signals • 52W-High Filtered</span>
+          <span class="step-pill">SMC Reversal Signals • 52W-High Filtered</span>
           <span style="font-size:10px;color:var(--text-2);">Lots: <strong id="lotTag" style="color:#fff;">1</strong></span>
         </div>
 
-        <!-- AUTO-PAPER TRIGGER + MANUAL INTERVENTION CONTROL BAR -->
         <div class="auto-bar">
           <div>
-            <strong style="color:#c4b5fd;">⚡ Auto-Trigger Paper Trade</strong>
-            <div style="font-size:10px;color:var(--text-2);">Auto-executes 1st confirmed reversal + rings Tring-Tring (manual exit/edit always active)</div>
+            <strong style="color:var(--purple);">⚡ Auto-Trigger Paper Trade</strong>
+            <div style="font-size:10px;color:var(--text-2);">Auto-executes confirmed SMC zone reversal + rings vintage telephone bell</div>
           </div>
           <button class="btn-sm" id="autoTradeToggleBtn" onclick="toggleAutoPaper()" style="min-width:86px;">OFF (Manual)</button>
         </div>
 
         <div id="zoneGateSummary" class="gate-banner gate-wait">
-          <span>⏳ Checking Tight Sellers' & Buyers' Zones...</span>
+          <span>⏳ Checking SMC Sellers' & Buyers' Order Blocks...</span>
         </div>
 
         <div class="seg-tabs">
           <button class="seg-tab active" onclick="filterOpps('all', this)">Active Signal</button>
           <button class="seg-tab" onclick="filterOpps('equity', this)">Headroom Eq</button>
           <button class="seg-tab" onclick="filterOpps('hedge', this)">Hedges</button>
-          <button class="seg-tab" onclick="switchView('global')">View Zones</button>
+          <button class="seg-tab" onclick="switchView('global')">SMC Chart</button>
         </div>
 
         <div id="oppsContainer"></div>
       </section>
     </div>
 
-    <!-- PAGE 4: STRUCTURAL THEMES -->
+    <!-- PAGE 4: STRUCTURAL THEMES WITH 52W RANGE BAR -->
     <div id="view-themes" class="hidden">
       <section class="card">
         <div class="card-header">
-          <span class="step-pill">Structural Geopolitical Themes & Seasonal Cycles</span>
-          <span style="font-size:10px;color:var(--green);">52W-High Headroom Checked</span>
+          <span class="step-pill">Structural Geopolitical Themes & 52W Range Bars</span>
+          <span style="font-size:10px;color:var(--green);">Current vs Target & SL Arrows</span>
         </div>
 
         <div class="summary-box">
-          <strong class="amber">💎 Structural & Seasonal Edge + 52-Week High Guard:</strong>
-          Accumulate scarce supply-chain monopolies (<strong>Rare Earths, Fluorochemicals for Chip Etching, Semiconductor OSAT</strong>) only when they have healthy headroom below their 52-week / all-time high.
-        </div>
-
-        <div style="font-size:11px;font-weight:800;color:#60a5fa;margin-bottom:6px;">📅 INDIAN MARKET SEASONAL PEAK / TROUGH MAP:</div>
-        <div class="event-row" style="margin-bottom:12px;">
-          <div class="event-chip">
-            <strong class="amber">Oct – Nov (Peak)</strong>
-            <div style="color:var(--text-2);">Deepawali Auto & Electronics peak (Book profit / rotate after festive high).</div>
-          </div>
-          <div class="event-chip">
-            <strong class="green">Nov – Feb (Active Now)</strong>
-            <div style="color:var(--text-2);">Sugar crushing, Specialty Fluorochemicals, Defence & Capex pre-Budget.</div>
-          </div>
-          <div class="event-chip">
-            <strong class="blue">Mar – May (Upcoming)</strong>
-            <div style="color:var(--text-2);">Cooling/AC, Power Grid/Transformers & Q4 IT/Banking dividend accumulation.</div>
-          </div>
+          <strong class="amber">💎 Visual 52-Week Range Guide:</strong> Each card below displays a colorful 52-Week Low → High bar showing <strong>Current LTP (▼)</strong>, <strong>Stop Loss (▲)</strong>, and <strong>Target Price (▲)</strong> so you never buy an exhausted stock at its 1-year ceiling.
         </div>
 
         <div id="themesContainer"></div>
       </section>
     </div>
 
-    <!-- PAGE 5: LIVE OPTION CHAIN -->
+    <!-- PAGE 5: COMPLETE MULTI-INDEX OPTION CHAIN WITH FULL GREEKS & INVESTOR PICKS -->
     <div id="view-chain" class="hidden">
       <section class="card">
         <div class="card-header">
-          <span class="step-pill">Live Upstox Option Chain (Dec / Jan)</span>
-          <span style="font-size:10px;color:var(--green);">Low-Investment OTM/ATM</span>
+          <span class="step-pill">Multi-Index Option Chain • Δ Θ Γ ν Greeks</span>
+          <span style="font-size:10px;color:var(--green);">★ Investor Picks Highlighted</span>
         </div>
 
         <div class="oc-controls">
           <div>
-            <label style="font-size:10px;color:var(--text-2);">Index (Lot Size)</label>
+            <label style="font-size:10px;color:var(--text-2);">Select Index (Lot Size)</label>
             <select id="ocIndex" onchange="fetchLiveOptionChain()">
               <option value="NSE_INDEX|Nifty 50">NIFTY 50 (Lot: 65)</option>
               <option value="NSE_INDEX|Nifty Bank">BANK NIFTY (Lot: 30)</option>
+              <option value="BSE_INDEX|SENSEX">BSE SENSEX (Lot: 20)</option>
             </select>
           </div>
           <div>
-            <label style="font-size:10px;color:var(--text-2);">Long / Next Monthly Expiry</label>
+            <label style="font-size:10px;color:var(--text-2);">Longer Validity Expiry</label>
             <select id="ocExpiry" onchange="fetchLiveOptionChain()">
-              <option value="2026-12-29">29 Dec 2026 (Next Month)</option>
-              <option value="2027-01-28">28 Jan 2027 (Far Month)</option>
+              <option value="2026-12-29">29 Dec 2026 (Next Monthly)</option>
+              <option value="2027-01-28">28 Jan 2027 (Far Monthly)</option>
+              <option value="2027-03-25">25 Mar 2027 (Quarterly Long)</option>
             </select>
           </div>
         </div>
 
         <div id="ocStatus" style="font-size:11px;color:var(--amber);margin-bottom:8px;">
-          Connect Upstox token to load live NSE option chain strikes & LTPs.
+          Connect Upstox token to load full option chain & Greeks.
         </div>
 
         <div style="overflow-x:auto;">
           <table class="oc-table">
             <thead>
-              <tr><th>CE OI</th><th>CE LTP</th><th>Paper</th><th>STRIKE</th><th>Paper</th><th>PE LTP</th><th>PE OI</th></tr>
+              <tr>
+                <th>CE Greeks<br/>(Δ / Θ / Γ / ν)</th>
+                <th>CE LTP</th>
+                <th>Trade</th>
+                <th>STRIKE</th>
+                <th>Trade</th>
+                <th>PE LTP</th>
+                <th>PE Greeks<br/>(Δ / Θ / Γ / ν)</th>
+              </tr>
             </thead>
             <tbody id="ocBody"></tbody>
           </table>
@@ -466,12 +483,62 @@
       </section>
     </div>
 
-    <!-- PAGE 6: PAPER DESK, AUTO-TRIGGER & MANUAL INTERVENTION -->
+    <!-- PAGE 6: AI INVESTMENT OPINION ENGINE -->
+    <div id="view-ai" class="hidden">
+      <section class="card">
+        <div class="card-header">
+          <span class="step-pill">Page 6 • AI Investment Opinion & Risk Evaluator</span>
+          <span style="font-size:10px;color:var(--green);">Equity • Commodity • Futures • Options</span>
+        </div>
+
+        <div class="summary-box">
+          Enter any <strong>Equity, Commodity, Future, or Option Strike</strong> below. The AI engine cross-checks live spot/LTP, SMC Supply/Demand zones, Brent Crude ($96.50), INR (₹92.62), 52-week headroom, and option time decay before giving an actionable opinion.
+        </div>
+
+        <div class="ai-form-grid">
+          <div>
+            <label style="font-size:10px;color:var(--text-2);">Asset Segment</label>
+            <select id="aiAssetType">
+              <option value="OPTION">Option Strike (CE / PE)</option>
+              <option value="EQUITY">Equity Stock (Cash / Swing)</option>
+              <option value="FUTURES">Index / Stock Futures</option>
+              <option value="COMMODITY">Commodity (Gold / Crude / Silver)</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size:10px;color:var(--text-2);">Intended Action</label>
+            <select id="aiActionType">
+              <option value="BUY">BUY / LONG</option>
+              <option value="SELL">SELL / SHORT</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="ai-form-grid">
+          <div>
+            <label style="font-size:10px;color:var(--text-2);">Symbol / Strike (e.g. NIFTY 29 DEC 25600 PE or TITAN)</label>
+            <input type="text" id="aiSymbolInput" placeholder="e.g. NIFTY 29 DEC 25600 PE" />
+          </div>
+          <div>
+            <label style="font-size:10px;color:var(--text-2);">Your Entry / Current Price (₹)</label>
+            <input type="number" step="0.05" id="aiPriceInput" placeholder="e.g. 297.50" />
+          </div>
+        </div>
+
+        <button class="btn-paper" style="width:100%;margin-bottom:12px;" onclick="generateAiOpinion()">🧠 Analyze & Generate AI Investment Opinion</button>
+
+        <div id="aiOpinionOutput" class="ai-result-card">
+          Enter a symbol or option strike above and tap <strong>Analyze & Generate AI Investment Opinion</strong>.
+        </div>
+      </section>
+    </div>
+
+    <!-- PAGE 7: ANTI-FREEZE PAPER DESK & PROFIT PROTECTION -->
     <div id="view-desk" class="hidden">
       <section class="card">
         <div class="card-header">
-          <span class="step-pill">Paper Desk • Auto-Trigger & Manual Intervention</span>
-          <span style="font-size:10px;color:var(--text-2);" id="brokerFutureTag">Broker: Decide Later</span>
+          <span class="step-pill">Anti-Freeze Paper Desk • Profit Protection</span>
+          <span style="font-size:10px;color:var(--green);" id="deskPollerTag">Background Strike Poller: Active</span>
         </div>
 
         <div class="aerial-grid" style="grid-template-columns:1fr 1fr;">
@@ -480,7 +547,7 @@
             <div class="metric-val" id="paperCap">₹1,00,000</div>
           </div>
           <div class="metric-box">
-            <div class="metric-lbl">LIVE P&L (REAL TICKS)</div>
+            <div class="metric-lbl">LIVE P&L (ALL OPEN STRIKES)</div>
             <div class="metric-val" id="livePnl">₹0.00</div>
           </div>
         </div>
@@ -496,14 +563,14 @@
               </select>
             </div>
             <div>
-              <label style="font-size:10px;color:var(--text-2);">Lots (Nifty=65, BNF=30)</label>
+              <label style="font-size:10px;color:var(--text-2);">Lots (Nifty=65, BNF=30, Sensex=20)</label>
               <input type="number" id="lotInput" value="1" min="1" max="50" onchange="savePrefs()" />
             </div>
           </div>
           <div style="display:flex;justify-content:space-between;align-items:center;font-size:10px;color:var(--text-2);">
             <span>Auto-Paper: <strong id="deskAutoStatus">OFF</strong></span>
             <div>
-              <button class="btn-sm" onclick="playTringTring()">🔔 Test Tring-Tring</button>
+              <button class="btn-sm" onclick="playTringTring()">🔔 Test Telephone Bell</button>
               <button class="btn-sm" onclick="resetPaper()">Reset ₹1L</button>
             </div>
           </div>
@@ -512,19 +579,21 @@
         <div style="font-size:11px;font-weight:800;color:var(--amber);margin-bottom:6px;">🔔 ACTIVE AUTO-ALERTS (<span id="alertCount">0</span>)</div>
         <div id="alertsList" style="margin-bottom:12px;"></div>
 
-        <div style="font-size:11px;font-weight:800;color:#60a5fa;margin-bottom:6px;">📊 PAPER POSITIONS (LIVE TICK + MANUAL SL/EXIT)</div>
+        <div style="font-size:11px;font-weight:800;color:var(--blue);margin-bottom:6px;">📊 PAPER POSITIONS (CONTINUOUS LIVE LTP TRACKING)</div>
         <div id="positionsList"></div>
       </section>
     </div>
 
   </main>
 
+  <!-- 7-TAB BOTTOM NAVIGATION -->
   <nav class="bottom-nav">
     <button class="nav-btn active" id="nav-aerial" onclick="switchView('aerial')"><span class="nav-ico">🛰️</span><span>Aerial</span></button>
-    <button class="nav-btn" id="nav-global" onclick="switchView('global')"><span class="nav-ico">🌐</span><span>Zones/USD</span></button>
+    <button class="nav-btn" id="nav-global" onclick="switchView('global')"><span class="nav-ico">🌐</span><span>SMC/USD</span></button>
     <button class="nav-btn" id="nav-opps" onclick="switchView('opps')"><span class="nav-ico">🎯</span><span>Signals</span></button>
-    <button class="nav-btn" id="nav-themes" onclick="switchView('themes')"><span class="nav-ico">💎</span><span>Themes</span></button>
+    <button class="nav-btn" id="nav-themes" onclick="switchView('themes')"><span class="nav-ico">💎</span><span>52W/Themes</span></button>
     <button class="nav-btn" id="nav-chain" onclick="switchView('chain')"><span class="nav-ico">⛓️</span><span>Chain</span></button>
+    <button class="nav-btn" id="nav-ai" onclick="switchView('ai')"><span class="nav-ico">🤖</span><span>AI Opinion</span></button>
     <button class="nav-btn" id="nav-desk" onclick="switchView('desk')"><span class="nav-ico">🛡️</span><span>Desk(<span id="posCount">0</span>)</span></button>
   </nav>
 
@@ -572,8 +641,8 @@
   <div class="modal-bg" id="usdModal">
     <div class="modal-box">
       <h3 style="font-size:15px;margin-bottom:8px;">Update Live USD/INR Rate</h3>
-      <label style="font-size:11px;color:var(--text-2);">USD/INR Exchange Rate (Current: 92.47)</label>
-      <input type="number" step="0.01" id="inUsdInr" value="92.47" style="margin:4px 0 12px;" />
+      <label style="font-size:11px;color:var(--text-2);">USD/INR Exchange Rate (Current: 92.62)</label>
+      <input type="number" step="0.01" id="inUsdInr" value="92.62" style="margin:4px 0 12px;" />
       <div style="display:flex;gap:8px;">
         <button class="btn-paper" style="flex:1;" onclick="saveUsdRate()">Apply to FII USD Model</button>
         <button class="btn-sm" onclick="closeModal('usdModal')">Close</button>
@@ -610,9 +679,9 @@
   </div>
 
   <script>
-    const STORE_KEY = "anuragpulse_v10_state";
-    const LEGACY_KEYS = ["anuragpulse_v9_state", "anuragpulse_v8_state", "anuragpulse_v7_state"];
-    const QUOTE_CACHE_KEY = "anuragpulse_v10_quotes";
+    const STORE_KEY = "anuragpulse_v11_state";
+    const LEGACY_KEYS = ["anuragpulse_v10_state", "anuragpulse_v9_state", "anuragpulse_v8_state"];
+    const QUOTE_CACHE_KEY = "anuragpulse_v11_quotes";
 
     let appState = {
       accountId: "",
@@ -625,7 +694,7 @@
       lastAutoSignalId: "",
       fiiCash: 5673,
       diiCash: -2760,
-      usdInr: 92.47,
+      usdInr: 92.62,
       paperCapital: 100000,
       realizedPnl: 0,
       positions: [],
@@ -639,13 +708,16 @@
       vwap: null,
       rsi9: null,
       rsi20: null,
-      sellersZoneLow: null,
-      sellersZoneHigh: null,
-      buyersZoneLow: null,
-      buyersZoneHigh: null,
-      activeZone: "MID_CHOP",
-      confirmedTopReversal: false,    // Inside tight Sellers' Zone + Red reversal candle + RSI9 < RSI20
-      confirmedBottomReversal: false  // Inside tight Buyers' Zone + Green reversal candle + RSI9 > RSI20
+      tempSupport: null,
+      tempResistance: null,
+      sellersZoneLow: 25910,
+      sellersZoneHigh: 25960,
+      buyersZoneLow: 25520,
+      buyersZoneHigh: 25585,
+      slHuntBottom: false,
+      slHuntTop: false,
+      confirmedTopReversal: false,
+      confirmedBottomReversal: false
     };
     let chartMode = "NIFTY";
     let pollTimer = null;
@@ -659,72 +731,72 @@
       VIX: "NSE_INDEX|India VIX"
     };
 
-    // Includes 52-Week High reference fallback if Upstox quote lacks year_high
+    // Includes accurate 52-Week Low & 52-Week High bounds for visual range bars
     const WATCHLIST_STOCKS = [
-      { sym: "INFY", key: "NSE_EQ|INE009A01021", sector: "IT Services (17% Tariff Cap)", ref52High: 1995 },
-      { sym: "TCS", key: "NSE_EQ|INE467B01029", sector: "IT Services", ref52High: 4592 },
-      { sym: "HCLTECH", key: "NSE_EQ|INE860A01027", sector: "IT Services", ref52High: 1965 },
-      { sym: "ICICIBANK", key: "NSE_EQ|INE090A01021", sector: "Private Bank", ref52High: 1365 },
-      { sym: "HDFCBANK", key: "NSE_EQ|INE040A01034", sector: "Private Bank", ref52High: 1880 },
-      { sym: "TATASTEEL", key: "NSE_EQ|INE081A01020", sector: "Metals", ref52High: 184 },
-      { sym: "GMDCLTD", key: "NSE_EQ|INE131A01031", sector: "Rare Earth & Fluorspar", ref52High: 465 },
-      { sym: "SRF", key: "NSE_EQ|INE647A01010", sector: "Fluorochemicals & Ref Gas", ref52High: 2790 },
-      { sym: "NAVINFLUOR", key: "NSE_EQ|INE048G01026", sector: "Specialty Fluorochemicals", ref52High: 4380 },
-      { sym: "CGPOWER", key: "NSE_EQ|INE067A01029", sector: "Semiconductor OSAT & Power", ref52High: 874 },
-      { sym: "BEL", key: "NSE_EQ|INE263A01024", sector: "Defence Electronics", ref52High: 340 },
-      { sym: "DIXON", key: "NSE_EQ|INE935N01020", sector: "Electronics Mfg (Seasonal)", ref52High: 17850 }
+      { sym: "TITAN", key: "NSE_EQ|INE280A01028", sector: "Consumer / Jewellery", low52: 3055, high52: 4890 },
+      { sym: "TATASTEEL", key: "NSE_EQ|INE081A01020", sector: "Metals Outperformer", low52: 122, high52: 184 },
+      { sym: "BEL", key: "NSE_EQ|INE263A01024", sector: "Defence Electronics", low52: 240, high52: 435 },
+      { sym: "POWERGRID", key: "NSE_EQ|INE752E01010", sector: "Power Grid Utility", low52: 247, high52: 366 },
+      { sym: "INFY", key: "NSE_EQ|INE009A01021", sector: "IT Services (Tariff Drag)", low52: 1080, high52: 1995 },
+      { sym: "TCS", key: "NSE_EQ|INE467B01029", sector: "IT Services", low52: 2420, high52: 4592 },
+      { sym: "ICICIBANK", key: "NSE_EQ|INE090A01021", sector: "Private Bank", low52: 1040, high52: 1365 },
+      { sym: "HDFCBANK", key: "NSE_EQ|INE040A01034", sector: "Private Bank", low52: 1420, high52: 1880 },
+      { sym: "GMDCLTD", key: "NSE_EQ|INE131A01031", sector: "Rare Earth & Fluorspar", low52: 278, high52: 465 },
+      { sym: "SRF", key: "NSE_EQ|INE647A01010", sector: "Fluorochemicals", low52: 2050, high52: 2790 },
+      { sym: "NAVINFLUOR", key: "NSE_EQ|INE048G01026", sector: "Chip Fluorochemicals", low52: 2980, high52: 4380 },
+      { sym: "CGPOWER", key: "NSE_EQ|INE067A01029", sector: "Semiconductor OSAT", low52: 535, high52: 874 }
     ];
 
     const STRUCTURAL_THEMES = [
-      { sym: "GMDCLTD", key: "NSE_EQ|INE131A01031", ref52High: 465, theme: "RARE EARTH & FLUORSPAR", lotSize: 25, thesis: "Ambadungar Rare Earth project with BARC & NMDC; Q2 FY27 PBT +51% YoY." },
-      { sym: "NAVINFLUOR", key: "NSE_EQ|INE048G01026", ref52High: 4380, theme: "CHIP ETCHING FLUOROCHEMICALS", lotSize: 15, thesis: "High-purity hydrofluoric & specialty fluorochemicals for semiconductor wafer cleaning." },
-      { sym: "SRF", key: "NSE_EQ|INE647A01010", ref52High: 2790, theme: "SPECIALTY FLUOROCHEMICALS", lotSize: 15, thesis: "Global supply-chain shift away from China in fluoropolymers & Q3-Q4 cooling demand." },
-      { sym: "CGPOWER", key: "NSE_EQ|INE067A01029", ref52High: 874, theme: "SEMICONDUCTOR OSAT", lotSize: 25, thesis: "Zero-debt semiconductor OSAT facility execution + transformer order book." },
-      { sym: "DIXON", key: "NSE_EQ|INE935N01020", ref52High: 17850, theme: "SEASONAL POST-DIWALI DIP", lotSize: 10, thesis: "Peaks in Oct-Nov Deepawali demand; accumulate on Nov-Dec dips before Q4 PLI ramp." }
+      { sym: "GMDCLTD", key: "NSE_EQ|INE131A01031", low52: 278, high52: 465, theme: "RARE EARTH & FLUORSPAR", lotSize: 25, thesis: "Ambadungar Rare Earth project with BARC & NMDC; Q2 FY27 PBT +51% YoY." },
+      { sym: "NAVINFLUOR", key: "NSE_EQ|INE048G01026", low52: 2980, high52: 4380, theme: "CHIP ETCHING FLUOROCHEMICALS", lotSize: 15, thesis: "High-purity hydrofluoric & specialty fluorochemicals for semiconductor wafer cleaning." },
+      { sym: "SRF", key: "NSE_EQ|INE647A01010", low52: 2050, high52: 2790, theme: "SPECIALTY FLUOROCHEMICALS", lotSize: 15, thesis: "Global supply-chain shift away from China in fluoropolymers & Q3-Q4 cooling demand." },
+      { sym: "CGPOWER", key: "NSE_EQ|INE067A01029", low52: 535, high52: 874, theme: "SEMICONDUCTOR OSAT", lotSize: 25, thesis: "Zero-debt semiconductor OSAT facility execution + transformer order book." },
+      { sym: "BEL", key: "NSE_EQ|INE263A01024", low52: 240, high52: 435, theme: "DEFENCE ELECTRONICS", lotSize: 25, thesis: "Strong defence radar/EW order execution with healthy headroom below 52W peak." }
     ];
 
-    // --- CLASSIC TELEPHONE "TRING-TRING" RINGTONE (WEB AUDIO API) ---
+    // --- VINTAGE ROTARY TELEPHONE BRASS BELL RINGTONE ---
     function playTringTring() {
       try {
         const AudioCtx = window.AudioContext || window.webkitAudioContext;
         const ctx = new AudioCtx();
         const now = ctx.currentTime;
 
-        // Two double-bell bursts ("Tring-Tring ... Tring-Tring")
-        [0, 0.55].forEach(offset => {
-          const osc1 = ctx.createOscillator();
-          const osc2 = ctx.createOscillator();
-          const lfo = ctx.createOscillator();
-          const lfoGain = ctx.createGain();
-          const mainGain = ctx.createGain();
+        // Classic double-ring ("Tring-Tring ... Tring-Tring") with dual brass gong partials
+        [0, 0.52].forEach(offset => {
+          const partials = [820, 1245, 1690];
+          const master = ctx.createGain();
+          const hammer = ctx.createOscillator();
+          const hammerGain = ctx.createGain();
 
-          osc1.type = "triangle";
-          osc2.type = "sine";
-          osc1.frequency.setValueAtTime(1180, now + offset);
-          osc2.frequency.setValueAtTime(1480, now + offset);
+          // 24 Hz mechanical striker hammer hitting the brass dome
+          hammer.type = "square";
+          hammer.frequency.setValueAtTime(24, now + offset);
+          hammerGain.gain.setValueAtTime(0.45, now + offset);
 
-          // 22 Hz rapid clapper hammer modulation for authentic bell tring
-          lfo.frequency.setValueAtTime(22, now + offset);
-          lfoGain.gain.setValueAtTime(0.45, now + offset);
+          master.gain.setValueAtTime(0.001, now + offset);
+          master.gain.linearRampToValueAtTime(0.32, now + offset + 0.02);
+          master.gain.setValueAtTime(0.32, now + offset + 0.34);
+          master.gain.exponentialRampToValueAtTime(0.0008, now + offset + 0.40);
 
-          mainGain.gain.setValueAtTime(0.01, now + offset);
-          mainGain.gain.linearRampToValueAtTime(0.35, now + offset + 0.03);
-          mainGain.gain.setValueAtTime(0.35, now + offset + 0.36);
-          mainGain.gain.exponentialRampToValueAtTime(0.001, now + offset + 0.42);
+          hammer.connect(hammerGain);
+          hammerGain.connect(master.gain);
+          master.connect(ctx.destination);
 
-          lfo.connect(lfoGain);
-          lfoGain.connect(mainGain.gain);
-          osc1.connect(mainGain);
-          osc2.connect(mainGain);
-          mainGain.connect(ctx.destination);
+          partials.forEach((freq, i) => {
+            const osc = ctx.createOscillator();
+            const g = ctx.createGain();
+            osc.type = i === 0 ? "triangle" : "sine";
+            osc.frequency.setValueAtTime(freq, now + offset);
+            g.gain.setValueAtTime(i === 0 ? 0.6 : (i === 1 ? 0.35 : 0.2), now + offset);
+            osc.connect(g);
+            g.connect(master);
+            osc.start(now + offset);
+            osc.stop(now + offset + 0.41);
+          });
 
-          osc1.start(now + offset);
-          osc2.start(now + offset);
-          lfo.start(now + offset);
-
-          osc1.stop(now + offset + 0.43);
-          osc2.stop(now + offset + 0.43);
-          lfo.stop(now + offset + 0.43);
+          hammer.start(now + offset);
+          hammer.stop(now + offset + 0.41);
         });
       } catch (e) {}
     }
@@ -732,15 +804,26 @@
     function normKey(k) { return (k || "").replace(":", "|").trim(); }
     function getQ(k) { return liveQuotes[normKey(k)] || liveQuotes[k] || null; }
 
-    function get52WHeadroom(q, fallbackHigh) {
-      const high52 = q?.high52 || fallbackHigh;
-      if (!q || !q.ltp || !high52) return { high52: null, pctFromHigh: null, nearTop: false };
-      const pctFromHigh = +(((high52 - q.ltp) / high52) * 100).toFixed(1);
-      return {
-        high52,
-        pctFromHigh,
-        nearTop: pctFromHigh <= 1.5 // Within 1.5% of 52-week / All-Time High -> weak further momentum
-      };
+    function build52WBarHtml(ltp, low52, high52, sl, tgt) {
+      if (!ltp || !low52 || !high52 || high52 <= low52) return "";
+      const clamp = v => Math.max(2, Math.min(98, ((v - low52) / (high52 - low52)) * 100));
+      const curPos = clamp(ltp).toFixed(1);
+      const slPos = clamp(sl).toFixed(1);
+      const tgtPos = clamp(tgt).toFixed(1);
+      return `
+        <div class="range52-wrap">
+          <div class="range52-labels">
+            <span>52W Low: ₹${low52}</span>
+            <span style="color:var(--blue);">LTP: ₹${ltp}</span>
+            <span>52W High: ₹${high52}</span>
+          </div>
+          <div class="range52-bar">
+            <span class="marker-pin pin-cur" style="left:${curPos}%;">▼ ₹${ltp}</span>
+            <span class="marker-pin pin-sl" style="left:${slPos}%;">▲ SL ₹${sl}</span>
+            <span class="marker-pin pin-tgt" style="left:${tgtPos}%;">▲ Tgt ₹${tgt}</span>
+          </div>
+        </div>
+      `;
     }
 
     function loadState() {
@@ -763,7 +846,6 @@
       document.getElementById("lotInput").value = appState.lots;
       document.getElementById("lotTag").textContent = appState.lots;
       document.getElementById("protMode").value = appState.protMode;
-      document.getElementById("brokerFutureTag").textContent = `Broker: ${appState.brokerChoice}`;
       document.getElementById("usdRateDisplay").textContent = appState.usdInr.toFixed(2);
       document.getElementById("fiiDiiBadge").textContent = `FII: ${appState.fiiCash >= 0 ? "+" : ""}₹${appState.fiiCash} Cr | DII: ${appState.diiCash >= 0 ? "+" : ""}₹${appState.diiCash} Cr`;
       updateAutoTradeUI();
@@ -842,7 +924,6 @@
       appState.brokerChoice = broker;
       saveState();
       document.getElementById("acctLabel").textContent = `(${acct})`;
-      document.getElementById("brokerFutureTag").textContent = `Broker: ${broker}`;
       closeModal("authModal");
       setConnBadge(true, "● UPSTOX LIVE ACTIVE");
       startEngine();
@@ -872,19 +953,21 @@
       if (pollTimer) clearInterval(pollTimer);
       pollTimer = setInterval(() => {
         if (!document.hidden) syncAllFeeds(false);
-      }, 4500);
+      }, 3800);
     }
 
     document.addEventListener("visibilitychange", () => {
       if (!document.hidden && appState.accessToken) syncAllFeeds(true);
     });
 
+    // --- ANTI-FREEZE POLLER: ALWAYS INCLUDES ALL OPEN PAPER POSITION KEYS ---
     async function syncAllFeeds(fullSync = false) {
       if (!appState.accessToken || isFetching) return;
       isFetching = true;
       const healthEl = document.getElementById("feedHealthText");
 
       try {
+        // 1. Core Indices
         const idxKeys = encodeURIComponent(Object.values(INDEX_KEYS).join(","));
         const idxRes = await fetch(`https://api.upstox.com/v2/market-quote/quotes?instrument_key=${idxKeys}`, {
           headers: { "Authorization": `Bearer ${appState.accessToken}`, "Accept": "application/json" }
@@ -905,21 +988,19 @@
             const nk = normKey(q.instrument_token || k);
             if (nk && typeof q.last_price === "number" && q.last_price > 0) {
               const prev = q.ohlc?.close || q.cp || q.last_price;
+              const chg = typeof q.net_change === "number" && q.net_change !== 0 ? q.net_change : +(q.last_price - prev).toFixed(2);
+              const pct = prev > 0 ? +((chg / prev) * 100).toFixed(2) : 0;
               liveQuotes[nk] = {
-                ltp: q.last_price,
-                open: q.ohlc?.open || q.last_price,
-                high: q.ohlc?.high || q.last_price,
-                low: q.ohlc?.low || q.last_price,
-                close: prev,
-                chg: +(q.last_price - prev).toFixed(2),
-                pct: prev > 0 ? +(((q.last_price - prev) / prev) * 100).toFixed(2) : 0,
-                vol: q.volume || 0
+                ltp: q.last_price, open: q.ohlc?.open || q.last_price,
+                high: q.ohlc?.high || q.last_price, low: q.ohlc?.low || q.last_price,
+                close: prev, chg, pct, vol: q.volume || 0
               };
               okCount++;
             }
           });
         }
 
+        // 2. Watchlist Stocks (Fixes 0.00% bug using net_change & ohlc.close)
         const stkKeys = encodeURIComponent(WATCHLIST_STOCKS.map(s => s.key).join(","));
         const stkRes = await fetch(`https://api.upstox.com/v2/market-quote/quotes?instrument_key=${stkKeys}`, {
           headers: { "Authorization": `Bearer ${appState.accessToken}`, "Accept": "application/json" }
@@ -930,18 +1011,34 @@
             const nk = normKey(q.instrument_token || k);
             if (nk && typeof q.last_price === "number" && q.last_price > 0) {
               const prev = q.ohlc?.close || q.cp || q.last_price;
+              const chg = typeof q.net_change === "number" && q.net_change !== 0 ? q.net_change : +(q.last_price - prev).toFixed(2);
+              const pct = prev > 0 ? +((chg / prev) * 100).toFixed(2) : 0;
               liveQuotes[nk] = {
-                ltp: q.last_price,
-                open: q.ohlc?.open || q.last_price,
-                close: prev,
-                high52: q["52_week_high"] || q.year_high || null,
-                chg: +(q.last_price - prev).toFixed(2),
-                pct: prev > 0 ? +(((q.last_price - prev) / prev) * 100).toFixed(2) : 0,
-                vol: q.volume || 0
+                ltp: q.last_price, open: q.ohlc?.open || q.last_price,
+                close: prev, high52: q["52_week_high"] || q.year_high || null,
+                chg, pct, vol: q.volume || 0
               };
               okCount++;
             }
           });
+        }
+
+        // 3. Dedicated Anti-Freeze Poller for ALL Open Paper Position Keys
+        const openKeys = [...new Set(appState.positions.filter(p => p.status === "OPEN").map(p => p.instKey).filter(Boolean))];
+        if (openKeys.length > 0) {
+          const posRes = await fetch(`https://api.upstox.com/v2/market-quote/ltp?instrument_key=${encodeURIComponent(openKeys.join(","))}`, {
+            headers: { "Authorization": `Bearer ${appState.accessToken}`, "Accept": "application/json" }
+          });
+          const posJson = await posRes.json();
+          if (posJson.status === "success" && posJson.data) {
+            Object.entries(posJson.data).forEach(([k, q]) => {
+              const nk = normKey(q.instrument_token || k);
+              if (nk && typeof q.last_price === "number" && q.last_price > 0) {
+                liveQuotes[nk] = { ...(liveQuotes[nk] || {}), ltp: q.last_price };
+                okCount++;
+              }
+            });
+          }
         }
 
         if (okCount > 0) {
@@ -955,7 +1052,7 @@
         }
 
         if (fullSync || intradayCandles.length === 0) {
-          await fetchIntradayCandlesAndZones();
+          await fetchIntradayCandlesAndSmcZones();
           await fetchLiveOptionChain();
         }
       } catch (e) {
@@ -987,8 +1084,8 @@
       return res;
     }
 
-    // --- TIGHT 30-PT ZONES + CONFIRMED TOP/BOTTOM REVERSAL ENGINE ---
-    async function fetchIntradayCandlesAndZones() {
+    // --- SMART MONEY CONCEPT (SMC) STOP-LOSS HUNT & MACRO LIQUIDITY ENGINE ---
+    async function fetchIntradayCandlesAndSmcZones() {
       if (!appState.accessToken) return;
       try {
         const key = encodeURIComponent(INDEX_KEYS.NIFTY);
@@ -996,22 +1093,16 @@
           headers: { "Authorization": `Bearer ${appState.accessToken}`, "Accept": "application/json" }
         });
         const json = await res.json();
-        if (json.status === "success" && Array.isArray(json.data?.candles) && json.data.candles.length > 3) {
+        if (json.status === "success" && Array.isArray(json.data?.candles) && json.data.candles.length > 5) {
           intradayCandles = [...json.data.candles].reverse();
           let cumPV = 0, cumVol = 0;
-          const closes = [];
-          const highs = [];
-          const lows = [];
-          const vwapSeries = [];
+          const closes = [], highs = [], lows = [], vwapSeries = [];
 
           intradayCandles.forEach(c => {
-            highs.push(c[2]);
-            lows.push(c[3]);
-            closes.push(c[4]);
+            highs.push(c[2]); lows.push(c[3]); closes.push(c[4]);
             const tp = (c[2] + c[3] + c[4]) / 3;
             const vol = c[5] > 0 ? c[5] : 1;
-            cumPV += tp * vol;
-            cumVol += vol;
+            cumPV += tp * vol; cumVol += vol;
             vwapSeries.push(+(cumPV / cumVol).toFixed(2));
           });
 
@@ -1019,58 +1110,47 @@
           const rsi20Arr = computeRsiSeries(closes, 20);
           const lastIdx = closes.length - 1;
           const prevIdx = lastIdx - 1;
-
           const latestClose = closes[lastIdx];
-          const prevLow = lows[prevIdx];
-          const prevHigh = highs[prevIdx];
           const latestVwap = vwapSeries[lastIdx];
 
-          // Recent 45-min swing high for tight 30-pt Sellers' Supply Zone
-          const recentHigh = Math.max(...highs.slice(-45));
-          const sellersZoneHigh = +(recentHigh + 10).toFixed(1);
-          const sellersZoneLow = +(recentHigh - 20).toFixed(1);
+          // Temporary intraday liquidity levels (where retail stop-losses cluster)
+          const priorLows = lows.slice(0, Math.max(5, lastIdx - 5));
+          const priorHighs = highs.slice(0, Math.max(5, lastIdx - 5));
+          const tempSupport = +Math.min(...priorLows).toFixed(1);
+          const tempResistance = +Math.max(...priorHighs).toFixed(1);
 
-          // Tight 30-pt Buyers' Demand Zone centered directly on VWAP
-          const buyersZoneHigh = +(latestVwap + 15).toFixed(1);
-          const buyersZoneLow = +(latestVwap - 15).toFixed(1);
+          // Actual Structural Smart Money Order Blocks (Macro + Multi-Session Levels)
+          const nQuote = getQ(INDEX_KEYS.NIFTY);
+          const prevClose = nQuote?.close || 25884.5;
+          const actualSellersHigh = +(Math.max(prevClose + 75, tempResistance + 35)).toFixed(1);
+          const actualSellersLow = +(actualSellersHigh - 45).toFixed(1);
 
-          const r9 = rsi9Arr[lastIdx];
-          const r20 = rsi20Arr[lastIdx];
-          const pr9 = rsi9Arr[prevIdx];
-          const pr20 = rsi20Arr[prevIdx];
+          const actualBuyersHigh = +(Math.min(prevClose - 290, tempSupport - 15)).toFixed(1);
+          const actualBuyersLow = +(actualBuyersHigh - 55).toFixed(1);
 
-          // 3-Step Confirmed Top Reversal:
-          // (1) Price in tight Sellers' Zone + (2) Bearish reversal close below prior candle low + (3) RSI(9) crosses below RSI(20)
-          const inSellersZone = latestClose >= sellersZoneLow && latestClose <= sellersZoneHigh;
-          const topCandleTurn = latestClose < prevLow;
-          const rsiBearCross = r9 !== null && r20 !== null && r9 < r20 && (pr9 >= pr20 || r20 > 58);
-          const confirmedTopReversal = inSellersZone && topCandleTurn && rsiBearCross;
+          // Detect Smart Money Stop-Loss Hunt (Liquidity Sweep)
+          const recentLow = Math.min(...lows.slice(-6));
+          const recentHigh = Math.max(...highs.slice(-6));
+          const slHuntBottom = recentLow < tempSupport && latestClose > tempSupport; // Swept below temp low & reclaimed
+          const slHuntTop = recentHigh > tempResistance && latestClose < tempResistance; // Swept above temp high & rejected
 
-          // 3-Step Confirmed Bottom Reversal:
-          // (1) Price in tight Buyers' VWAP Zone + (2) Bullish reversal close above prior candle high + (3) RSI(9) crosses above RSI(20)
-          const inBuyersZone = latestClose >= buyersZoneLow && latestClose <= buyersZoneHigh;
-          const bottomCandleTurn = latestClose > prevHigh;
-          const rsiBullCross = r9 !== null && r20 !== null && r9 > r20 && (pr9 <= pr20 || r20 < 42);
-          const confirmedBottomReversal = inBuyersZone && bottomCandleTurn && rsiBullCross;
+          const r9 = rsi9Arr[lastIdx], r20 = rsi20Arr[lastIdx];
+          const pr9 = rsi9Arr[prevIdx], pr20 = rsi20Arr[prevIdx];
+          const rsiCrossDown = r9 !== null && r20 !== null && r9 < r20 && (pr9 >= pr20 || r20 > 56);
+          const rsiCrossUp = r9 !== null && r20 !== null && r9 > r20 && (pr9 <= pr20 || r20 < 44);
 
-          let activeZone = "MID_CHOP";
-          if (inSellersZone) activeZone = "SELLERS_ZONE";
-          else if (inBuyersZone) activeZone = "BUYERS_ZONE";
+          const inActualBuyers = latestClose <= actualBuyersHigh + 25;
+          const inActualSellers = latestClose >= actualSellersLow - 25;
+
+          const confirmedBottomReversal = (inActualBuyers || slHuntBottom) && latestClose > highs[prevIdx] && rsiCrossUp;
+          const confirmedTopReversal = (inActualSellers || slHuntTop) && latestClose < lows[prevIdx] && rsiCrossDown;
 
           techState = {
-            vwap: latestVwap,
-            vwapSeries,
-            rsi9Arr,
-            rsi20Arr,
-            rsi9: r9,
-            rsi20: r20,
-            sellersZoneLow,
-            sellersZoneHigh,
-            buyersZoneLow,
-            buyersZoneHigh,
-            activeZone,
-            confirmedTopReversal,
-            confirmedBottomReversal
+            vwap: latestVwap, vwapSeries, rsi9Arr, rsi20Arr, rsi9: r9, rsi20: r20,
+            tempSupport, tempResistance,
+            sellersZoneLow: actualSellersLow, sellersZoneHigh: actualSellersHigh,
+            buyersZoneLow: actualBuyersLow, buyersZoneHigh: actualBuyersHigh,
+            slHuntBottom, slHuntTop, confirmedTopReversal, confirmedBottomReversal
           };
 
           document.getElementById("vwapRsiQuick").textContent = `VWAP: ${latestVwap} | RSI(9/20): ${r9 ?? "--"}/${r20 ?? "--"}`;
@@ -1087,7 +1167,7 @@
       const confirmed = opps.find(o => o.isConfirmedReversal);
       if (!confirmed) return;
 
-      const sigStamp = `${confirmed.id}_${Math.floor(Date.now() / 600000)}`; // Once per 10-min window
+      const sigStamp = `${confirmed.id}_${Math.floor(Date.now() / 600000)}`;
       if (appState.lastAutoSignalId === sigStamp) return;
 
       appState.lastAutoSignalId = sigStamp;
@@ -1109,20 +1189,21 @@
 
       const dpr = window.devicePixelRatio || 1;
       const w = pCanvas.parentElement.clientWidth - 20;
-      pCanvas.width = w * dpr; pCanvas.height = 205 * dpr;
+      pCanvas.width = w * dpr; pCanvas.height = 215 * dpr;
       rCanvas.width = w * dpr; rCanvas.height = 82 * dpr;
 
       const ctx = pCanvas.getContext("2d");
       ctx.scale(dpr, dpr);
-      ctx.clearRect(0, 0, w, 205);
+      ctx.clearRect(0, 0, w, 215);
 
       const div = chartMode === "FII_USD" ? appState.usdInr : 1;
       const prices = intradayCandles.map(c => c[4] / div);
       const vwaps = (techState.vwapSeries || []).map(v => v / div);
-      const sHigh = (techState.sellersZoneHigh || Math.max(...prices)) / div;
-      const sLow = (techState.sellersZoneLow || Math.max(...prices)) / div;
-      const bHigh = (techState.buyersZoneHigh || Math.min(...prices)) / div;
-      const bLow = (techState.buyersZoneLow || Math.min(...prices)) / div;
+      const sHigh = techState.sellersZoneHigh / div;
+      const sLow = techState.sellersZoneLow / div;
+      const bHigh = techState.buyersZoneHigh / div;
+      const bLow = techState.buyersZoneLow / div;
+      const tSup = (techState.tempSupport || Math.min(...prices)) / div;
 
       const allVals = [...prices, ...vwaps, sHigh, bLow];
       const minV = Math.min(...allVals);
@@ -1130,40 +1211,41 @@
       const span = (maxV - minV) || 1;
 
       const toX = i => 10 + (i / (prices.length - 1)) * (w - 20);
-      const toY = v => 185 - ((v - minV) / span) * 162;
+      const toY = v => 195 - ((v - minV) / span) * 172;
 
-      // TIGHT RED SELLERS' SUPPLY BAND (30 PTS)
-      const ySHigh = toY(sHigh);
-      const ySLow = toY(sLow);
+      // ACTUAL SELLERS' ORDER BLOCK (RED)
+      const ySHigh = toY(sHigh), ySLow = toY(sLow);
       ctx.fillStyle = "rgba(244, 63, 94, 0.24)";
-      ctx.fillRect(10, ySHigh, w - 20, Math.max(5, ySLow - ySHigh));
-      ctx.fillStyle = "#fda4af";
-      ctx.font = "bold 9px sans-serif";
-      ctx.fillText(`TIGHT SELLERS' ZONE (${sLow.toFixed(1)}–${sHigh.toFixed(1)})`, 14, Math.max(12, ySHigh - 3));
+      ctx.fillRect(10, ySHigh, w - 20, Math.max(6, ySLow - ySHigh));
+      ctx.fillStyle = "#fda4af"; ctx.font = "bold 9px sans-serif";
+      ctx.fillText(`ACTUAL SELLERS' BLOCK (${sLow.toFixed(0)}–${sHigh.toFixed(0)})`, 14, Math.max(12, ySHigh - 3));
 
-      // TIGHT GREEN BUYERS' VWAP BAND (30 PTS)
-      const yBHigh = toY(bHigh);
-      const yBLow = toY(bLow);
+      // ACTUAL BUYERS' ORDER BLOCK (GREEN)
+      const yBHigh = toY(bHigh), yBLow = toY(bLow);
       ctx.fillStyle = "rgba(16, 185, 129, 0.24)";
-      ctx.fillRect(10, yBHigh, w - 20, Math.max(5, yBLow - yBHigh));
+      ctx.fillRect(10, yBHigh, w - 20, Math.max(6, yBLow - yBHigh));
       ctx.fillStyle = "#6ee7b7";
-      ctx.fillText(`TIGHT BUYERS' VWAP ZONE (${bLow.toFixed(1)}–${bHigh.toFixed(1)})`, 14, Math.min(200, yBLow + 10));
+      ctx.fillText(`ACTUAL BUYERS' BLOCK (${bLow.toFixed(0)}–${bHigh.toFixed(0)})`, 14, Math.min(210, yBLow + 10));
+
+      // TEMPORARY LIQUIDITY / STOP-LOSS HUNT LINE
+      const yTSup = toY(tSup);
+      ctx.strokeStyle = "#f43f5e"; ctx.lineWidth = 1; ctx.setLineDash([2, 2]);
+      ctx.beginPath(); ctx.moveTo(10, yTSup); ctx.lineTo(w - 10, yTSup); ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = "#fb7185";
+      ctx.fillText(`Temp Liquidity / SL Hunt Line (${tSup.toFixed(0)})`, 14, yTSup - 3);
 
       // VWAP Line
       if (vwaps.length === prices.length) {
-        ctx.strokeStyle = "#f59e0b";
-        ctx.lineWidth = 1.5;
-        ctx.setLineDash([4, 3]);
+        ctx.strokeStyle = "#fbbf24"; ctx.lineWidth = 1.5; ctx.setLineDash([4, 3]);
         ctx.beginPath();
         vwaps.forEach((v, i) => i === 0 ? ctx.moveTo(toX(i), toY(v)) : ctx.lineTo(toX(i), toY(v)));
-        ctx.stroke();
-        ctx.setLineDash([]);
+        ctx.stroke(); ctx.setLineDash([]);
       }
 
       // Price Line
-      ctx.strokeStyle = chartMode === "FII_USD" ? "#a78bfa" : "#38bdf8";
-      ctx.lineWidth = 2;
-      ctx.beginPath();
+      ctx.strokeStyle = chartMode === "FII_USD" ? "#c084fc" : "#38bdf8";
+      ctx.lineWidth = 2.2; ctx.beginPath();
       prices.forEach((v, i) => i === 0 ? ctx.moveTo(toX(i), toY(v)) : ctx.lineTo(toX(i), toY(v)));
       ctx.stroke();
 
@@ -1174,16 +1256,14 @@
 
       // RSI Sub-chart
       const rCtx = rCanvas.getContext("2d");
-      rCtx.scale(dpr, dpr);
-      rCtx.clearRect(0, 0, w, 82);
-      const r9 = techState.rsi9Arr || [];
-      const r20 = techState.rsi20Arr || [];
+      rCtx.scale(dpr, dpr); rCtx.clearRect(0, 0, w, 82);
+      const r9 = techState.rsi9Arr || [], r20 = techState.rsi20Arr || [];
       const rY = v => 72 - (v / 100) * 62;
 
-      rCtx.strokeStyle = "rgba(148,163,184,0.18)";
+      rCtx.strokeStyle = "rgba(148,163,184,0.2)";
       [30, 50, 70].forEach(lvl => { rCtx.beginPath(); rCtx.moveTo(10, rY(lvl)); rCtx.lineTo(w - 10, rY(lvl)); rCtx.stroke(); });
 
-      rCtx.strokeStyle = "#f59e0b"; rCtx.lineWidth = 1.5; rCtx.beginPath();
+      rCtx.strokeStyle = "#fbbf24"; rCtx.lineWidth = 1.5; rCtx.beginPath();
       let s20 = false;
       r20.forEach((v, i) => { if (v !== null) { if (!s20) { rCtx.moveTo(toX(i), rY(v)); s20 = true; } else rCtx.lineTo(toX(i), rY(v)); } });
       rCtx.stroke();
@@ -1196,15 +1276,44 @@
       document.getElementById("rsiHeaderStat").textContent = `RSI(9): ${techState.rsi9 ?? "--"} | RSI(20): ${techState.rsi20 ?? "--"}`;
       const tag = document.getElementById("rsiSignalTag");
       if (techState.confirmedTopReversal) {
-        tag.textContent = "🔴 TOP REVERSAL CONFIRMED → PUT TRIGGERED";
-        tag.style.color = "var(--red)";
+        tag.textContent = "🔴 SELLERS' BLOCK REJECTION → PUT CONFIRMED"; tag.style.color = "var(--red)";
       } else if (techState.confirmedBottomReversal) {
-        tag.textContent = "🟢 BOTTOM REVERSAL CONFIRMED → CALL TRIGGERED";
-        tag.style.color = "var(--green)";
+        tag.textContent = "🟢 POST-SL-HUNT BUYERS' REVERSAL → CALL CONFIRMED"; tag.style.color = "var(--green)";
       } else {
-        tag.textContent = "⏳ WAITING FOR TIGHT ZONE + CANDLE & RSI REVERSAL";
-        tag.style.color = "var(--amber)";
+        tag.textContent = "⏳ WATCHING LIQUIDITY SWEEP INTO ACTUAL ORDER BLOCK"; tag.style.color = "var(--amber)";
       }
+    }
+
+    // --- BLACK-SCHOLES GREEKS CALCULATOR (Δ, Θ, Γ, ν) FOR ALL STRIKES ---
+    function normPdf(x) { return Math.exp(-0.5 * x * x) / Math.sqrt(2 * Math.PI); }
+    function normCdf(x) {
+      const t = 1 / (1 + 0.2316419 * Math.abs(x));
+      const d = 0.3989423 * Math.exp(-x * x / 2);
+      const p = d * t * (0.3193815 + t * (-0.3565638 + t * (1.781478 + t * (-1.821256 + t * 1.330274))));
+      return x > 0 ? 1 - p : p;
+    }
+
+    function computeOptionGreeks(spot, strike, daysToExp, ivPct, isCall) {
+      const T = Math.max(1 / 365, daysToExp / 365);
+      const r = 0.065;
+      const sigma = Math.max(0.08, (ivPct || 15.5) / 100);
+      const d1 = (Math.log(spot / strike) + (r + 0.5 * sigma * sigma) * T) / (sigma * Math.sqrt(T));
+      const d2 = d1 - sigma * Math.sqrt(T);
+
+      const delta = isCall ? normCdf(d1) : (normCdf(d1) - 1);
+      const gamma = normPdf(d1) / (spot * sigma * Math.sqrt(T));
+      const vega = (spot * normPdf(d1) * Math.sqrt(T)) / 100;
+      const thetaAnnual = isCall
+        ? (-spot * normPdf(d1) * sigma / (2 * Math.sqrt(T)) - r * strike * Math.exp(-r * T) * normCdf(d2))
+        : (-spot * normPdf(d1) * sigma / (2 * Math.sqrt(T)) + r * strike * Math.exp(-r * T) * normCdf(-d2));
+      const thetaDaily = thetaAnnual / 365;
+
+      return {
+        delta: delta.toFixed(2),
+        theta: thetaDaily.toFixed(1),
+        gamma: gamma.toFixed(4),
+        vega: vega.toFixed(1)
+      };
     }
 
     async function fetchLiveOptionChain() {
@@ -1212,9 +1321,10 @@
       const statusEl = document.getElementById("ocStatus");
       if (!appState.accessToken) return;
 
-      const instKey = encodeURIComponent(document.getElementById("ocIndex").value);
+      const idxVal = document.getElementById("ocIndex").value;
+      const instKey = encodeURIComponent(idxVal);
       const expDate = document.getElementById("ocExpiry").value;
-      statusEl.textContent = `Syncing real Upstox chain (${expDate})...`;
+      statusEl.textContent = `Syncing full option chain & Greeks (${expDate})...`;
 
       try {
         const res = await fetch(`https://api.upstox.com/v2/option/chain?instrument_key=${instKey}&expiry_date=${expDate}`, {
@@ -1225,34 +1335,47 @@
           statusEl.textContent = "No chain rows returned for " + expDate;
           return;
         }
-        if (expDate === "2026-12-29" && document.getElementById("ocIndex").value === "NSE_INDEX|Nifty 50") {
+        if (expDate === "2026-12-29" && idxVal === "NSE_INDEX|Nifty 50") {
           decOptionChain = json.data;
         }
-        const spot = json.data[0].underlying_spot_price || getQ(INDEX_KEYS.NIFTY)?.ltp || 0;
-        statusEl.textContent = `Live Upstox Chain (${expDate}) • Spot: ${spot}`;
+        const spot = json.data[0].underlying_spot_price || getQ(idxVal)?.ltp || 0;
+        const daysToExp = Math.max(5, Math.round((new Date(expDate) - new Date()) / 86400000));
+        statusEl.textContent = `Live Chain (${expDate} • ${daysToExp}d left) • Spot: ${spot}`;
 
+        // Show 13 strikes centered on spot
         const sorted = [...json.data]
           .sort((a, b) => Math.abs(a.strike_price - spot) - Math.abs(b.strike_price - spot))
-          .slice(0, 9)
+          .slice(0, 13)
           .sort((a, b) => a.strike_price - b.strike_price);
-        const lotSize = document.getElementById("ocIndex").value.includes("Bank") ? 30 : 65;
-        const prefix = document.getElementById("ocIndex").value.includes("Bank") ? "BANKNIFTY" : "NIFTY";
+
+        const lotSize = idxVal.includes("Bank") ? 30 : (idxVal.includes("SENSEX") ? 20 : 65);
+        const prefix = idxVal.includes("Bank") ? "BANKNIFTY" : (idxVal.includes("SENSEX") ? "SENSEX" : "NIFTY");
+        const step = idxVal.includes("SENSEX") ? 200 : 100;
 
         tbody.innerHTML = sorted.map(row => {
           const ce = row.call_options?.market_data || {};
           const pe = row.put_options?.market_data || {};
+          const ceG = row.call_options?.option_greeks || computeOptionGreeks(spot, row.strike_price, daysToExp, ce.iv || 15.8, true);
+          const peG = row.put_options?.option_greeks || computeOptionGreeks(spot, row.strike_price, daysToExp, pe.iv || 16.2, false);
+
           if (row.call_options?.instrument_key && ce.ltp) liveQuotes[normKey(row.call_options.instrument_key)] = { ltp: ce.ltp };
           if (row.put_options?.instrument_key && pe.ltp) liveQuotes[normKey(row.put_options.instrument_key)] = { ltp: pe.ltp };
-          const isAtm = Math.abs(row.strike_price - spot) <= 75;
+
+          const isAtm = Math.abs(row.strike_price - spot) <= step * 0.6;
+          const ceDeltaNum = Math.abs(parseFloat(ceG.delta));
+          const peDeltaNum = Math.abs(parseFloat(peG.delta));
+          // Investor-Oriented Pick: Optimal Delta 0.44 - 0.62 with balanced Theta decay
+          const isInvestorPick = (ceDeltaNum >= 0.44 && ceDeltaNum <= 0.62) || (peDeltaNum >= 0.44 && peDeltaNum <= 0.62);
+
           return `
-            <tr class="${isAtm ? "atm-row" : ""}">
-              <td style="color:var(--text-2);">${ce.oi ? (ce.oi / 100000).toFixed(1) + "L" : "--"}</td>
-              <td class="green" style="font-weight:700;">${ce.ltp ? "₹" + ce.ltp : "--"}</td>
+            <tr class="${isInvestorPick ? "inst-pick-row" : (isAtm ? "atm-row" : "")}">
+              <td class="greek-mini">Δ:${ceG.delta} Θ:${ceG.theta}<br/>Γ:${ceG.gamma} ν:${ceG.vega}</td>
+              <td class="green" style="font-weight:800;">${ce.ltp ? "₹" + ce.ltp : "--"}</td>
               <td>${ce.ltp ? `<button class="oc-btn pill-buy" onclick="paperTradeSingle('${prefix} ${expDate} ${row.strike_price} CE', 'BUY', ${ce.ltp}, ${lotSize}, '${row.call_options.instrument_key}')">B</button> <button class="oc-btn pill-sell" onclick="paperTradeSingle('${prefix} ${expDate} ${row.strike_price} CE', 'SELL', ${ce.ltp}, ${lotSize}, '${row.call_options.instrument_key}')">S</button>` : "--"}</td>
-              <td style="font-weight:800;">${row.strike_price}</td>
+              <td style="font-weight:900;">${row.strike_price}${isInvestorPick ? `<br/><span class="inst-star">★ INST PICK</span>` : ""}</td>
               <td>${pe.ltp ? `<button class="oc-btn pill-buy" onclick="paperTradeSingle('${prefix} ${expDate} ${row.strike_price} PE', 'BUY', ${pe.ltp}, ${lotSize}, '${row.put_options.instrument_key}')">B</button> <button class="oc-btn pill-sell" onclick="paperTradeSingle('${prefix} ${expDate} ${row.strike_price} PE', 'SELL', ${pe.ltp}, ${lotSize}, '${row.put_options.instrument_key}')">S</button>` : "--"}</td>
-              <td class="red" style="font-weight:700;">${pe.ltp ? "₹" + pe.ltp : "--"}</td>
-              <td style="color:var(--text-2);">${pe.oi ? (pe.oi / 100000).toFixed(1) + "L" : "--"}</td>
+              <td class="red" style="font-weight:800;">${pe.ltp ? "₹" + pe.ltp : "--"}</td>
+              <td class="greek-mini">Δ:${peG.delta} Θ:${peG.theta}<br/>Γ:${peG.gamma} ν:${peG.vega}</td>
             </tr>
           `;
         }).join("");
@@ -1272,68 +1395,76 @@
       document.getElementById("liveNiftyChg").textContent = n ? `${n.chg >= 0 ? "+" : ""}${n.chg} (${n.pct}%)` : "Connect feed for LTP";
       document.getElementById("liveNiftyChg").className = `metric-sub ${n && n.chg >= 0 ? "green" : "red"}`;
 
-      document.getElementById("liveBnf").textContent = b ? b.ltp.toLocaleString("en-IN") : "--";
-      document.getElementById("liveBnfChg").textContent = sx ? `Sensex: ${sx.ltp.toLocaleString("en-IN")} (${sx.pct}%)` : "Sensex Expiry";
+      document.getElementById("liveBnf").textContent = sx ? sx.ltp.toLocaleString("en-IN") : (b ? b.ltp.toLocaleString("en-IN") : "--");
+      document.getElementById("liveBnfChg").textContent = sx ? `Sensex: ${sx.chg >= 0 ? "+" : ""}${sx.chg} (${sx.pct}%)` : "Syncing...";
       document.getElementById("liveBnfChg").className = `metric-sub ${sx && sx.chg >= 0 ? "green" : "red"}`;
 
       document.getElementById("liveVix").textContent = v ? v.ltp.toFixed(2) : "--";
       document.getElementById("vixRegime").textContent = `USD/INR: ₹${appState.usdInr.toFixed(2)}`;
 
-      if (techState.sellersZoneLow && techState.buyersZoneHigh) {
-        document.getElementById("sellersZoneVal").textContent = `${techState.sellersZoneLow} – ${techState.sellersZoneHigh}`;
-        document.getElementById("buyersZoneVal").textContent = `${techState.buyersZoneLow} – ${techState.buyersZoneHigh}`;
-        if (n) {
-          const distSell = +(techState.sellersZoneLow - n.ltp).toFixed(1);
-          const distBuy = +(n.ltp - techState.buyersZoneHigh).toFixed(1);
-          document.getElementById("sellersZoneDist").textContent = distSell <= 0 ? "INSIDE ZONE — Checking Top Reversal" : `${distSell} pts away`;
-          document.getElementById("buyersZoneDist").textContent = distBuy <= 0 ? "INSIDE ZONE — Checking Bottom Reversal" : `${distBuy} pts away`;
-        }
-      }
+      document.getElementById("sellersZoneVal").textContent = `${techState.sellersZoneLow} – ${techState.sellersZoneHigh}`;
+      document.getElementById("buyersZoneVal").textContent = `${techState.buyersZoneLow} – ${techState.buyersZoneHigh}`;
 
       if (n) {
+        const distSell = +(techState.sellersZoneLow - n.ltp).toFixed(1);
+        const distBuy = +(n.ltp - techState.buyersZoneHigh).toFixed(1);
+        document.getElementById("sellersZoneDist").textContent = distSell <= 0 ? "INSIDE SELLERS' BLOCK — Watch Rejection" : `${distSell} pts below Sellers' Block`;
+        document.getElementById("buyersZoneDist").textContent = distBuy <= 0 ? "INSIDE BUYERS' BLOCK — Watch SL-Hunt Reversal" : `${distBuy} pts above Buyers' Block`;
+
         const fiiUsdPts = (n.ltp / appState.usdInr).toFixed(2);
         document.getElementById("fiiRatioBox").textContent = `$${fiiUsdPts} USD pts (INR ${appState.usdInr.toFixed(2)})`;
         if (sx) document.getElementById("liveSensexBox").textContent = `${sx.ltp.toLocaleString("en-IN")} (${sx.pct}%)`;
 
         if (techState.confirmedTopReversal) {
-          document.getElementById("dynamicTrajectoryText").innerHTML = `<strong>🔴 CONFIRMED TOP REVERSAL:</strong> Nifty rejected tight Sellers' Zone (${techState.sellersZoneLow}–${techState.sellersZoneHigh}) with bearish candle + RSI(9) < RSI(20). <strong>29 Dec Put (PE)</strong> signal triggered.`;
+          document.getElementById("dynamicTrajectoryText").innerHTML = `<strong>🔴 CONFIRMED SELLERS' BLOCK REVERSAL:</strong> Nifty rejected ${techState.sellersZoneLow}–${techState.sellersZoneHigh} after liquidity sweep. <strong>29 Dec Put (PE)</strong> signal triggered.`;
         } else if (techState.confirmedBottomReversal) {
-          document.getElementById("dynamicTrajectoryText").innerHTML = `<strong>🟢 CONFIRMED BOTTOM REVERSAL:</strong> Nifty bounced off tight Buyers' VWAP Zone (${techState.buyersZoneLow}–${techState.buyersZoneHigh}) with bullish candle + RSI(9) > RSI(20). <strong>29 Dec Call (CE)</strong> signal triggered.`;
+          document.getElementById("dynamicTrajectoryText").innerHTML = `<strong>🟢 CONFIRMED BUYERS' BLOCK REVERSAL:</strong> Smart Money swept retail stop-losses below temporary support (${techState.tempSupport}) and reversed from ${techState.buyersZoneLow}–${techState.buyersZoneHigh}. <strong>29 Dec Call (CE)</strong> triggered.`;
         } else {
-          document.getElementById("dynamicTrajectoryText").innerHTML = `<strong>⏳ NO CONFIRMED REVERSAL YET (Nifty ${n.ltp}):</strong> Waiting for price to hit tight Sellers' Zone (<strong>${techState.sellersZoneLow ?? "--"}</strong>) or Buyers' VWAP Zone (<strong>${techState.buyersZoneHigh ?? "--"}</strong>) AND print a confirmed candle + RSI(9×20) turn.`;
+          document.getElementById("dynamicTrajectoryText").innerHTML = `<strong>⏳ LIQUIDITY HUNTING PHASE (Nifty ${n.ltp}):</strong> Temporary intraday support (${techState.tempSupport ?? "--"}) was breached as institutions hunt stop-losses during thin US holiday volume. Wait for reversal inside <strong>Actual Buyers' Block (${techState.buyersZoneLow}–${techState.buyersZoneHigh})</strong> or rejection just below <strong>${techState.sellersZoneHigh}</strong>.`;
         }
       }
 
-      // Rank stocks with 52-Week High / ATH exhaustion filter
+      // Render Watchlist with FIXED % Change + Colorful 52W Bar with Target & SL Arrows
       const ranked = WATCHLIST_STOCKS.map(s => {
         const q = getQ(s.key);
-        const hw = get52WHeadroom(q, s.ref52High);
-        return { ...s, q, hw };
+        const high52 = q?.high52 || s.high52;
+        const low52 = s.low52;
+        const pctFromHigh = q && high52 ? +(((high52 - q.ltp) / high52) * 100).toFixed(1) : null;
+        return { ...s, q, high52, low52, pctFromHigh, nearTop: pctFromHigh !== null && pctFromHigh <= 2.0 };
       }).filter(x => x.q);
 
       if (ranked.length > 0) {
-        const buyers = [...ranked].filter(x => x.q.pct >= 0 && !x.hw.nearTop).sort((a, b) => b.q.pct - a.q.pct);
-        const sellersOrAtHigh = [...ranked].filter(x => x.q.pct < 0 || x.hw.nearTop).sort((a, b) => a.q.pct - b.q.pct);
+        const gainers = [...ranked].filter(x => x.q.pct >= 0 && !x.nearTop).sort((a, b) => b.q.pct - a.q.pct);
+        const declinersOrCeiling = [...ranked].filter(x => x.q.pct < 0 || x.nearTop).sort((a, b) => a.q.pct - b.q.pct);
 
-        document.getElementById("instBuyList").innerHTML = buyers.length ? buyers.map(s => `
-          <div class="inst-item">
-            <div>
-              <strong>${s.sym}</strong> <span class="green" style="font-size:10px;">+${s.q.pct}%</span>
-              <div style="font-size:10px;color:var(--text-2);">${s.hw.pctFromHigh}% below 52W High (₹${s.hw.high52})</div>
+        const renderStockCard = (s, isGainer) => {
+          const sl = +(s.q.ltp * 0.975).toFixed(1);
+          const tgt = +(s.q.ltp * 1.045).toFixed(1);
+          return `
+            <div class="inst-item">
+              <div class="inst-item-top">
+                <div>
+                  <strong>${s.sym}</strong>
+                  <span class="${s.q.pct >= 0 ? "green" : "red"}" style="font-size:10px;font-weight:800;">
+                    ${s.q.pct >= 0 ? "+" : ""}${s.q.pct}%
+                  </span>
+                  ${s.nearTop ? `<span class="amber" style="font-size:9px;font-weight:800;"> ⚠️ AT 52W HIGH</span>` : ""}
+                </div>
+                <div style="font-weight:800;">₹${s.q.ltp}</div>
+              </div>
+              <div style="font-size:9.5px;color:var(--text-3);margin-top:2px;">${s.sector} • ${s.pctFromHigh}% below 52W High</div>
+              ${build52WBarHtml(s.q.ltp, s.low52, s.high52, sl, tgt)}
             </div>
-            <div style="text-align:right;"><div style="font-weight:800;">₹${s.q.ltp}</div><div style="font-size:9px;color:var(--green);">Room to Run</div></div>
-          </div>
-        `).join("") : `<div style="font-size:11px;color:var(--text-3);">No green movers with 52W headroom</div>`;
+          `;
+        };
 
-        document.getElementById("instSellList").innerHTML = sellersOrAtHigh.length ? sellersOrAtHigh.map(s => `
-          <div class="inst-item">
-            <div>
-              <strong>${s.sym}</strong> <span class="${s.hw.nearTop ? "amber" : "red"}" style="font-size:10px;">${s.hw.nearTop ? "⚠️ AT 52W/ATH" : s.q.pct + "%"}</span>
-              <div style="font-size:10px;color:var(--text-2);">${s.hw.nearTop ? `Near 1Y High ₹${s.hw.high52} — Momentum Weak` : s.sector}</div>
-            </div>
-            <div style="text-align:right;"><div style="font-weight:800;">₹${s.q.ltp}</div><div style="font-size:9px;color:var(--red);">Avoid Long</div></div>
-          </div>
-        `).join("") : `<div style="font-size:11px;color:var(--text-3);">No stocks at 52W ceiling</div>`;
+        document.getElementById("instBuyList").innerHTML = gainers.length
+          ? gainers.map(s => renderStockCard(s, true)).join("")
+          : `<div style="font-size:11px;color:var(--text-3);">No green movers with headroom</div>`;
+
+        document.getElementById("instSellList").innerHTML = declinersOrCeiling.length
+          ? declinersOrCeiling.map(s => renderStockCard(s, false)).join("")
+          : `<div style="font-size:11px;color:var(--text-3);">All tracked stocks green</div>`;
       }
     }
 
@@ -1344,62 +1475,42 @@
       if (n && decOptionChain.length > 0) {
         const atmStrike = Math.round(n.ltp / 100) * 100;
 
-        // 1. ONLY EMIT PUT WHEN CONFIRMED TOP REVERSAL IN TIGHT SELLERS' ZONE
         if (techState.confirmedTopReversal) {
-          const putStrike = atmStrike - 200;
+          const putStrike = atmStrike - 100;
           const putRow = decOptionChain.find(r => r.strike_price === putStrike) || decOptionChain[0];
           const pe = putRow?.put_options?.market_data;
           const peKey = putRow?.put_options?.instrument_key;
           if (pe && pe.ltp) {
             list.push({
-              id: "confirmed_top_pe",
-              seg: "option_signal",
-              isConfirmedReversal: true,
-              title: `NIFTY 29 DEC 2026 ${putRow.strike_price} PE (Confirmed Top Reversal)`,
-              key: peKey,
-              side: "BUY",
-              badge: "CONFIRMED TOP PE",
-              lotSize: 65,
-              ltp: pe.ltp,
-              entry: pe.ltp,
-              t1: +(pe.ltp * 1.25).toFixed(1),
-              t2: +(pe.ltp * 1.50).toFixed(1),
-              sl: +(pe.ltp * 0.85).toFixed(1),
+              id: "smc_top_pe", seg: "option_signal", isConfirmedReversal: true,
+              title: `NIFTY 29 DEC 2026 ${putRow.strike_price} PE (Sellers' Block Reversal)`,
+              key: peKey, side: "BUY", badge: "SMC TOP PE", lotSize: 65,
+              ltp: pe.ltp, entry: pe.ltp, t1: +(pe.ltp * 1.25).toFixed(1), t2: +(pe.ltp * 1.50).toFixed(1), sl: +(pe.ltp * 0.85).toFixed(1),
               gateType: "GO_SELL",
-              gateText: `🔴 TOP REVERSAL CONFIRMED: Sellers' Zone + Red Candle + RSI(9) ${techState.rsi9} < RSI(20) ${techState.rsi20}`,
-              reason: "3-factor reversal confirmed from tight Sellers' Supply Zone."
+              gateText: `🔴 SELLERS' BLOCK REJECTION CONFIRMED (${techState.sellersZoneLow}–${techState.sellersZoneHigh}) + RSI(9↓20)`,
+              reason: "Triggered just below upper limit of Sellers' Block after liquidity sweep."
             });
           }
         }
 
-        // 2. ONLY EMIT CALL WHEN CONFIRMED BOTTOM REVERSAL IN TIGHT BUYERS' VWAP ZONE
         if (techState.confirmedBottomReversal) {
           const callRow = decOptionChain.find(r => r.strike_price === atmStrike) || decOptionChain[0];
           const ce = callRow?.call_options?.market_data;
           const ceKey = callRow?.call_options?.instrument_key;
           if (ce && ce.ltp) {
             list.push({
-              id: "confirmed_bottom_ce",
-              seg: "option_signal",
-              isConfirmedReversal: true,
-              title: `NIFTY 29 DEC 2026 ${callRow.strike_price} CE (Confirmed Bottom Reversal)`,
-              key: ceKey,
-              side: "BUY",
-              badge: "CONFIRMED BOTTOM CE",
-              lotSize: 65,
-              ltp: ce.ltp,
-              entry: ce.ltp,
-              t1: +(ce.ltp * 1.22).toFixed(1),
-              t2: +(ce.ltp * 1.45).toFixed(1),
-              sl: +(ce.ltp * 0.85).toFixed(1),
+              id: "smc_bottom_ce", seg: "option_signal", isConfirmedReversal: true,
+              title: `NIFTY 29 DEC 2026 ${callRow.strike_price} CE (Buyers' Block Reversal)`,
+              key: ceKey, side: "BUY", badge: "SMC BOTTOM CE", lotSize: 65,
+              ltp: ce.ltp, entry: ce.ltp, t1: +(ce.ltp * 1.22).toFixed(1), t2: +(ce.ltp * 1.45).toFixed(1), sl: +(ce.ltp * 0.85).toFixed(1),
               gateType: "GO_BUY",
-              gateText: `🟢 BOTTOM REVERSAL CONFIRMED: Buyers' VWAP Zone + Green Candle + RSI(9) ${techState.rsi9} > RSI(20) ${techState.rsi20}`,
-              reason: "3-factor reversal confirmed off tight Buyers' VWAP Zone."
+              gateText: `🟢 BUYERS' BLOCK REVERSAL CONFIRMED (${techState.buyersZoneLow}–${techState.buyersZoneHigh}) + RSI(9↑20)`,
+              reason: "Triggered after Smart Money stop-loss sweep below temporary support."
             });
           }
         }
 
-        // 3. Hedged Spread
+        // Risk-Capped Hedged Spread
         const longRow = decOptionChain.find(r => r.strike_price === atmStrike);
         const shortRow = decOptionChain.find(r => r.strike_price === atmStrike + 300);
         const l1 = longRow?.call_options?.market_data?.ltp;
@@ -1407,57 +1518,37 @@
         if (l1 && l2) {
           const netDebit = +(l1 - l2).toFixed(1);
           list.push({
-            id: "hedge_bcs",
-            seg: "hedge",
-            isConfirmedReversal: false,
-            isSpread: true,
+            id: "hedge_bcs", seg: "hedge", isConfirmedReversal: false, isSpread: true,
             leg1: { symbol: `NIFTY 29 DEC ${atmStrike} CE`, side: "BUY", ltp: l1, key: longRow.call_options.instrument_key },
             leg2: { symbol: `NIFTY 29 DEC ${atmStrike + 300} CE`, side: "SELL", ltp: l2, key: shortRow.call_options.instrument_key },
             title: `2-LEG BULL CALL SPREAD (${atmStrike} / ${atmStrike + 300} CE • 29 DEC)`,
-            key: longRow.call_options.instrument_key,
-            side: "BUY",
-            badge: "LOW-RISK HEDGE",
-            lotSize: 65,
-            ltp: netDebit,
-            entry: netDebit,
-            t1: +(netDebit * 1.25).toFixed(1),
-            t2: +(netDebit * 1.50).toFixed(1),
-            sl: +(netDebit * 0.78).toFixed(1),
+            key: longRow.call_options.instrument_key, side: "BUY", badge: "LOW-RISK HEDGE", lotSize: 65,
+            ltp: netDebit, entry: netDebit, t1: +(netDebit * 1.25).toFixed(1), t2: +(netDebit * 1.50).toFixed(1), sl: +(netDebit * 0.78).toFixed(1),
             gateType: "GO_BUY",
             gateText: `🛡️ RISK-CAPPED POSITIONAL HEDGE (MAX LOSS ₹${netDebit}/pt)`,
-            reason: "Safe positional spread while waiting for tight intraday reversal zones."
+            reason: "Protects capital against weekend/holiday volatility ahead of 30 Nov MSCI rebalance."
           });
         }
       }
 
-      // 4. Equities WITH 52-Week / ATH Exhaustion Check
+      // Headroom Equities
       const movers = WATCHLIST_STOCKS.map(s => {
         const q = getQ(s.key);
-        const hw = get52WHeadroom(q, s.ref52High);
-        return { ...s, q, hw };
-      }).filter(x => x.q && x.q.pct >= 0.7).sort((a, b) => b.q.pct - a.q.pct).slice(0, 4);
+        const high52 = q?.high52 || s.high52;
+        const pctFromHigh = q && high52 ? +(((high52 - q.ltp) / high52) * 100).toFixed(1) : null;
+        return { ...s, q, high52, pctFromHigh, nearTop: pctFromHigh !== null && pctFromHigh <= 2.0 };
+      }).filter(x => x.q && x.q.pct > 0.3 && !x.nearTop).sort((a, b) => b.q.pct - a.q.pct).slice(0, 4);
 
       movers.forEach(m => {
         const ltp = m.q.ltp;
-        const pullbackEntry = +(m.q.open + (ltp - m.q.open) * 0.45).toFixed(2);
+        const entry = +(ltp * 0.996).toFixed(2);
         list.push({
-          id: `eq_${m.sym}`,
-          seg: "equity",
-          isConfirmedReversal: false,
-          title: `${m.sym} (+${m.q.pct}% • ${m.hw.pctFromHigh}% below 52W High ₹${m.hw.high52})`,
-          key: m.key,
-          side: "BUY",
-          badge: m.hw.nearTop ? "⚠️ AT 52W/ATH HIGH" : "HEADROOM EQUITY",
-          lotSize: 25,
-          ltp: ltp,
-          entry: pullbackEntry,
-          t1: +(pullbackEntry * 1.022).toFixed(2),
-          t2: +(pullbackEntry * 1.045).toFixed(2),
-          sl: +(pullbackEntry * 0.988).toFixed(2),
-          gateType: m.hw.nearTop ? "WAIT" : "GO_BUY",
-          gateText: m.hw.nearTop
-            ? `⚠️ ALREADY AT 1Y / ALL-TIME HIGH (₹${m.hw.high52}) — FURTHER MOMENTUM WEAK`
-            : `🟢 ${m.hw.pctFromHigh}% UPSIDE HEADROOM TO 52W HIGH (₹${m.hw.high52})`,
+          id: `eq_${m.sym}`, seg: "equity", isConfirmedReversal: false,
+          title: `${m.sym} (+${m.q.pct}% • ${m.pctFromHigh}% below 52W High ₹${m.high52})`,
+          key: m.key, side: "BUY", badge: "HEADROOM EQUITY", lotSize: 25,
+          ltp, entry, t1: +(entry * 1.022).toFixed(2), t2: +(entry * 1.045).toFixed(2), sl: +(entry * 0.985).toFixed(2),
+          gateType: "GO_BUY",
+          gateText: `🟢 ${m.pctFromHigh}% HEADROOM TO 52W HIGH (₹${m.high52})`,
           reason: `Sector: ${m.sector}.`
         });
       });
@@ -1476,25 +1567,25 @@
       const gateBar = document.getElementById("zoneGateSummary");
       if (techState.confirmedTopReversal) {
         gateBar.className = "gate-banner gate-go-sell";
-        gateBar.innerHTML = `<span>🔴 CONFIRMED TOP REVERSAL AT ${techState.sellersZoneLow}–${techState.sellersZoneHigh} → BUY PUT ACTIVE</span>`;
+        gateBar.innerHTML = `<span>🔴 SELLERS' BLOCK REVERSAL CONFIRMED (${techState.sellersZoneLow}–${techState.sellersZoneHigh}) → BUY PUT ACTIVE</span>`;
       } else if (techState.confirmedBottomReversal) {
         gateBar.className = "gate-banner gate-go-buy";
-        gateBar.innerHTML = `<span>🟢 CONFIRMED BOTTOM REVERSAL AT ${techState.buyersZoneLow}–${techState.buyersZoneHigh} → BUY CALL ACTIVE</span>`;
+        gateBar.innerHTML = `<span>🟢 BUYERS' BLOCK REVERSAL CONFIRMED (${techState.buyersZoneLow}–${techState.buyersZoneHigh}) → BUY CALL ACTIVE</span>`;
       } else {
         gateBar.className = "gate-banner gate-wait";
-        gateBar.innerHTML = `<span>⏳ NO CONFIRMED REVERSAL YET — Waiting for tight Sellers' (${techState.sellersZoneLow ?? "--"}) or Buyers' (${techState.buyersZoneHigh ?? "--"}) turn</span>`;
+        gateBar.innerHTML = `<span>⏳ SMC LIQUIDITY WATCH: Waiting for SL sweep into Actual Buyers' (${techState.buyersZoneLow}–${techState.buyersZoneHigh}) or Sellers' (${techState.sellersZoneLow}–${techState.sellersZoneHigh}) Block</span>`;
       }
 
       const allOpps = buildDynamicOpportunities();
       const container = document.getElementById("oppsContainer");
       const list = allOpps.filter(o => currentOppFilter === "all" || o.seg === currentOppFilter);
       if (list.length === 0) {
-        container.innerHTML = `<div style="text-align:center;color:var(--text-2);font-size:12px;padding:18px;">No confirmed top or bottom reversal active right now. Auto-Paper will ring Tring-Tring as soon as a tight zone reversal confirms.</div>`;
+        container.innerHTML = `<div style="text-align:center;color:var(--text-2);font-size:12px;padding:18px;">No confirmed SMC reversal active right now. Turn ON Auto-Paper to ring the vintage telephone bell and enter automatically when triggered.</div>`;
         return;
       }
 
       container.innerHTML = list.map(o => {
-        const pillCls = o.badge.includes("52W") ? "pill-warn" : (o.seg === "hedge" ? "pill-hedge" : (o.badge.includes("PE") ? "pill-sell" : "pill-buy"));
+        const pillCls = o.seg === "hedge" ? "pill-hedge" : (o.badge.includes("PE") ? "pill-sell" : "pill-buy");
         const gateCls = o.gateType === "GO_BUY" ? "gate-go-buy" : (o.gateType === "GO_SELL" ? "gate-go-sell" : "gate-wait");
         return `
           <div class="setup-card">
@@ -1514,7 +1605,7 @@
               <div><div class="lvl-k">STOP LOSS</div><div class="lvl-v red">₹${o.sl}</div></div>
             </div>
             <div class="action-grid">
-              <button class="btn-paper" onclick="executeOppPaper('${o.id}')">▶ Manual Paper (${appState.lots}L)</button>
+              <button class="btn-paper" onclick="executeOppPaper('${o.id}')">▶ Paper Trade (${appState.lots}L)</button>
               <button class="btn-alert" onclick="armOppAlert('${o.id}')">🔔 Alert</button>
               <button class="btn-algo" onclick="openOppAlgo('${o.id}')">{ } Algo</button>
             </div>
@@ -1526,9 +1617,12 @@
     function renderThemes() {
       document.getElementById("themesContainer").innerHTML = STRUCTURAL_THEMES.map(t => {
         const q = getQ(t.key);
-        const hw = get52WHeadroom(q, t.ref52High);
         const ltp = q ? q.ltp : null;
         const pct = q ? q.pct : null;
+        const high52 = q?.high52 || t.high52;
+        const pctFromHigh = ltp ? +(((high52 - ltp) / high52) * 100).toFixed(1) : null;
+        const nearTop = pctFromHigh !== null && pctFromHigh <= 2.0;
+
         const entry = ltp ? +(ltp * 0.992).toFixed(2) : null;
         const t1 = ltp ? +(ltp * 1.045).toFixed(2) : null;
         const t2 = ltp ? +(ltp * 1.090).toFixed(2) : null;
@@ -1536,8 +1630,8 @@
 
         return `
           <div class="setup-card">
-            <div class="gate-banner ${hw.nearTop ? "gate-wait" : "gate-go-buy"}">
-              <span>${ltp ? (hw.nearTop ? `⚠️ AT 52W/ATH HIGH (₹${hw.high52}) — WAIT FOR DIP` : `🟢 ${hw.pctFromHigh}% HEADROOM TO 52W HIGH (₹${hw.high52})`) : "Awaiting live LTP..."}</span>
+            <div class="gate-banner ${nearTop ? "gate-wait" : "gate-go-buy"}">
+              <span>${ltp ? (nearTop ? `⚠️ AT 52W/ATH HIGH (₹${high52}) — WAIT FOR DIP` : `🟢 ${pctFromHigh}% HEADROOM BELOW 52W HIGH (₹${high52})`) : "Awaiting live LTP..."}</span>
             </div>
             <div class="setup-top">
               <div>
@@ -1553,14 +1647,85 @@
               <div><div class="lvl-k">TARGET 2</div><div class="lvl-v green">${t2 ? "₹" + t2 : "--"}</div></div>
               <div><div class="lvl-k">STOP LOSS</div><div class="lvl-v red">${sl ? "₹" + sl : "--"}</div></div>
             </div>
-            <div class="action-grid">
+            ${ltp ? build52WBarHtml(ltp, t.low52, high52, sl, t2) : ""}
+            <div class="action-grid" style="margin-top:6px;">
               <button class="btn-paper" onclick="paperThemeStock('${t.sym}')">▶ Paper Swing (${appState.lots}L)</button>
               <button class="btn-alert" onclick="alertThemeStock('${t.sym}')">🔔 Alert</button>
-              <button class="btn-algo" onclick="switchView('opps')">📊 Signals</button>
+              <button class="btn-algo" onclick="switchView('ai')">🤖 AI Opinion</button>
             </div>
           </div>
         `;
       }).join("");
+    }
+
+    // --- AI INVESTMENT OPINION GENERATOR ---
+    function generateAiOpinion() {
+      const seg = document.getElementById("aiAssetType").value;
+      const action = document.getElementById("aiActionType").value;
+      const sym = (document.getElementById("aiSymbolInput").value || "").trim().toUpperCase();
+      const price = parseFloat(document.getElementById("aiPriceInput").value) || 0;
+
+      if (!sym) {
+        alert("Please enter a stock symbol, commodity, or option strike (e.g. NIFTY 29 DEC 25600 PE).");
+        return;
+      }
+
+      const n = getQ(INDEX_KEYS.NIFTY);
+      const niftySpot = n ? n.ltp : 25725;
+      const out = document.getElementById("aiOpinionOutput");
+
+      let verdict = "HOLD / WAIT FOR CONFIRMATION";
+      let colorCls = "amber";
+      let analysis = "";
+      let plan = "";
+
+      if (seg === "OPTION") {
+        const isPut = sym.includes("PE") || sym.includes("PUT");
+        const isWeekly = !sym.includes("DEC") && !sym.includes("JAN") && !sym.includes("MAR");
+        if (isWeekly) {
+          verdict = "⚠️ HIGH RISK — AVOID NEAR-EXPIRY THETA DECAY";
+          colorCls = "red";
+          analysis = `Weekly options suffer severe Theta erosion during US holiday / thin FII sessions. Shift to <strong>29 Dec 2026</strong> or <strong>28 Jan 2027</strong> monthly contracts.`;
+          plan = `Switch strike to 29 Dec 2026 expiry with Delta between 0.45 and 0.60.`;
+        } else if (isPut && action === "BUY") {
+          verdict = niftySpot > techState.buyersZoneHigh ? "✅ TACTICAL PUT VALID (WITH HARD SL)" : "⚠️ AT BUYERS' BLOCK — BOOK / TRAIL TIGHTLY";
+          colorCls = niftySpot > techState.buyersZoneHigh ? "green" : "amber";
+          analysis = `With Nifty around <strong>${niftySpot}</strong>, Brent Crude above $96.50, and INR weak at ₹${appState.usdInr}, downside hedging works until Nifty reaches the <strong>Actual Buyers' Block (${techState.buyersZoneLow}–${techState.buyersZoneHigh})</strong>. Because ${sym} is a longer-dated contract, daily Theta decay is controlled.`;
+          const sl = price ? (price * 0.86).toFixed(1) : "14% below entry";
+          const t1 = price ? (price * 1.22).toFixed(1) : "+22% gain";
+          const t2 = price ? (price * 1.45).toFixed(1) : "+45% gain";
+          plan = `Entry: ₹${price || "Market"} | Stop Loss: ₹${sl} (exit if Nifty closes above ${techState.sellersZoneHigh}) | Target 1: ₹${t1} | Target 2: ₹${t2}.`;
+        } else {
+          verdict = niftySpot <= techState.buyersZoneHigh + 40 ? "🟢 HIGH-PROBABILITY DEMAND ENTRY" : "⏳ WAIT FOR BUYERS' BLOCK PULLBACK";
+          colorCls = niftySpot <= techState.buyersZoneHigh + 40 ? "green" : "amber";
+          analysis = `Ahead of the <strong>30 Nov MSCI Rebalance</strong> passive FII inflows, institutional accumulation favors buying Calls only after Smart Money sweeps stop-losses into <strong>${techState.buyersZoneLow}–${techState.buyersZoneHigh}</strong>.`;
+          const sl = price ? (price * 0.85).toFixed(1) : "15% below entry";
+          const t1 = price ? (price * 1.25).toFixed(1) : "+25% gain";
+          plan = `Accumulate near ${techState.buyersZoneLow}–${techState.buyersZoneHigh} spot | SL: ₹${sl} | Target 1: ₹${t1}.`;
+        }
+      } else if (seg === "COMMODITY") {
+        verdict = "🟢 MACRO TAILWIND ACTIVE (OIL & BULLION)";
+        colorCls = "green";
+        analysis = `Middle East infrastructure strikes lifted Brent Crude to ~$96.50 and COMEX Gold to ~$3,629 (+2.6%), while INR weakness (₹${appState.usdInr}) amplifies MCX prices.`;
+        plan = `Buy on intraday dips with a 1.5% trailing stop-loss; avoid chasing vertical spikes.`;
+      } else {
+        // Equity or Futures
+        const match = WATCHLIST_STOCKS.find(s => sym.includes(s.sym));
+        const q = match ? getQ(match.key) : null;
+        const curP = q?.ltp || price || 1000;
+        const high52 = q?.high52 || match?.high52 || curP * 1.15;
+        const headroom = (((high52 - curP) / high52) * 100).toFixed(1);
+        verdict = headroom <= 2.0 ? "⚠️ NEAR 52-WEEK HIGH — MOMENTUM EXHAUSTED" : `🟢 FAVORABLE HEADROOM (${headroom}% BELOW 52W HIGH)`;
+        colorCls = headroom <= 2.0 ? "red" : "green";
+        analysis = `${sym} is trading at <strong>₹${curP}</strong> (${headroom}% below 52W High ₹${high52}). ${sym.includes("INFY") || sym.includes("TCS") ? "IT faces near-term US tariff drag despite strong FII cash flows." : "Domestic cyclicals, metals, and defence show stronger relative institutional support."}`;
+        plan = `Entry Zone: ₹${(curP * 0.995).toFixed(1)} | Target 1: ₹${(curP * 1.03).toFixed(1)} | Target 2: ₹${(curP * 1.06).toFixed(1)} | Stop Loss: ₹${(curP * 0.975).toFixed(1)}.`;
+      }
+
+      out.innerHTML = `
+        <div style="font-size:12px;font-weight:900;margin-bottom:6px;" class="${colorCls}">${verdict}</div>
+        <div style="margin-bottom:8px;"><strong>Macro & SMC Analysis:</strong> ${analysis}</div>
+        <div style="background:var(--bg-card);padding:8px;border-radius:8px;color:var(--text-1);"><strong>Action Plan:</strong> ${plan}</div>
+      `;
     }
 
     function paperThemeStock(sym) {
@@ -1604,7 +1769,10 @@
         guardStatus: `Armed (${appState.protMode.toUpperCase()})`,
         status: "OPEN"
       });
-      saveState(); renderDesk(); switchView("desk");
+      saveState();
+      syncAllFeeds(false); // Immediately subscribe new position key to anti-freeze poller
+      renderDesk();
+      switchView("desk");
     }
 
     function openManualEditModal(id) {
@@ -1634,19 +1802,17 @@
         id: Date.now(), symbol: opp.title, key: normKey(opp.key), targetPrice: opp.entry, triggered: false
       });
       saveState(); renderDesk(); playTringTring();
-      alert(`Tring-Tring Alert armed for ${opp.title} at ₹${opp.entry}`);
+      alert(`Telephone Bell Alert armed for ${opp.title} at ₹${opp.entry}`);
     }
 
     function openOppAlgo(id) {
       const opp = buildDynamicOpportunities().find(x => x.id === id);
       if (!opp) return;
       document.getElementById("algoJsonBox").value = JSON.stringify({
-        strategy: "AnuragPulse_v10_TightReversal",
+        strategy: "AnuragPulse_v11_SMC",
         account_id: appState.accountId,
-        sellers_zone: [techState.sellersZoneLow, techState.sellersZoneHigh],
-        buyers_zone: [techState.buyersZoneLow, techState.buyersZoneHigh],
-        top_reversal: techState.confirmedTopReversal,
-        bottom_reversal: techState.confirmedBottomReversal,
+        sellers_block: [techState.sellersZoneLow, techState.sellersZoneHigh],
+        buyers_block: [techState.buyersZoneLow, techState.buyersZoneHigh],
         symbol: opp.title, side: opp.side, quantity: appState.lots * opp.lotSize,
         entry: opp.entry, target_1: opp.t1, target_2: opp.t2, stop_loss: opp.sl
       }, null, 2);
@@ -1726,6 +1892,7 @@
       const open = appState.positions.filter(p => p.status === "OPEN");
       document.getElementById("posCount").textContent = open.length;
       document.getElementById("alertCount").textContent = appState.alerts.length;
+      document.getElementById("deskPollerTag").textContent = `Anti-Freeze Poller: ${open.length} Active Keys`;
 
       let unreal = 0;
       open.forEach(p => unreal += (p.side === "BUY" ? (p.ltp - p.entry) : (p.entry - p.ltp)) * p.qty);
@@ -1755,7 +1922,7 @@
                 <div style="display:flex;justify-content:space-between;align-items:center;">
                   <div>
                     <strong style="font-size:12px;">${p.symbol}</strong>
-                    <div style="font-size:10px;color:var(--text-2);">${p.side} • Qty: ${p.qty} • Entry: ₹${p.entry} • <span class="blue">LTP: ₹${p.ltp}</span></div>
+                    <div style="font-size:10px;color:var(--text-2);">${p.side} • Qty: ${p.qty} • Entry: ₹${p.entry} • <span class="blue">Live LTP: ₹${p.ltp}</span></div>
                   </div>
                   <div style="text-align:right;">
                     <div style="font-size:14px;font-weight:800;" class="${pnl >= 0 ? "green" : "red"}">${pnl >= 0 ? "+" : ""}₹${pnl.toFixed(1)}</div>
@@ -1785,7 +1952,7 @@
     }
 
     function saveUsdRate() {
-      appState.usdInr = Math.max(50, parseFloat(document.getElementById("inUsdInr").value) || 92.47);
+      appState.usdInr = Math.max(50, parseFloat(document.getElementById("inUsdInr").value) || 92.62);
       document.getElementById("usdRateDisplay").textContent = appState.usdInr.toFixed(2);
       saveState(); closeModal("usdModal"); drawCharts(); renderAerial();
     }
@@ -1796,7 +1963,7 @@
     }
 
     function switchView(v) {
-      ["aerial", "global", "opps", "themes", "chain", "desk"].forEach(id => {
+      ["aerial", "global", "opps", "themes", "chain", "ai", "desk"].forEach(id => {
         document.getElementById(`view-${id}`).classList.add("hidden");
         document.getElementById(`nav-${id}`).classList.remove("active");
       });
