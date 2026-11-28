@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta name="theme-color" content="#f1f5f9" />
+  <meta name="theme-color" content="#eef2f6" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="application-name" content="AnuragPulse Pro" />
-  <title>AnuragPulse Pro v13.0 — Investor Command Center & Multi-Asset Terminal</title>
+  <title>AnuragPulse Pro — Market Intelligence & Multi-Asset Terminal</title>
   <link rel="manifest" href="manifest.json" />
   <style>
     :root {
@@ -32,7 +32,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     body { background: var(--bg-base); color: var(--text-1); padding-bottom: 86px; }
     .topbar {
-      position: sticky; top: 0; z-index: 50; background: rgba(255, 255, 255, 0.96); backdrop-filter: blur(12px);
+      position: sticky; top: 0; z-index: 50; background: rgba(255, 255, 255, 0.97); backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border); padding: 10px 12px; display: flex; justify-content: space-between; align-items: center;
       box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
     }
@@ -41,7 +41,11 @@
       width: 30px; height: 30px; border-radius: 8px; background: linear-gradient(135deg, #2563eb, #059669);
       display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; color: #fff;
     }
-    .brand h1 { font-size: 13px; font-weight: 800; color: var(--text-1); }
+    .brand h1 { font-size: 13px; font-weight: 800; color: var(--text-1); display: flex; align-items: center; gap: 4px; }
+    .privacy-pill {
+      font-size: 9.5px; font-weight: 700; color: var(--text-3); background: var(--bg-input);
+      border: 1px solid var(--border); padding: 1px 6px; border-radius: 5px; cursor: pointer;
+    }
     .badge { font-size: 9px; font-weight: 800; padding: 2px 7px; border-radius: 99px; display: inline-flex; align-items: center; gap: 4px; }
     .badge-off { background: var(--red-bg); color: var(--red); border: 1px solid #fca5a5; }
     .badge-live { background: var(--green-bg); color: var(--green); border: 1px solid #6ee7b7; }
@@ -59,28 +63,36 @@
     .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 14px; box-shadow: 0 2px 10px rgba(15, 23, 42, 0.05); }
     .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; gap: 8px; flex-wrap: wrap; }
     .step-pill { background: #dbeafe; color: #1d4ed8; font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 6px; text-transform: uppercase; }
-    .aerial-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 8px; }
-    .metric-box { background: var(--bg-input); border: 1px solid var(--border); border-radius: 10px; padding: 9px; }
-    .metric-lbl { font-size: 9px; color: var(--text-3); font-weight: 800; text-transform: uppercase; }
-    .metric-val { font-size: 14px; font-weight: 800; margin-top: 2px; color: var(--text-1); }
-    .metric-sub { font-size: 10px; font-weight: 700; margin-top: 2px; color: var(--text-2); }
+
+    /* Speedometer Gauges Grid */
+    .gauge-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+    @media (max-width: 460px) { .gauge-grid { grid-template-columns: 1fr; } }
+    .gauge-card {
+      background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 12px;
+      padding: 10px; text-align: center;
+    }
+    .gauge-title { font-size: 10px; font-weight: 800; color: var(--text-2); text-transform: uppercase; margin-bottom: 4px; }
+    .gauge-verdict { font-size: 12px; font-weight: 900; margin-top: 2px; }
+    .gauge-factors { font-size: 9.5px; color: var(--text-3); margin-top: 3px; line-height: 1.35; }
+
+    /* Macro Strip (4 Key Drivers) */
+    .macro-four { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 10px; }
+    @media (max-width: 480px) { .macro-four { grid-template-columns: repeat(2, 1fr); } }
+    .metric-box { background: var(--bg-input); border: 1px solid var(--border); border-radius: 10px; padding: 8px; }
+    .metric-lbl { font-size: 8.5px; color: var(--text-3); font-weight: 800; text-transform: uppercase; }
+    .metric-val { font-size: 13px; font-weight: 800; margin-top: 2px; color: var(--text-1); }
+    .metric-sub { font-size: 9.5px; font-weight: 700; margin-top: 2px; color: var(--text-2); }
+
+    .next-move-box {
+      background: linear-gradient(135deg, #eff6ff, #ecfdf5); border: 1px solid #93c5fd;
+      border-radius: 11px; padding: 10px 12px; font-size: 11px; line-height: 1.45; margin-bottom: 10px;
+    }
     .health-bar {
       display: flex; justify-content: space-between; align-items: center; background: var(--bg-input);
       border: 1px solid var(--border); border-radius: 8px; padding: 6px 10px; font-size: 10px; margin-bottom: 10px;
     }
 
-    /* Investor Verdict Cards: Global vs India */
-    .verdict-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
-    @media (max-width: 460px) { .verdict-grid { grid-template-columns: 1fr; } }
-    .verdict-card { border-radius: 11px; padding: 10px; font-size: 11px; border: 1px solid var(--border); }
-    .verdict-caution { background: #fffbeb; border-color: #fcd34d; }
-    .verdict-fav { background: #ecfdf5; border-color: #6ee7b7; }
-    .verdict-pill {
-      display: inline-block; font-size: 9px; font-weight: 900; padding: 2px 7px; border-radius: 5px;
-      margin-bottom: 5px; text-transform: uppercase;
-    }
-
-    /* Upcoming Events & Institutional Behavior */
+    /* Events & 4-Asset Guide */
     .event-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
     .event-row-card {
       background: var(--bg-input); border: 1px solid var(--border); border-radius: 9px; padding: 8px 10px;
@@ -90,13 +102,9 @@
       background: #e0e7ff; color: #3730a3; font-weight: 800; font-size: 9.5px; padding: 3px 7px;
       border-radius: 6px; white-space: nowrap;
     }
-
-    /* 4-Asset Lowest-Risk Guide Grid */
     .asset-guide-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
     @media (max-width: 480px) { .asset-guide-grid { grid-template-columns: 1fr; } }
-    .asset-box {
-      background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 10px; padding: 10px; font-size: 11px;
-    }
+    .asset-box { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 10px; padding: 10px; font-size: 11px; }
     .asset-tag { font-size: 9px; font-weight: 900; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; }
 
     .zone-strip { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
@@ -113,7 +121,7 @@
     .inst-item:last-child { border-bottom: none; }
     .inst-item-top { display: flex; justify-content: space-between; align-items: center; }
 
-    /* Colorful 52-Week Range Bar */
+    /* 52-Week Range Bar */
     .range52-wrap { margin-top: 8px; padding-top: 4px; }
     .range52-labels { display: flex; justify-content: space-between; font-size: 9px; color: var(--text-3); margin-bottom: 11px; font-weight: 700; }
     .range52-bar {
@@ -126,9 +134,15 @@
     .pin-sl { bottom: -12px; color: #dc2626; }
     .pin-tgt { bottom: -12px; color: #059669; }
 
-    /* Chart & Global */
-    .chart-wrap { background: #0f172a; border: 1px solid var(--border); border-radius: 12px; padding: 10px; margin-bottom: 10px; color: #f8fafc; }
+    /* Light-Themed Chart & Timeframe Pills */
+    .chart-wrap { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 12px; padding: 10px; margin-bottom: 10px; color: var(--text-1); }
     canvas { width: 100%; display: block; border-radius: 8px; }
+    .tf-bar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 8px; }
+    .tf-btn {
+      padding: 5px 2px; border-radius: 6px; font-size: 10px; font-weight: 800; border: 1px solid var(--border);
+      background: var(--bg-card); color: var(--text-2); cursor: pointer; text-align: center;
+    }
+    .tf-btn.active { background: var(--blue); color: #fff; border-color: var(--blue); }
     .toggle-group { display: flex; gap: 4px; background: var(--bg-input); padding: 3px; border-radius: 8px; border: 1px solid var(--border); }
     .tgl-btn {
       padding: 4px 8px; border-radius: 6px; font-size: 10px; font-weight: 700; border: none;
@@ -241,75 +255,89 @@
     <div class="brand">
       <div class="brand-icon">AP</div>
       <div>
-        <h1>AnuragPulse Pro <span style="font-size:10px;color:var(--blue);" id="acctLabel"></span></h1>
-        <span id="connBadge" class="badge badge-off">● DISCONNECTED (TAP SETUP)</span>
+        <h1>
+          AnuragPulse Pro
+          <span class="privacy-pill" id="acctMaskBtn" onclick="togglePrivacyMask()" title="Tap to reveal/hide ID">••••</span>
+        </h1>
+        <span id="connBadge" class="badge badge-off">● SOCKET OFFLINE (TAP SETUP)</span>
       </div>
     </div>
     <div class="top-actions">
-      <button class="btn-sm" onclick="playTringTring()" title="Test Old Gramophone Bell">🔔 Bell</button>
-      <button class="btn-sm" onclick="syncAllFeeds(true)">↻ Sync</button>
+      <button class="btn-sm" onclick="playRailwayTingTong()" title="Test Railway Ting-Tong Chime">🔔 Ting-Tong</button>
+      <button class="btn-sm" onclick="reconnectSocketAndSync()">↻ Sync</button>
       <button class="btn-sm btn-connect" onclick="openAuthModal()">🔑 Setup</button>
     </div>
   </header>
 
   <div id="alertToast">
-    <span id="alertToastMsg">🔔 Tring-Tring! Signal Triggered!</span>
+    <span id="alertToastMsg">🔔 Ting-Tong! Signal Triggered!</span>
     <button class="btn-sm" style="padding:2px 8px;" onclick="document.getElementById('alertToast').style.display='none'">Dismiss</button>
   </div>
 
   <main class="container">
 
-    <!-- PAGE 1: INVESTOR COMMAND CENTER (SIMPLE GUIDE + GLOBAL/INDIA FAVOURABILITY + 4-ASSET LOW-RISK PICKS) -->
+    <!-- PAGE 1: SPEEDOMETER SENTIMENT METERS + MACRO DRIVERS + 4-ASSET LOWEST-RISK GUIDE -->
     <div id="view-aerial">
       <section class="card">
         <div class="card-header">
-          <span class="step-pill">Investor Guide • Market Pulse & Low-Risk Opportunities</span>
-          <span style="font-size:10px;color:var(--text-2);" id="lastTickTime">Waiting for Feed</span>
+          <span class="step-pill">Aerial Sentiment Speedometers & Market Compass</span>
+          <span style="font-size:10px;color:var(--text-2);" id="lastTickTime">Socket Ready</span>
         </div>
 
-        <!-- LIVE BENCHMARKS -->
-        <div class="aerial-grid">
+        <!-- DUAL SPEEDOMETER GAUGES (GLOBAL & INDIAN MARKET SENTIMENT) -->
+        <div class="gauge-grid">
+          <div class="gauge-card">
+            <div class="gauge-title">🌍 Global Market Sentiment</div>
+            <canvas id="globalGaugeCanvas" height="105"></canvas>
+            <div class="gauge-verdict amber" id="globalGaugeLabel">NEUTRAL / CAUTIOUS</div>
+            <div class="gauge-factors" id="globalGaugeFactors">Crude $92–$96 • INR ₹92.83 • US Holiday</div>
+          </div>
+          <div class="gauge-card">
+            <div class="gauge-title">🇮🇳 Indian Market Sentiment</div>
+            <canvas id="indiaGaugeCanvas" height="105"></canvas>
+            <div class="gauge-verdict green" id="indiaGaugeLabel">BUY (FII + DII SUPPORT)</div>
+            <div class="gauge-factors" id="indiaGaugeFactors">VIX ~16.5 • 18D FII Cash Inflow</div>
+          </div>
+        </div>
+
+        <!-- 4 CORE MARKET DRIVERS STRIP -->
+        <div class="macro-four">
           <div class="metric-box">
-            <div class="metric-lbl">NIFTY 50 LIVE</div>
+            <div class="metric-lbl">NIFTY 50 SOCKET</div>
             <div class="metric-val" id="liveNifty">--</div>
-            <div class="metric-sub" id="liveNiftyChg">Connect feed for LTP</div>
+            <div class="metric-sub" id="liveNiftyChg">Live Stream</div>
           </div>
           <div class="metric-box">
-            <div class="metric-lbl">SENSEX / BANK NIFTY</div>
+            <div class="metric-lbl">SENSEX SOCKET</div>
             <div class="metric-val" id="liveBnf">--</div>
-            <div class="metric-sub" id="liveBnfChg">Syncing...</div>
+            <div class="metric-sub" id="liveBnfChg">Live Stream</div>
           </div>
           <div class="metric-box">
-            <div class="metric-lbl">INDIA VIX / USD-INR</div>
+            <div class="metric-lbl">INDIA VIX (FEAR)</div>
             <div class="metric-val amber" id="liveVix">--</div>
-            <div class="metric-sub" id="vixRegime">USD/INR: ₹92.83</div>
+            <div class="metric-sub" id="vixRegime">Low Fear &lt; 17.5</div>
+          </div>
+          <div class="metric-box">
+            <div class="metric-lbl">CRUDE / USD-INR</div>
+            <div class="metric-val" style="font-size:12px;">$94.5 / ₹<span id="topUsdVal">92.83</span></div>
+            <div class="metric-sub" id="macroRatioSub">FII Ratio: --</div>
+          </div>
+        </div>
+
+        <!-- EXPECTED NEXT MOVE COMPASS -->
+        <div class="next-move-box">
+          <strong style="color:#1d4ed8;">🧭 Expected Next Move & Institutional Outlook:</strong>
+          <div id="expectedMoveText" style="color:var(--text-1);margin-top:3px;">
+            Global cues are <strong>Neutral-Cautious</strong> (Crude $94.5, INR ₹92.83), while Indian institutional flows are in <strong>BUY</strong> territory (18-day FII buying streak + falling VIX). Expect range-bound consolidation early Monday followed by passive FII buying into the <strong>30 Nov MSCI Rebalance (3:00–3:30 PM)</strong>.
           </div>
         </div>
 
         <div class="health-bar">
-          <span id="feedHealthText" style="color:var(--text-2);">Feed Health: Idle</span>
+          <span id="feedHealthText" style="color:var(--text-2);">Socket Status: Ready</span>
           <span id="vwapRsiQuick" style="color:var(--blue);font-weight:700;">VWAP & RSI(9/20): Syncing...</span>
         </div>
 
-        <!-- 1. SIMPLE VERDICT: ARE GLOBAL & INDIAN CONDITIONS FAVOURABLE OR AGAINST? -->
-        <div class="verdict-grid">
-          <div class="verdict-card verdict-caution">
-            <span class="verdict-pill" style="background:#fef3c7;color:#92400e;">🌍 GLOBAL SITUATION: MIXED / CAUTION</span>
-            <div style="font-weight:800;color:var(--text-1);margin-bottom:3px;">Brent Oil $92–$96 • INR ₹92.83 • US Holiday</div>
-            <div style="color:var(--text-2);font-size:10px;line-height:1.4;">
-              Strait of Hormuz vessel strikes & weak Rupee (₹92.83) are mildly <strong>against</strong> aggressive index chasing today, while US Thanksgiving / Black Friday keeps foreign desks quiet.
-            </div>
-          </div>
-          <div class="verdict-card verdict-fav">
-            <span class="verdict-pill" style="background:#d1fae5;color:#065f46;">🇮🇳 INDIAN CONDITIONS: FAVOURABLE</span>
-            <div style="font-weight:800;color:var(--text-1);margin-bottom:3px;">18-Day FII Buying (+₹5,843 Cr) • VIX Down (-4.7%)</div>
-            <div style="color:var(--text-2);font-size:10px;line-height:1.4;">
-              FIIs (+₹5,843 Cr) & DIIs (+₹5,631 Cr) both bought cash yesterday while India VIX cooled to ~16.50—creating a strong domestic cushion on dips.
-            </div>
-          </div>
-        </div>
-
-        <!-- 2. UPCOMING IMPORTANT EVENTS WITH DATES & EXPECTED INSTITUTIONAL BEHAVIOR -->
+        <!-- UPCOMING IMPORTANT EVENTS & EXPECTED INSTITUTIONAL BEHAVIOR -->
         <div style="font-size:10.5px;font-weight:800;color:var(--blue);margin-bottom:6px;text-transform:uppercase;">
           📅 Upcoming Events & Expected FII / DII Behavior:
         </div>
@@ -337,30 +365,30 @@
           </div>
         </div>
 
-        <!-- 3. LOWEST-RISK OPPORTUNITY GUIDE ACROSS ALL 4 SEGMENTS -->
+        <!-- LOWEST-RISK OPPORTUNITY GUIDE ACROSS ALL 4 SEGMENTS -->
         <div style="font-size:10.5px;font-weight:800;color:var(--green);margin-bottom:6px;text-transform:uppercase;">
-          🛡️ Where Is Lowest-Risk Profit Opportunity Right Now?
+          🛡️ Lowest-Risk Profit Opportunities Across All 4 Segments:
         </div>
         <div class="asset-guide-grid">
           <div class="asset-box">
             <span class="asset-tag" style="background:#dbeafe;color:#1d4ed8;">1. EQUITY (LOWEST RISK)</span>
-            <div style="font-weight:800;margin-top:4px;">Accumulate Non-IT Leaders Below 52W High</div>
-            <div style="font-size:10px;color:var(--text-2);margin-top:2px;">Target <strong>BEL, POWERGRID, TITAN, TATASTEEL</strong> with 8–15% headroom below 52W highs (avoid stocks already at 52W ceiling).</div>
+            <div style="font-weight:800;margin-top:4px;">Non-IT Leaders Below 52W High</div>
+            <div style="font-size:10px;color:var(--text-2);margin-top:2px;">Accumulate <strong>BEL, POWERGRID, TITAN, TATASTEEL</strong> with 8–15% headroom below 52W ceiling.</div>
           </div>
           <div class="asset-box">
             <span class="asset-tag" style="background:#fef3c7;color:#92400e;">2. COMMODITY (MACRO HEDGE)</span>
-            <div style="font-weight:800;margin-top:4px;">Buy MCX Gold / Silver on Intraday Dips</div>
-            <div style="font-size:10px;color:var(--text-2);margin-top:2px;">Strait of Hormuz tension + weak Rupee (₹92.83) act as a natural floor for domestic bullion.</div>
+            <div style="font-weight:800;margin-top:4px;">Buy MCX Gold / Silver on Dips</div>
+            <div style="font-size:10px;color:var(--text-2);margin-top:2px;">Weak INR (₹92.83) & Middle East oil risk provide a strong floor for MCX bullion.</div>
           </div>
           <div class="asset-box">
             <span class="asset-tag" style="background:#f3e8ff;color:#6d28d9;">3. OPTIONS (CAPPED RISK)</span>
-            <div style="font-weight:800;margin-top:4px;">29 Dec 2026 Bull Call Spread (Not Weekly)</div>
-            <div style="font-size:10px;color:var(--text-2);margin-top:2px;">32 days validity eliminates weekly decay; caps max loss to ~₹150/pt while riding 30 Nov MSCI inflows.</div>
+            <div style="font-weight:800;margin-top:4px;">Dec 2026 / Jan 2027 Bull Call Spread</div>
+            <div style="font-size:10px;color:var(--text-2);margin-top:2px;">Longer validity eliminates weekly Theta decay and caps maximum loss.</div>
           </div>
           <div class="asset-box">
             <span class="asset-tag" style="background:#d1fae5;color:#065f46;">4. FUTURES (DISCIPLINED)</span>
-            <div style="font-weight:800;margin-top:4px;">Nifty Dec Fut Only at Buyers' Block</div>
-            <div style="font-size:10px;color:var(--text-2);margin-top:2px;">Avoid mid-range chase; enter Dec Futures only after stop-loss sweep into <strong>25,520–25,585</strong>.</div>
+            <div style="font-weight:800;margin-top:4px;">Nifty Dec Fut at Buyers' Block</div>
+            <div style="font-size:10px;color:var(--text-2);margin-top:2px;">Enter Dec Futures only after stop-loss sweep into <strong>25,520–25,585</strong>.</div>
           </div>
         </div>
 
@@ -396,25 +424,36 @@
       </section>
     </div>
 
-    <!-- PAGE 2: SMC LIQUIDITY ZONES & FII USD CHART -->
+    <!-- PAGE 2: LIGHT-THEMED MULTI-TIMEFRAME CHART (1D, 5D, 1M, 6M, 1Y, 5Y, MAX) & FII USD -->
     <div id="view-global" class="hidden">
       <section class="card">
         <div class="card-header">
-          <span class="step-pill">SMC Liquidity Zones & FII USD Return Chart</span>
+          <span class="step-pill">Interactive Market Chart • Light Theme</span>
           <div class="toggle-group">
-            <button class="tgl-btn active" id="mode-nifty" onclick="setChartMode('NIFTY')">SMC ZONES</button>
+            <button class="tgl-btn active" id="mode-nifty" onclick="setChartMode('NIFTY')">NIFTY + ZONES</button>
             <button class="tgl-btn" id="mode-fii" onclick="setChartMode('FII_USD')">FII USD RETURN</button>
           </div>
         </div>
 
+        <!-- 7-TIMEFRAME SELECTOR BAR -->
+        <div class="tf-bar">
+          <button class="tf-btn active" id="tf-1D" onclick="setChartTimeframe('1D')">1D</button>
+          <button class="tf-btn" id="tf-5D" onclick="setChartTimeframe('5D')">5D</button>
+          <button class="tf-btn" id="tf-1M" onclick="setChartTimeframe('1M')">1M</button>
+          <button class="tf-btn" id="tf-6M" onclick="setChartTimeframe('6M')">6M</button>
+          <button class="tf-btn" id="tf-1Y" onclick="setChartTimeframe('1Y')">1Y</button>
+          <button class="tf-btn" id="tf-5Y" onclick="setChartTimeframe('5Y')">5Y</button>
+          <button class="tf-btn" id="tf-MAX" onclick="setChartTimeframe('MAX')">MAX</button>
+        </div>
+
         <div class="chart-wrap">
           <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:6px;flex-wrap:wrap;gap:4px;">
-            <span id="chartHeaderStat" style="font-weight:700;color:#60a5fa;">Red = Sellers' Block | Green = Buyers' Block | Dashed = SL Hunt</span>
-            <span id="rsiHeaderStat" style="font-weight:700;color:#fbbf24;">RSI(9): -- | RSI(20): --</span>
+            <span id="chartHeaderStat" style="font-weight:800;color:var(--blue);">1D Intraday • Red = Sellers' Block | Green = Buyers' Block</span>
+            <span id="rsiHeaderStat" style="font-weight:800;color:var(--amber);">RSI(9): -- | RSI(20): --</span>
           </div>
-          <canvas id="priceChartCanvas" height="215"></canvas>
-          <div style="font-size:9px;color:#cbd5e1;margin:6px 0 3px;display:flex;justify-content:space-between;">
-            <span><strong>RSI(9)</strong> (Cyan) vs <strong>RSI(20)</strong> (Amber) — Confirms Post-SL-Hunt Reversal</span>
+          <canvas id="priceChartCanvas" height="220"></canvas>
+          <div style="font-size:9px;color:var(--text-2);margin:6px 0 3px;display:flex;justify-content:space-between;">
+            <span><strong>RSI(9)</strong> (Blue) vs <strong>RSI(20)</strong> (Amber) — Momentum Crossover</span>
             <span id="rsiSignalTag" style="font-weight:800;">Scanning...</span>
           </div>
           <canvas id="rsiChartCanvas" height="82"></canvas>
@@ -422,24 +461,11 @@
 
         <div class="summary-box">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-            <strong style="color:var(--purple);">💱 FII Real USD Return & Tax Erosion Model</strong>
+            <strong style="color:var(--purple);">💱 FII Real USD Return & Currency Erosion Model</strong>
             <button class="btn-sm" style="padding:2px 7px;font-size:10px;" onclick="openModal('usdModal')">USD/INR: ₹<span id="usdRateDisplay">92.83</span></button>
           </div>
           <div>
-            Rupee is trading around ₹92.83 today. When INR weakens, FIIs see their USD-denominated gains shrink (plus 20% STCG / 12.5% LTCG tax drag), prompting selective hedging during US holidays before 30 Nov MSCI inflows.
-          </div>
-        </div>
-
-        <div class="global-grid">
-          <div class="metric-box">
-            <div class="metric-lbl">US HOLIDAY & TARIFFS</div>
-            <div class="metric-val" style="font-size:12px;">Thanksgiving / Black Friday</div>
-            <div class="metric-sub">Thin US FII desk; IT stocks digest tariff news.</div>
-          </div>
-          <div class="metric-box">
-            <div class="metric-lbl">FII DOLLAR-ADJUSTED NIFTY</div>
-            <div class="metric-val amber" id="fiiRatioBox" style="font-size:12px;">-- USD pts</div>
-            <div class="metric-sub">Tracks true FII return after INR/USD conversion.</div>
+            When INR weakens (₹92.83), FIIs see their USD-denominated gains shrink (plus 20% STCG / 12.5% LTCG tax drag). Switch to <strong>FII USD RETURN</strong> above to view Nifty in real US Dollar terms across 1D to MAX timeframes.
           </div>
         </div>
       </section>
@@ -456,7 +482,7 @@
         <div class="auto-bar">
           <div>
             <strong style="color:var(--purple);">⚡ Auto-Trigger Paper Trade</strong>
-            <div style="font-size:10px;color:var(--text-2);">Auto-executes confirmed SMC zone reversal + rings gramophone bell</div>
+            <div style="font-size:10px;color:var(--text-2);">Auto-executes confirmed SMC zone reversal + rings Railway Ting-Tong</div>
           </div>
           <button class="btn-sm" id="autoTradeToggleBtn" onclick="toggleAutoPaper()" style="min-width:86px;">OFF (Manual)</button>
         </div>
@@ -492,11 +518,11 @@
       </section>
     </div>
 
-    <!-- PAGE 5: COMPLETE MULTI-INDEX OPTION CHAIN WITH FULL GREEKS -->
+    <!-- PAGE 5: COMPLETE MULTI-INDEX OPTION CHAIN (NEXT 13 MONTHS + FULL GREEKS) -->
     <div id="view-chain" class="hidden">
       <section class="card">
         <div class="card-header">
-          <span class="step-pill">Multi-Index Option Chain • Δ Θ Γ ν Greeks</span>
+          <span class="step-pill">13-Month Option Chain • Δ Θ Γ ν Greeks</span>
           <span style="font-size:10px;color:var(--green);">★ Investor Picks Highlighted</span>
         </div>
 
@@ -510,17 +536,13 @@
             </select>
           </div>
           <div>
-            <label style="font-size:10px;color:var(--text-2);">Longer Validity Expiry</label>
-            <select id="ocExpiry" onchange="fetchLiveOptionChain()">
-              <option value="2026-12-29">29 Dec 2026 (Next Monthly)</option>
-              <option value="2027-01-28">28 Jan 2027 (Far Monthly)</option>
-              <option value="2027-03-25">25 Mar 2027 (Quarterly Long)</option>
-            </select>
+            <label style="font-size:10px;color:var(--text-2);">Expiry (Next 13 Months)</label>
+            <select id="ocExpiry" onchange="fetchLiveOptionChain()"></select>
           </div>
         </div>
 
         <div id="ocStatus" style="font-size:11px;color:var(--amber);margin-bottom:8px;">
-          Connect Upstox token to load full option chain & Greeks.
+          Connect Upstox socket/token to load 13-month option chains & Greeks.
         </div>
 
         <div style="overflow-x:auto;">
@@ -551,7 +573,7 @@
         </div>
 
         <div class="summary-box">
-          Enter any <strong>Equity, Commodity, Future, or Option Strike</strong> below. The AI engine cross-checks live spot/LTP, SMC Supply/Demand zones, Brent Crude, INR (₹92.83), and 52-week headroom.
+          Enter any <strong>Equity, Commodity, Future, or Option Strike</strong> below. The AI engine cross-checks live socket spot/LTP, SMC Supply/Demand zones, Brent Crude, INR (₹92.83), and 52-week headroom.
         </div>
 
         <div class="ai-form-grid">
@@ -597,10 +619,10 @@
       <section class="card">
         <div class="card-header">
           <span class="step-pill">Anti-Freeze Paper Desk • Profit Protection</span>
-          <span style="font-size:10px;color:var(--green);" id="deskPollerTag">Background Strike Poller: Active</span>
+          <span style="font-size:10px;color:var(--green);" id="deskPollerTag">Direct Socket Stream: Active</span>
         </div>
 
-        <div class="aerial-grid" style="grid-template-columns:1fr 1fr;">
+        <div class="aerial-grid" style="grid-template-columns:1fr 1fr;display:grid;gap:8px;margin-bottom:8px;">
           <div class="metric-box">
             <div class="metric-lbl">PAPER CAPITAL</div>
             <div class="metric-val" id="paperCap">₹1,00,000</div>
@@ -629,7 +651,7 @@
           <div style="display:flex;justify-content:space-between;align-items:center;font-size:10px;color:var(--text-2);">
             <span>Auto-Paper: <strong id="deskAutoStatus">OFF</strong></span>
             <div>
-              <button class="btn-sm" onclick="playTringTring()">🔔 Test Gramophone Bell</button>
+              <button class="btn-sm" onclick="playRailwayTingTong()">🔔 Test Railway Ting-Tong</button>
               <button class="btn-sm" onclick="resetPaper()">Reset ₹1L</button>
             </div>
           </div>
@@ -638,7 +660,7 @@
         <div style="font-size:11px;font-weight:800;color:var(--amber);margin-bottom:6px;">🔔 ACTIVE AUTO-ALERTS (<span id="alertCount">0</span>)</div>
         <div id="alertsList" style="margin-bottom:12px;"></div>
 
-        <div style="font-size:11px;font-weight:800;color:var(--blue);margin-bottom:6px;">📊 PAPER POSITIONS (CONTINUOUS LIVE LTP TRACKING)</div>
+        <div style="font-size:11px;font-weight:800;color:var(--blue);margin-bottom:6px;">📊 PAPER POSITIONS (LIVE SOCKET LTP TRACKING)</div>
         <div id="positionsList"></div>
       </section>
     </div>
@@ -646,26 +668,26 @@
   </main>
 
   <nav class="bottom-nav">
-    <button class="nav-btn active" id="nav-aerial" onclick="switchView('aerial')"><span class="nav-ico">🧭</span><span>Guide</span></button>
-    <button class="nav-btn" id="nav-global" onclick="switchView('global')"><span class="nav-ico">🌐</span><span>SMC/USD</span></button>
+    <button class="nav-btn active" id="nav-aerial" onclick="switchView('aerial')"><span class="nav-ico">🧭</span><span>Speedometer</span></button>
+    <button class="nav-btn" id="nav-global" onclick="switchView('global')"><span class="nav-ico">📈</span><span>Chart/USD</span></button>
     <button class="nav-btn" id="nav-opps" onclick="switchView('opps')"><span class="nav-ico">🎯</span><span>Signals</span></button>
     <button class="nav-btn" id="nav-themes" onclick="switchView('themes')"><span class="nav-ico">💎</span><span>52W/Themes</span></button>
-    <button class="nav-btn" id="nav-chain" onclick="switchView('chain')"><span class="nav-ico">⛓️</span><span>Chain</span></button>
+    <button class="nav-btn" id="nav-chain" onclick="switchView('chain')"><span class="nav-ico">⛓️</span><span>13M Chain</span></button>
     <button class="nav-btn" id="nav-ai" onclick="switchView('ai')"><span class="nav-ico">🤖</span><span>AI Opinion</span></button>
     <button class="nav-btn" id="nav-desk" onclick="switchView('desk')"><span class="nav-ico">🛡️</span><span>Desk(<span id="posCount">0</span>)</span></button>
   </nav>
 
-  <!-- AUTH MODAL -->
+  <!-- PRIVACY-PROTECTED AUTH MODAL -->
   <div class="modal-bg" id="authModal">
     <div class="modal-box">
-      <h3 style="font-size:15px;margin-bottom:6px;">🔑 Live Data Feed Setup (Saved on Device)</h3>
+      <h3 style="font-size:15px;margin-bottom:6px;">🔑 Direct Market Data Socket Setup</h3>
       <p style="font-size:11px;color:var(--text-2);margin-bottom:10px;line-height:1.4;">
-        Saved permanently on your phone so refreshing never disconnects your session.
+        Saved encrypted/masked on your local device only. Credentials remain hidden on screen.
       </p>
-      <label style="font-size:11px;color:var(--text-2);">Account ID / Profile Name</label>
-      <input type="text" id="inAccountId" placeholder="e.g. 84BKKN" style="margin:4px 0 10px;" />
-      <label style="font-size:11px;color:var(--text-2);">Upstox Live Data Access Token</label>
-      <input type="password" id="inAccessToken" placeholder="Paste Upstox v2 Access Token..." style="margin:4px 0 10px;" />
+      <label style="font-size:11px;color:var(--text-2);">Secret Account ID (Masked on Display)</label>
+      <input type="password" id="inAccountId" placeholder="Enter Account ID..." style="margin:4px 0 10px;" />
+      <label style="font-size:11px;color:var(--text-2);">Upstox Market Data Socket Token</label>
+      <input type="password" id="inAccessToken" placeholder="Paste Upstox Access Token..." style="margin:4px 0 10px;" />
       <label style="font-size:11px;color:var(--text-2);">Preferred Broker for Future Live Orders</label>
       <select id="inBrokerChoice" style="margin:4px 0 12px;">
         <option value="Decide Later (Paper Only)">Decide Later (Paper Only)</option>
@@ -673,7 +695,7 @@
         <option value="Sahi">Sahi</option>
       </select>
       <div style="display:flex;gap:8px;">
-        <button class="btn-paper" style="flex:1;" onclick="saveDeviceCredentials()">Save & Start Live Feed</button>
+        <button class="btn-paper" style="flex:1;" onclick="saveDeviceCredentials()">Connect Live Socket</button>
         <button class="btn-sm" style="background:var(--red-bg);color:var(--red);" onclick="clearDeviceCredentials()">Clear</button>
         <button class="btn-sm" onclick="closeModal('authModal')">Close</button>
       </div>
@@ -698,11 +720,11 @@
   <!-- USD/INR MODAL -->
   <div class="modal-bg" id="usdModal">
     <div class="modal-box">
-      <h3 style="font-size:15px;margin-bottom:8px;">Update Live USD/INR Rate</h3>
+      <h3 style="font-size:15px;margin-bottom:8px;">Update Live USD/INR & Crude</h3>
       <label style="font-size:11px;color:var(--text-2);">USD/INR Exchange Rate (Current: 92.83)</label>
       <input type="number" step="0.01" id="inUsdInr" value="92.83" style="margin:4px 0 12px;" />
       <div style="display:flex;gap:8px;">
-        <button class="btn-paper" style="flex:1;" onclick="saveUsdRate()">Apply to FII USD Model</button>
+        <button class="btn-paper" style="flex:1;" onclick="saveUsdRate()">Apply to Speedometer & Chart</button>
         <button class="btn-sm" onclick="closeModal('usdModal')">Close</button>
       </div>
     </div>
@@ -728,7 +750,7 @@
   <div class="modal-bg" id="algoModal">
     <div class="modal-box">
       <h3 style="font-size:14px;margin-bottom:6px;">🤖 Algo-Compatible Signal Payload</h3>
-      <textarea id="algoJsonBox" rows="9" style="width:100%;background:#0f172a;color:#6ee7b7;border:1px solid var(--border);border-radius:8px;padding:8px;font-size:11px;font-family:monospace;"></textarea>
+      <textarea id="algoJsonBox" rows="9" style="width:100%;background:var(--bg-input);color:var(--text-1);border:1px solid var(--border);border-radius:8px;padding:8px;font-size:11px;font-family:monospace;"></textarea>
       <div style="display:flex;gap:8px;margin-top:10px;">
         <button class="btn-paper" style="flex:1;" onclick="copyAlgoJson()">Copy JSON</button>
         <button class="btn-sm" onclick="closeModal('algoModal')">Close</button>
@@ -737,10 +759,9 @@
   </div>
 
   <script>
-    // Single master storage key + automatic seamless migration from all prior versions
-    const STORE_KEY = "anuragpulse_master_v13";
-    const LEGACY_KEYS = ["anuragpulse_v12_state", "anuragpulse_v11_state", "anuragpulse_v10_state", "anuragpulse_v9_state", "anuragpulse_v8_state"];
-    const QUOTE_CACHE_KEY = "anuragpulse_master_quotes_v13";
+    const STORE_KEY = "anuragpulse_master_v14";
+    const LEGACY_KEYS = ["anuragpulse_master_v13", "anuragpulse_v12_state", "anuragpulse_v11_state", "anuragpulse_v10_state"];
+    const QUOTE_CACHE_KEY = "anuragpulse_master_quotes_v14";
 
     let appState = {
       accountId: "",
@@ -754,15 +775,18 @@
       fiiCash: 5843,
       diiCash: 5631,
       usdInr: 92.83,
+      brentCrude: 94.50,
       paperCapital: 100000,
       realizedPnl: 0,
       positions: [],
       alerts: []
     };
 
+    let revealAccountId = false;
     let liveQuotes = {};
     let decOptionChain = [];
-    let intradayCandles = [];
+    let chartCandles = [];
+    let activeTimeframe = "1D";
     let techState = {
       vwap: null,
       rsi9: null,
@@ -773,13 +797,12 @@
       sellersZoneHigh: 25960,
       buyersZoneLow: 25520,
       buyersZoneHigh: 25585,
-      slHuntBottom: false,
-      slHuntTop: false,
       confirmedTopReversal: false,
       confirmedBottomReversal: false
     };
     let chartMode = "NIFTY";
-    let pollTimer = null;
+    let socketConn = null;
+    let socketPingTimer = null;
     let isFetching = false;
     let currentOppFilter = "all";
 
@@ -790,7 +813,6 @@
       VIX: "NSE_INDEX|India VIX"
     };
 
-    // Proven, verified NSE EQ ISIN keys from v11 so Gainers/Losers ALWAYS populate reliably
     const WATCHLIST_STOCKS = [
       { sym: "TITAN", key: "NSE_EQ|INE280A01028", sector: "Consumer / Jewellery", low52: 3055, high52: 4890 },
       { sym: "TATASTEEL", key: "NSE_EQ|INE081A01020", sector: "Metals Outperformer", low52: 122, high52: 184 },
@@ -814,57 +836,198 @@
       { sym: "BEL", key: "NSE_EQ|INE263A01024", low52: 240, high52: 435, theme: "DEFENCE ELECTRONICS", lotSize: 25, thesis: "Strong defence radar/EW order execution with healthy headroom below 52W peak." }
     ];
 
-    // --- OLD GRAMOPHONE / VINTAGE BRASS BELL "TRING-TRING" RINGTONE ---
-    function playTringTring() {
+    // --- INDIAN RAILWAY STATION "TING-TONG" PA ANNOUNCEMENT CHIME ---
+    function playRailwayTingTong() {
       try {
         const AudioCtx = window.AudioContext || window.webkitAudioContext;
         const ctx = new AudioCtx();
         const now = ctx.currentTime;
 
-        // Warm gramophone horn bandpass filter + rich brass bell harmonics
-        const filter = ctx.createBiquadFilter();
-        filter.type = "bandpass";
-        filter.frequency.setValueAtTime(1350, now);
-        filter.Q.setValueAtTime(1.8, now);
-        filter.connect(ctx.destination);
+        // Classic Indian Railway PA two-note chime: High Bell "TING" (G5 = 784Hz) -> Low Bell "TONG" (E5 = 659.25Hz)
+        const notes = [
+          { freq: 783.99, overtone: 1567.98, start: 0.00, dur: 0.52 },
+          { freq: 659.25, overtone: 1318.50, start: 0.38, dur: 0.75 }
+        ];
 
-        // Two distinct classic rings: "TRING-TRING ... TRING-TRING"
-        [0, 0.58].forEach(offset => {
-          const bellHarmonics = [680, 1020, 1530, 2040];
-          const ringGain = ctx.createGain();
-          const clapper = ctx.createOscillator();
-          const clapperDepth = ctx.createGain();
+        notes.forEach(n => {
+          const oscMain = ctx.createOscillator();
+          const oscHarm = ctx.createOscillator();
+          const gainMain = ctx.createGain();
+          const gainHarm = ctx.createGain();
 
-          // 28 Hz vintage mechanical bell clapper hammer
-          clapper.type = "sine";
-          clapper.frequency.setValueAtTime(28, now + offset);
-          clapperDepth.gain.setValueAtTime(0.48, now + offset);
+          oscMain.type = "sine";
+          oscHarm.type = "triangle";
+          oscMain.frequency.setValueAtTime(n.freq, now + n.start);
+          oscHarm.frequency.setValueAtTime(n.overtone, now + n.start);
 
-          ringGain.gain.setValueAtTime(0.001, now + offset);
-          ringGain.gain.linearRampToValueAtTime(0.38, now + offset + 0.02);
-          ringGain.gain.setValueAtTime(0.38, now + offset + 0.36);
-          ringGain.gain.exponentialRampToValueAtTime(0.0005, now + offset + 0.45);
+          // Crisp metallic chime strike + warm PA hall decay
+          gainMain.gain.setValueAtTime(0.001, now + n.start);
+          gainMain.gain.linearRampToValueAtTime(0.42, now + n.start + 0.015);
+          gainMain.gain.exponentialRampToValueAtTime(0.0008, now + n.start + n.dur);
 
-          clapper.connect(clapperDepth);
-          clapperDepth.connect(ringGain.gain);
-          ringGain.connect(filter);
+          gainHarm.gain.setValueAtTime(0.001, now + n.start);
+          gainHarm.gain.linearRampToValueAtTime(0.14, now + n.start + 0.01);
+          gainHarm.gain.exponentialRampToValueAtTime(0.0005, now + n.start + n.dur * 0.6);
 
-          bellHarmonics.forEach((freq, idx) => {
-            const osc = ctx.createOscillator();
-            const partGain = ctx.createGain();
-            osc.type = idx % 2 === 0 ? "triangle" : "sine";
-            osc.frequency.setValueAtTime(freq, now + offset);
-            partGain.gain.setValueAtTime(0.55 / (idx + 1), now + offset);
-            osc.connect(partGain);
-            partGain.connect(ringGain);
-            osc.start(now + offset);
-            osc.stop(now + offset + 0.46);
-          });
+          oscMain.connect(gainMain);
+          oscHarm.connect(gainHarm);
+          gainMain.connect(ctx.destination);
+          gainHarm.connect(ctx.destination);
 
-          clapper.start(now + offset);
-          clapper.stop(now + offset + 0.46);
+          oscMain.start(now + n.start);
+          oscHarm.start(now + n.start);
+          oscMain.stop(now + n.start + n.dur + 0.02);
+          oscHarm.stop(now + n.start + n.dur + 0.02);
         });
       } catch (e) {}
+    }
+
+    // --- 13-MONTH ROLLING EXPIRY DROPDOWN GENERATOR ---
+    function populate13MonthExpiries() {
+      const sel = document.getElementById("ocExpiry");
+      if (!sel) return;
+      const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      const options = [];
+      const base = new Date();
+      for (let m = 1; m <= 13; m++) {
+        const d = new Date(base.getFullYear(), base.getMonth() + m + 1, 0); // Last day of target month
+        // Find last Tuesday of that month (NSE monthly expiry convention)
+        while (d.getDay() !== 2) {
+          d.setDate(d.getDate() - 1);
+        }
+        const yyyy = d.getFullYear();
+        const mm = String(d.getMonth() + 1).padStart(2, "0");
+        const dd = String(d.getDate()).padStart(2, "0");
+        const iso = `${yyyy}-${mm}-${dd}`;
+        const label = `${dd} ${monthNames[d.getMonth()]} ${yyyy} (M+${m})`;
+        options.push(`<option value="${iso}">${label}</option>`);
+      }
+      sel.innerHTML = options.join("");
+    }
+
+    // --- SPEEDOMETER GAUGE RENDERER (5 ZONES: STRONG SELL -> SELL -> NEUTRAL -> BUY -> STRONG BUY) ---
+    function drawSpeedometer(canvasId, score0to100) {
+      const canvas = document.getElementById(canvasId);
+      if (!canvas) return;
+      const dpr = window.devicePixelRatio || 1;
+      const w = canvas.parentElement.clientWidth - 20;
+      const h = 105;
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
+
+      const ctx = canvas.getContext("2d");
+      ctx.scale(dpr, dpr);
+      ctx.clearRect(0, 0, w, h);
+
+      const cx = w / 2;
+      const cy = h - 14;
+      const radius = Math.min(w * 0.42, 78);
+      const lineW = 16;
+
+      const zones = [
+        { color: "#dc2626", start: Math.PI, end: Math.PI * 1.2 },         // Strong Sell
+        { color: "#f97316", start: Math.PI * 1.2, end: Math.PI * 1.4 },   // Sell
+        { color: "#eab308", start: Math.PI * 1.4, end: Math.PI * 1.6 },   // Neutral
+        { color: "#22c55e", start: Math.PI * 1.6, end: Math.PI * 1.8 },   // Buy
+        { color: "#059669", start: Math.PI * 1.8, end: Math.PI * 2.0 }    // Strong Buy
+      ];
+
+      zones.forEach(z => {
+        ctx.beginPath();
+        ctx.arc(cx, cy, radius, z.start + 0.015, z.end - 0.015);
+        ctx.strokeStyle = z.color;
+        ctx.lineWidth = lineW;
+        ctx.stroke();
+      });
+
+      // Scale Labels
+      ctx.fillStyle = "#64748b";
+      ctx.font = "bold 8px sans-serif";
+      ctx.textAlign = "left";
+      ctx.fillText("STRONG SELL", cx - radius - 14, cy + 11);
+      ctx.textAlign = "center";
+      ctx.fillText("NEUTRAL", cx, cy - radius - 12);
+      ctx.textAlign = "right";
+      ctx.fillText("STRONG BUY", cx + radius + 14, cy + 11);
+
+      // Needle
+      const clamped = Math.max(0, Math.min(100, score0to100));
+      const angle = Math.PI + (clamped / 100) * Math.PI;
+      const nx = cx + Math.cos(angle) * (radius - 4);
+      const ny = cy + Math.sin(angle) * (radius - 4);
+
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(nx, ny);
+      ctx.strokeStyle = "#0f172a";
+      ctx.lineWidth = 3;
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.arc(cx, cy, 5, 0, Math.PI * 2);
+      ctx.fillStyle = "#0f172a";
+      ctx.fill();
+    }
+
+    function updateSentimentSpeedometers() {
+      const n = getQ(INDEX_KEYS.NIFTY);
+      const v = getQ(INDEX_KEYS.VIX);
+      const vixVal = v ? v.ltp : 16.5;
+
+      // Global Score: Factors Brent Crude ($94.5), INR (92.83), and VIX
+      let globalScore = 48; // Neutral base
+      if (appState.brentCrude > 95) globalScore -= 12;
+      if (appState.usdInr > 92.75) globalScore -= 8;
+      if (vixVal < 16) globalScore += 10;
+      globalScore = Math.max(10, Math.min(90, globalScore));
+
+      // India Score: Factors 18-day FII buying (+₹5,843 Cr), DII buying (+₹5,631 Cr), VIX, and Nifty trend
+      let indiaScore = 68; // Buy zone
+      if (appState.fiiCash > 3000 && appState.diiCash > 3000) indiaScore += 12;
+      if (vixVal < 17) indiaScore += 5;
+      if (n && n.chg < -150) indiaScore -= 15;
+      indiaScore = Math.max(10, Math.min(92, indiaScore));
+
+      const getZoneMeta = sc => {
+        if (sc < 25) return { label: "STRONG SELL", cls: "red" };
+        if (sc < 42) return { label: "SELL / DEFENSIVE", cls: "red" };
+        if (sc < 58) return { label: "NEUTRAL / MIXED", cls: "amber" };
+        if (sc < 78) return { label: "BUY (ACCUMULATE)", cls: "green" };
+        return { label: "STRONG BUY", cls: "green" };
+      };
+
+      const gMeta = getZoneMeta(globalScore);
+      const iMeta = getZoneMeta(indiaScore);
+
+      document.getElementById("globalGaugeLabel").textContent = `${gMeta.label} (${globalScore}/100)`;
+      document.getElementById("globalGaugeLabel").className = `gauge-verdict ${gMeta.cls}`;
+      document.getElementById("globalGaugeFactors").textContent = `Crude $${appState.brentCrude} • INR ₹${appState.usdInr.toFixed(2)}`;
+
+      document.getElementById("indiaGaugeLabel").textContent = `${iMeta.label} (${indiaScore}/100)`;
+      document.getElementById("indiaGaugeLabel").className = `gauge-verdict ${iMeta.cls}`;
+      document.getElementById("indiaGaugeFactors").textContent = `VIX ${vixVal.toFixed(2)} • FII +₹${appState.fiiCash} Cr`;
+
+      drawSpeedometer("globalGaugeCanvas", globalScore);
+      drawSpeedometer("indiaGaugeCanvas", indiaScore);
+    }
+
+    function togglePrivacyMask() {
+      revealAccountId = !revealAccountId;
+      updatePrivacyDisplay();
+    }
+
+    function updatePrivacyDisplay() {
+      const btn = document.getElementById("acctMaskBtn");
+      if (!appState.accountId) {
+        btn.textContent = "ID: ••••";
+        return;
+      }
+      if (revealAccountId) {
+        btn.textContent = `${appState.accountId} 🙈`;
+      } else {
+        const tail = appState.accountId.slice(-2);
+        btn.textContent = `••••${tail} 👁️`;
+      }
     }
 
     function normKey(k) { return (k || "").replace(":", "|").trim(); }
@@ -893,6 +1056,7 @@
     }
 
     function loadState() {
+      populate13MonthExpiries();
       try {
         let raw = localStorage.getItem(STORE_KEY);
         if (!raw) {
@@ -913,17 +1077,17 @@
       document.getElementById("lotTag").textContent = appState.lots;
       document.getElementById("protMode").value = appState.protMode;
       document.getElementById("usdRateDisplay").textContent = appState.usdInr.toFixed(2);
+      document.getElementById("topUsdVal").textContent = appState.usdInr.toFixed(2);
+      updatePrivacyDisplay();
       updateAutoTradeUI();
-
-      if (appState.accountId) document.getElementById("acctLabel").textContent = `(${appState.accountId})`;
 
       renderAll();
 
       if (appState.accessToken) {
-        setConnBadge(true, "● UPSTOX LIVE ACTIVE");
-        startEngine();
+        setConnBadge(true, "● UPSTOX SOCKET READY");
+        reconnectSocketAndSync();
       } else {
-        setConnBadge(false, "● DISCONNECTED (TAP SETUP)");
+        setConnBadge(false, "● SOCKET OFFLINE (TAP SETUP)");
         openAuthModal();
       }
     }
@@ -937,7 +1101,7 @@
       saveState();
       updateAutoTradeUI();
       if (appState.autoPaperEnabled) {
-        playTringTring();
+        playRailwayTingTong();
         evaluateAutoPaperTrigger();
       }
     }
@@ -980,7 +1144,7 @@
       const tok = document.getElementById("inAccessToken").value.trim();
       const broker = document.getElementById("inBrokerChoice").value;
       if (!acct || !tok) {
-        alert("Please enter both Account ID and Upstox Access Token.");
+        alert("Please enter both Account ID and Upstox Socket Token.");
         return;
       }
       appState.accountId = acct;
@@ -988,10 +1152,10 @@
       appState.savedAt = Date.now();
       appState.brokerChoice = broker;
       saveState();
-      document.getElementById("acctLabel").textContent = `(${acct})`;
+      updatePrivacyDisplay();
       closeModal("authModal");
-      setConnBadge(true, "● UPSTOX LIVE ACTIVE");
-      startEngine();
+      setConnBadge(true, "● CONNECTING SOCKET...");
+      reconnectSocketAndSync();
     }
 
     function clearDeviceCredentials() {
@@ -1000,8 +1164,10 @@
       liveQuotes = {};
       localStorage.removeItem(QUOTE_CACHE_KEY);
       saveState();
-      if (pollTimer) clearInterval(pollTimer);
-      setConnBadge(false, "● DISCONNECTED (TAP SETUP)");
+      if (socketConn) socketConn.close();
+      if (socketPingTimer) clearInterval(socketPingTimer);
+      updatePrivacyDisplay();
+      setConnBadge(false, "● SOCKET OFFLINE (TAP SETUP)");
       closeModal("authModal");
       renderAll();
     }
@@ -1012,41 +1178,175 @@
       b.textContent = text;
     }
 
-    function startEngine() {
+    // --- DIRECT UPSTOX V3 WEBSOCKET STREAMER (EVENT-DRIVEN, NON-TICK-POLLING) ---
+    async function reconnectSocketAndSync() {
       if (!appState.accessToken) return;
-      syncAllFeeds(true);
-      if (pollTimer) clearInterval(pollTimer);
-      pollTimer = setInterval(() => {
-        if (!document.hidden) syncAllFeeds(false);
-      }, 3800);
+      // 1. Seed initial snapshot & historical candles via REST
+      await fetchInitialSnapshotAndHistory();
+      // 2. Open direct Upstox v3 WebSocket stream for live push ticks
+      await connectDirectUpstoxSocket();
     }
 
     document.addEventListener("visibilitychange", () => {
-      if (!document.hidden && appState.accessToken) syncAllFeeds(true);
+      if (!document.hidden && appState.accessToken) {
+        if (!socketConn || socketConn.readyState !== WebSocket.OPEN) {
+          connectDirectUpstoxSocket();
+        }
+      }
     });
 
-    async function syncAllFeeds(fullSync = false) {
+    async function connectDirectUpstoxSocket() {
+      if (!appState.accessToken) return;
+      const healthEl = document.getElementById("feedHealthText");
+      try {
+        const authRes = await fetch("https://api.upstox.com/v3/feed/market-data-feed/authorize", {
+          headers: { "Authorization": `Bearer ${appState.accessToken}`, "Accept": "application/json" }
+        });
+        if (authRes.status === 401) {
+          setConnBadge(false, "● TOKEN EXPIRED (TAP SETUP)");
+          healthEl.textContent = "Socket Status: HTTP 401 — Daily token expired.";
+          healthEl.style.color = "var(--red)";
+          return;
+        }
+        const authJson = await authRes.json();
+        const wsUrl = authJson.data?.authorized_redirect_uri;
+        if (!wsUrl) return;
+
+        if (socketConn) {
+          try { socketConn.close(); } catch (e) {}
+        }
+
+        socketConn = new WebSocket(wsUrl);
+        socketConn.binaryType = "arraybuffer";
+
+        socketConn.onopen = () => {
+          setConnBadge(true, "● DIRECT SOCKET LIVE");
+          healthEl.textContent = "Socket Status: Upstox v3 WebSocket Connected (Push Stream)";
+          healthEl.style.color = "var(--green)";
+          subscribeSocketInstruments();
+        };
+
+        socketConn.onmessage = async (event) => {
+          document.getElementById("lastTickTime").textContent = "Socket Tick: " + new Date().toLocaleTimeString();
+          try {
+            if (typeof event.data === "string") {
+              const parsed = JSON.parse(event.data);
+              applySocketFeedObject(parsed);
+            } else if (event.data instanceof ArrayBuffer) {
+              // Decode binary protobuf string fields & IEEE-754 double LTP values directly from buffer
+              decodeUpstoxBinaryFrame(event.data);
+            }
+          } catch (e) {}
+        };
+
+        socketConn.onclose = () => {
+          if (appState.accessToken) {
+            setConnBadge(true, "● SOCKET STANDBY (MARKET CLOSED / RECONNECT)");
+            healthEl.textContent = "Socket Status: Standby (Re-syncs automatically when market opens)";
+          }
+        };
+      } catch (e) {
+        healthEl.textContent = "Socket Handshake: " + e.message;
+      }
+    }
+
+    function subscribeSocketInstruments() {
+      if (!socketConn || socketConn.readyState !== WebSocket.OPEN) return;
+      const openPosKeys = appState.positions.filter(p => p.status === "OPEN").map(p => p.instKey).filter(Boolean);
+      const allKeys = [...new Set([
+        ...Object.values(INDEX_KEYS),
+        ...WATCHLIST_STOCKS.map(s => s.key),
+        ...openPosKeys
+      ])];
+      const payload = {
+        guid: "ap_sock_" + Date.now(),
+        method: "sub",
+        data: { mode: "ltpc", instrumentKeys: allKeys }
+      };
+      socketConn.send(new TextEncoder().encode(JSON.stringify(payload)));
+    }
+
+    // Extracts instrument_key + double LTP directly from Upstox v3 binary feed frames
+    function decodeUpstoxBinaryFrame(buf) {
+      const bytes = new Uint8Array(buf);
+      const text = new TextDecoder("latin1").decode(bytes);
+      const view = new DataView(buf);
+      let updated = false;
+
+      const allKnownKeys = [
+        ...Object.values(INDEX_KEYS),
+        ...WATCHLIST_STOCKS.map(s => s.key),
+        ...appState.positions.map(p => p.instKey)
+      ].filter(Boolean);
+
+      allKnownKeys.forEach(k => {
+        const idx = text.indexOf(k);
+        if (idx !== -1) {
+          // Scan the 36 bytes immediately following the instrument key string for the IEEE-754 double LTP
+          const start = idx + k.length;
+          const end = Math.min(buf.byteLength - 8, start + 36);
+          for (let offset = start; offset <= end; offset++) {
+            const val = view.getFloat64(offset, true);
+            const prev = getQ(k)?.ltp || getQ(k)?.close;
+            if (Number.isFinite(val) && val > 1 && val < 200000) {
+              if (!prev || Math.abs(val - prev) / prev < 0.15) {
+                const baseClose = getQ(k)?.close || val;
+                liveQuotes[normKey(k)] = {
+                  ...(liveQuotes[normKey(k)] || {}),
+                  ltp: +val.toFixed(2),
+                  close: baseClose,
+                  chg: +(val - baseClose).toFixed(2),
+                  pct: baseClose > 0 ? +(((val - baseClose) / baseClose) * 100).toFixed(2) : 0
+                };
+                updated = true;
+                break;
+              }
+            }
+          }
+        }
+      });
+
+      if (updated) {
+        try { localStorage.setItem(QUOTE_CACHE_KEY, JSON.stringify(liveQuotes)); } catch (e) {}
+        evaluateAlertsAndPositions();
+        renderAll();
+      }
+    }
+
+    function applySocketFeedObject(msg) {
+      const feeds = msg?.feeds || msg?.data;
+      if (!feeds) return;
+      let updated = false;
+      Object.entries(feeds).forEach(([k, obj]) => {
+        const ltp = obj?.ltpc?.ltp || obj?.ff?.marketFF?.ltpc?.ltp || obj?.last_price;
+        const cp = obj?.ltpc?.cp || obj?.ff?.marketFF?.ltpc?.cp;
+        if (typeof ltp === "number" && ltp > 0) {
+          const nk = normKey(k);
+          const prev = cp || liveQuotes[nk]?.close || ltp;
+          liveQuotes[nk] = {
+            ...(liveQuotes[nk] || {}),
+            ltp, close: prev,
+            chg: +(ltp - prev).toFixed(2),
+            pct: prev > 0 ? +(((ltp - prev) / prev) * 100).toFixed(2) : 0
+          };
+          updated = true;
+        }
+      });
+      if (updated) {
+        evaluateAlertsAndPositions();
+        renderAll();
+      }
+    }
+
+    async function fetchInitialSnapshotAndHistory() {
       if (!appState.accessToken || isFetching) return;
       isFetching = true;
-      const healthEl = document.getElementById("feedHealthText");
-
       try {
-        // 1. Core Indices
         const idxKeys = encodeURIComponent(Object.values(INDEX_KEYS).join(","));
         const idxRes = await fetch(`https://api.upstox.com/v2/market-quote/quotes?instrument_key=${idxKeys}`, {
           headers: { "Authorization": `Bearer ${appState.accessToken}`, "Accept": "application/json" }
         });
-
-        if (idxRes.status === 401) {
-          setConnBadge(false, "● TOKEN EXPIRED (TAP SETUP)");
-          healthEl.textContent = "Feed Health: HTTP 401 — Daily Upstox token expired.";
-          healthEl.style.color = "var(--red)";
-          isFetching = false;
-          return;
-        }
-
         const idxJson = await idxRes.json();
-        let okCount = 0;
         if (idxJson.status === "success" && idxJson.data) {
           Object.entries(idxJson.data).forEach(([k, q]) => {
             const nk = normKey(q.instrument_token || k);
@@ -1059,79 +1359,139 @@
                 high: q.ohlc?.high || q.last_price, low: q.ohlc?.low || q.last_price,
                 close: prev, chg, pct, vol: q.volume || 0
               };
-              okCount++;
             }
           });
         }
 
-        // 2. Watchlist Stocks (Split into two small batches so one symbol can never block the list)
         const half = Math.ceil(WATCHLIST_STOCKS.length / 2);
-        const batches = [WATCHLIST_STOCKS.slice(0, half), WATCHLIST_STOCKS.slice(half)];
-        for (const batch of batches) {
-          try {
-            const stkKeys = encodeURIComponent(batch.map(s => s.key).join(","));
-            const stkRes = await fetch(`https://api.upstox.com/v2/market-quote/quotes?instrument_key=${stkKeys}`, {
-              headers: { "Authorization": `Bearer ${appState.accessToken}`, "Accept": "application/json" }
+        for (const batch of [WATCHLIST_STOCKS.slice(0, half), WATCHLIST_STOCKS.slice(half)]) {
+          const stkKeys = encodeURIComponent(batch.map(s => s.key).join(","));
+          const stkRes = await fetch(`https://api.upstox.com/v2/market-quote/quotes?instrument_key=${stkKeys}`, {
+            headers: { "Authorization": `Bearer ${appState.accessToken}`, "Accept": "application/json" }
+          });
+          const stkJson = await stkRes.json();
+          if (stkJson.status === "success" && stkJson.data) {
+            Object.entries(stkJson.data).forEach(([k, q]) => {
+              const nk = normKey(q.instrument_token || k);
+              if (nk && typeof q.last_price === "number" && q.last_price > 0) {
+                const prev = q.ohlc?.close || q.cp || q.last_price;
+                const chg = typeof q.net_change === "number" && q.net_change !== 0 ? q.net_change : +(q.last_price - prev).toFixed(2);
+                const pct = prev > 0 ? +((chg / prev) * 100).toFixed(2) : 0;
+                liveQuotes[nk] = {
+                  ltp: q.last_price, open: q.ohlc?.open || q.last_price,
+                  close: prev, high52: q["52_week_high"] || q.year_high || null,
+                  chg, pct, vol: q.volume || 0
+                };
+              }
             });
-            const stkJson = await stkRes.json();
-            if (stkJson.status === "success" && stkJson.data) {
-              Object.entries(stkJson.data).forEach(([k, q]) => {
-                const nk = normKey(q.instrument_token || k);
-                if (nk && typeof q.last_price === "number" && q.last_price > 0) {
-                  const prev = q.ohlc?.close || q.cp || q.last_price;
-                  const chg = typeof q.net_change === "number" && q.net_change !== 0 ? q.net_change : +(q.last_price - prev).toFixed(2);
-                  const pct = prev > 0 ? +((chg / prev) * 100).toFixed(2) : 0;
-                  liveQuotes[nk] = {
-                    ltp: q.last_price, open: q.ohlc?.open || q.last_price,
-                    close: prev, high52: q["52_week_high"] || q.year_high || null,
-                    chg, pct, vol: q.volume || 0
-                  };
-                  okCount++;
-                }
-              });
-            }
-          } catch (e) {}
+          }
         }
 
-        // 3. Anti-Freeze Poller for ALL Open Paper Position Keys
-        const openKeys = [...new Set(appState.positions.filter(p => p.status === "OPEN").map(p => p.instKey).filter(Boolean))];
-        if (openKeys.length > 0) {
-          try {
-            const posRes = await fetch(`https://api.upstox.com/v2/market-quote/ltp?instrument_key=${encodeURIComponent(openKeys.join(","))}`, {
-              headers: { "Authorization": `Bearer ${appState.accessToken}`, "Accept": "application/json" }
-            });
-            const posJson = await posRes.json();
-            if (posJson.status === "success" && posJson.data) {
-              Object.entries(posJson.data).forEach(([k, q]) => {
-                const nk = normKey(q.instrument_token || k);
-                if (nk && typeof q.last_price === "number" && q.last_price > 0) {
-                  liveQuotes[nk] = { ...(liveQuotes[nk] || {}), ltp: q.last_price };
-                  okCount++;
-                }
-              });
-            }
-          } catch (e) {}
-        }
-
-        if (okCount > 0) {
-          setConnBadge(true, "● UPSTOX LIVE STREAMING");
-          healthEl.textContent = `Feed Health: HTTP 200 OK • ${okCount} Live Feeds`;
-          healthEl.style.color = "var(--green)";
-          document.getElementById("lastTickTime").textContent = "Updated: " + new Date().toLocaleTimeString();
-          try { localStorage.setItem(QUOTE_CACHE_KEY, JSON.stringify(liveQuotes)); } catch (e) {}
-          evaluateAlertsAndPositions();
-          renderAll();
-        }
-
-        if (fullSync || intradayCandles.length === 0) {
-          await fetchIntradayCandlesAndSmcZones();
-          await fetchLiveOptionChain();
-        }
-      } catch (e) {
-        healthEl.textContent = "Feed Health: Network error — " + e.message;
-      } finally {
+        try { localStorage.setItem(QUOTE_CACHE_KEY, JSON.stringify(liveQuotes)); } catch (e) {}
+        renderAll();
+        await fetchHistoricalCandlesByTimeframe(activeTimeframe);
+        await fetchLiveOptionChain();
+      } catch (e) {} finally {
         isFetching = false;
       }
+    }
+
+    // --- MULTI-TIMEFRAME CANDLES (1D, 5D, 1M, 6M, 1Y, 5Y, MAX) ---
+    function setChartTimeframe(tf) {
+      activeTimeframe = tf;
+      ["1D", "5D", "1M", "6M", "1Y", "5Y", "MAX"].forEach(id => {
+        document.getElementById(`tf-${id}`).classList.remove("active");
+      });
+      document.getElementById(`tf-${tf}`).classList.add("active");
+      fetchHistoricalCandlesByTimeframe(tf);
+    }
+
+    async function fetchHistoricalCandlesByTimeframe(tf) {
+      if (!appState.accessToken) return;
+      const key = encodeURIComponent(INDEX_KEYS.NIFTY);
+      const today = new Date();
+      const fmt = d => d.toISOString().slice(0, 10);
+      const toDate = fmt(today);
+      let url = "";
+
+      if (tf === "1D") {
+        url = `https://api.upstox.com/v2/historical-candle/intraday/${key}/1minute`;
+      } else if (tf === "5D") {
+        const from = new Date(today); from.setDate(today.getDate() - 7);
+        url = `https://api.upstox.com/v2/historical-candle/${key}/30minute/${toDate}/${fmt(from)}`;
+      } else if (tf === "1M") {
+        const from = new Date(today); from.setMonth(today.getMonth() - 1);
+        url = `https://api.upstox.com/v2/historical-candle/${key}/day/${toDate}/${fmt(from)}`;
+      } else if (tf === "6M") {
+        const from = new Date(today); from.setMonth(today.getMonth() - 6);
+        url = `https://api.upstox.com/v2/historical-candle/${key}/day/${toDate}/${fmt(from)}`;
+      } else if (tf === "1Y") {
+        const from = new Date(today); from.setFullYear(today.getFullYear() - 1);
+        url = `https://api.upstox.com/v2/historical-candle/${key}/day/${toDate}/${fmt(from)}`;
+      } else if (tf === "5Y") {
+        const from = new Date(today); from.setFullYear(today.getFullYear() - 5);
+        url = `https://api.upstox.com/v2/historical-candle/${key}/week/${toDate}/${fmt(from)}`;
+      } else {
+        // MAX
+        url = `https://api.upstox.com/v2/historical-candle/${key}/month/${toDate}/2000-01-01`;
+      }
+
+      try {
+        const res = await fetch(url, {
+          headers: { "Authorization": `Bearer ${appState.accessToken}`, "Accept": "application/json" }
+        });
+        const json = await res.json();
+        let candles = json.data?.candles || [];
+        // Fallback to 1-day historical if intraday is empty on weekend/holiday
+        if (candles.length === 0 && tf === "1D") {
+          const from = new Date(today); from.setDate(today.getDate() - 5);
+          const fbRes = await fetch(`https://api.upstox.com/v2/historical-candle/${key}/30minute/${toDate}/${fmt(from)}`, {
+            headers: { "Authorization": `Bearer ${appState.accessToken}`, "Accept": "application/json" }
+          });
+          const fbJson = await fbRes.json();
+          candles = fbJson.data?.candles || [];
+        }
+
+        if (candles.length > 3) {
+          chartCandles = [...candles].reverse();
+          let cumPV = 0, cumVol = 0;
+          const closes = [], highs = [], lows = [], vwapSeries = [];
+          chartCandles.forEach(c => {
+            highs.push(c[2]); lows.push(c[3]); closes.push(c[4]);
+            const tp = (c[2] + c[3] + c[4]) / 3;
+            const vol = c[5] > 0 ? c[5] : 1;
+            cumPV += tp * vol; cumVol += vol;
+            vwapSeries.push(+(cumPV / cumVol).toFixed(2));
+          });
+
+          const rsi9Arr = computeRsiSeries(closes, 9);
+          const rsi20Arr = computeRsiSeries(closes, 20);
+          const lastIdx = closes.length - 1;
+          const prevIdx = Math.max(0, lastIdx - 1);
+          const latestClose = closes[lastIdx];
+          const latestVwap = vwapSeries[lastIdx];
+
+          const r9 = rsi9Arr[lastIdx], r20 = rsi20Arr[lastIdx];
+          const pr9 = rsi9Arr[prevIdx], pr20 = rsi20Arr[prevIdx];
+          const rsiCrossDown = r9 !== null && r20 !== null && r9 < r20 && (pr9 >= pr20 || r20 > 56);
+          const rsiCrossUp = r9 !== null && r20 !== null && r9 > r20 && (pr9 <= pr20 || r20 < 44);
+
+          const inActualBuyers = latestClose <= techState.buyersZoneHigh + 25;
+          const inActualSellers = latestClose >= techState.sellersZoneLow - 25;
+
+          techState = {
+            ...techState,
+            vwap: latestVwap, vwapSeries, rsi9Arr, rsi20Arr, rsi9: r9, rsi20: r20,
+            confirmedBottomReversal: inActualBuyers && latestClose > highs[prevIdx] && rsiCrossUp,
+            confirmedTopReversal: inActualSellers && latestClose < lows[prevIdx] && rsiCrossDown
+          };
+
+          document.getElementById("vwapRsiQuick").textContent = `VWAP: ${latestVwap} | RSI(9/20): ${r9 ?? "--"}/${r20 ?? "--"}`;
+          drawCharts();
+          evaluateAutoPaperTrigger();
+          renderAll();
+        }
+      } catch (e) {}
     }
 
     function computeRsiSeries(closes, period) {
@@ -1156,77 +1516,115 @@
       return res;
     }
 
-    async function fetchIntradayCandlesAndSmcZones() {
-      if (!appState.accessToken) return;
-      try {
-        const key = encodeURIComponent(INDEX_KEYS.NIFTY);
-        const res = await fetch(`https://api.upstox.com/v2/historical-candle/intraday/${key}/1minute`, {
-          headers: { "Authorization": `Bearer ${appState.accessToken}`, "Accept": "application/json" }
-        });
-        const json = await res.json();
-        if (json.status === "success" && Array.isArray(json.data?.candles) && json.data.candles.length > 5) {
-          intradayCandles = [...json.data.candles].reverse();
-          let cumPV = 0, cumVol = 0;
-          const closes = [], highs = [], lows = [], vwapSeries = [];
+    function setChartMode(mode) {
+      chartMode = mode;
+      document.getElementById("mode-nifty").className = `tgl-btn ${mode === "NIFTY" ? "active" : ""}`;
+      document.getElementById("mode-fii").className = `tgl-btn ${mode === "FII_USD" ? "active" : ""}`;
+      drawCharts();
+    }
 
-          intradayCandles.forEach(c => {
-            highs.push(c[2]); lows.push(c[3]); closes.push(c[4]);
-            const tp = (c[2] + c[3] + c[4]) / 3;
-            const vol = c[5] > 0 ? c[5] : 1;
-            cumPV += tp * vol; cumVol += vol;
-            vwapSeries.push(+(cumPV / cumVol).toFixed(2));
-          });
+    // --- LIGHT-THEME SYNCHRONIZED CHART RENDERER ---
+    function drawCharts() {
+      const pCanvas = document.getElementById("priceChartCanvas");
+      const rCanvas = document.getElementById("rsiChartCanvas");
+      if (!pCanvas || !rCanvas || chartCandles.length < 4) return;
 
-          const rsi9Arr = computeRsiSeries(closes, 9);
-          const rsi20Arr = computeRsiSeries(closes, 20);
-          const lastIdx = closes.length - 1;
-          const prevIdx = lastIdx - 1;
-          const latestClose = closes[lastIdx];
-          const latestVwap = vwapSeries[lastIdx];
+      const dpr = window.devicePixelRatio || 1;
+      const w = pCanvas.parentElement.clientWidth - 20;
+      pCanvas.width = w * dpr; pCanvas.height = 220 * dpr;
+      rCanvas.width = w * dpr; rCanvas.height = 82 * dpr;
 
-          const priorLows = lows.slice(0, Math.max(5, lastIdx - 5));
-          const priorHighs = highs.slice(0, Math.max(5, lastIdx - 5));
-          const tempSupport = +Math.min(...priorLows).toFixed(1);
-          const tempResistance = +Math.max(...priorHighs).toFixed(1);
+      const ctx = pCanvas.getContext("2d");
+      ctx.scale(dpr, dpr);
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, w, 220);
 
-          const nQuote = getQ(INDEX_KEYS.NIFTY);
-          const prevClose = nQuote?.close || 25884.5;
-          const actualSellersHigh = +(Math.max(prevClose + 75, tempResistance + 35)).toFixed(1);
-          const actualSellersLow = +(actualSellersHigh - 45).toFixed(1);
+      const div = chartMode === "FII_USD" ? appState.usdInr : 1;
+      const prices = chartCandles.map(c => c[4] / div);
+      const vwaps = (techState.vwapSeries || []).map(v => v / div);
+      const sHigh = techState.sellersZoneHigh / div;
+      const sLow = techState.sellersZoneLow / div;
+      const bHigh = techState.buyersZoneHigh / div;
+      const bLow = techState.buyersZoneLow / div;
 
-          const actualBuyersHigh = +(Math.min(prevClose - 290, tempSupport - 15)).toFixed(1);
-          const actualBuyersLow = +(actualBuyersHigh - 55).toFixed(1);
+      const allVals = activeTimeframe === "1D" ? [...prices, ...vwaps, sHigh, bLow] : [...prices, ...vwaps];
+      const minV = Math.min(...allVals);
+      const maxV = Math.max(...allVals);
+      const span = (maxV - minV) || 1;
 
-          const recentLow = Math.min(...lows.slice(-6));
-          const recentHigh = Math.max(...highs.slice(-6));
-          const slHuntBottom = recentLow < tempSupport && latestClose > tempSupport;
-          const slHuntTop = recentHigh > tempResistance && latestClose < tempResistance;
+      const toX = i => 10 + (i / (prices.length - 1)) * (w - 20);
+      const toY = v => 198 - ((v - minV) / span) * 174;
 
-          const r9 = rsi9Arr[lastIdx], r20 = rsi20Arr[lastIdx];
-          const pr9 = rsi9Arr[prevIdx], pr20 = rsi20Arr[prevIdx];
-          const rsiCrossDown = r9 !== null && r20 !== null && r9 < r20 && (pr9 >= pr20 || r20 > 56);
-          const rsiCrossUp = r9 !== null && r20 !== null && r9 > r20 && (pr9 <= pr20 || r20 < 44);
+      // Subtle light gridlines
+      ctx.strokeStyle = "#e2e8f0";
+      ctx.lineWidth = 1;
+      [0.2, 0.5, 0.8].forEach(f => {
+        const y = 24 + f * 174;
+        ctx.beginPath(); ctx.moveTo(10, y); ctx.lineTo(w - 10, y); ctx.stroke();
+      });
 
-          const inActualBuyers = latestClose <= actualBuyersHigh + 25;
-          const inActualSellers = latestClose >= actualSellersLow - 25;
+      if (activeTimeframe === "1D" || activeTimeframe === "5D") {
+        // Sellers' Block (Soft Red)
+        const ySHigh = toY(sHigh), ySLow = toY(sLow);
+        ctx.fillStyle = "rgba(220, 38, 38, 0.14)";
+        ctx.fillRect(10, ySHigh, w - 20, Math.max(6, ySLow - ySHigh));
+        ctx.fillStyle = "#dc2626"; ctx.font = "bold 9px sans-serif";
+        ctx.fillText(`SELLERS' BLOCK (${sLow.toFixed(0)}–${sHigh.toFixed(0)})`, 14, Math.max(12, ySHigh - 3));
 
-          const confirmedBottomReversal = (inActualBuyers || slHuntBottom) && latestClose > highs[prevIdx] && rsiCrossUp;
-          const confirmedTopReversal = (inActualSellers || slHuntTop) && latestClose < lows[prevIdx] && rsiCrossDown;
+        // Buyers' Block (Soft Green)
+        const yBHigh = toY(bHigh), yBLow = toY(bLow);
+        ctx.fillStyle = "rgba(5, 150, 105, 0.14)";
+        ctx.fillRect(10, yBHigh, w - 20, Math.max(6, yBLow - yBHigh));
+        ctx.fillStyle = "#059669";
+        ctx.fillText(`BUYERS' BLOCK (${bLow.toFixed(0)}–${bHigh.toFixed(0)})`, 14, Math.min(214, yBLow + 10));
+      }
 
-          techState = {
-            vwap: latestVwap, vwapSeries, rsi9Arr, rsi20Arr, rsi9: r9, rsi20: r20,
-            tempSupport, tempResistance,
-            sellersZoneLow: actualSellersLow, sellersZoneHigh: actualSellersHigh,
-            buyersZoneLow: actualBuyersLow, buyersZoneHigh: actualBuyersHigh,
-            slHuntBottom, slHuntTop, confirmedTopReversal, confirmedBottomReversal
-          };
+      // VWAP / Moving Average Line (Amber)
+      if (vwaps.length === prices.length) {
+        ctx.strokeStyle = "#d97706"; ctx.lineWidth = 1.5; ctx.setLineDash([4, 3]);
+        ctx.beginPath();
+        vwaps.forEach((v, i) => i === 0 ? ctx.moveTo(toX(i), toY(v)) : ctx.lineTo(toX(i), toY(v)));
+        ctx.stroke(); ctx.setLineDash([]);
+      }
 
-          document.getElementById("vwapRsiQuick").textContent = `VWAP: ${latestVwap} | RSI(9/20): ${r9 ?? "--"}/${r20 ?? "--"}`;
-          drawCharts();
-          evaluateAutoPaperTrigger();
-          renderAll();
-        }
-      } catch (e) {}
+      // Main Price Curve (Blue or Purple for FII USD)
+      ctx.strokeStyle = chartMode === "FII_USD" ? "#7c3aed" : "#2563eb";
+      ctx.lineWidth = 2.4; ctx.beginPath();
+      prices.forEach((v, i) => i === 0 ? ctx.moveTo(toX(i), toY(v)) : ctx.lineTo(toX(i), toY(v)));
+      ctx.stroke();
+
+      const lastP = prices[prices.length - 1];
+      const firstP = prices[0];
+      const tfPct = (((lastP - firstP) / firstP) * 100).toFixed(2);
+      document.getElementById("chartHeaderStat").textContent = chartMode === "FII_USD"
+        ? `[${activeTimeframe}] FII USD: $${lastP.toFixed(2)} (${tfPct >= 0 ? "+" : ""}${tfPct}% USD)`
+        : `[${activeTimeframe}] Nifty: ${lastP.toFixed(2)} (${tfPct >= 0 ? "+" : ""}${tfPct}%)`;
+
+      // RSI Sub-chart (Light Theme)
+      const rCtx = rCanvas.getContext("2d");
+      rCtx.scale(dpr, dpr);
+      rCtx.fillStyle = "#ffffff";
+      rCtx.fillRect(0, 0, w, 82);
+      const r9 = techState.rsi9Arr || [], r20 = techState.rsi20Arr || [];
+      const rY = v => 72 - (v / 100) * 62;
+
+      rCtx.strokeStyle = "#e2e8f0";
+      [30, 50, 70].forEach(lvl => { rCtx.beginPath(); rCtx.moveTo(10, rY(lvl)); rCtx.lineTo(w - 10, rY(lvl)); rCtx.stroke(); });
+
+      rCtx.strokeStyle = "#d97706"; rCtx.lineWidth = 1.5; rCtx.beginPath();
+      let s20 = false;
+      r20.forEach((v, i) => { if (v !== null) { if (!s20) { rCtx.moveTo(toX(i), rY(v)); s20 = true; } else rCtx.lineTo(toX(i), rY(v)); } });
+      rCtx.stroke();
+
+      rCtx.strokeStyle = "#2563eb"; rCtx.lineWidth = 1.8; rCtx.beginPath();
+      let s9 = false;
+      r9.forEach((v, i) => { if (v !== null) { if (!s9) { rCtx.moveTo(toX(i), rY(v)); s9 = true; } else rCtx.lineTo(toX(i), rY(v)); } });
+      rCtx.stroke();
+
+      document.getElementById("rsiHeaderStat").textContent = `RSI(9): ${techState.rsi9 ?? "--"} | RSI(20): ${techState.rsi20 ?? "--"}`;
+      const tag = document.getElementById("rsiSignalTag");
+      tag.textContent = techState.rsi9 > techState.rsi20 ? "BULLISH MOMENTUM (RSI9 > RSI20)" : "BEARISH / COOLING (RSI9 < RSI20)";
+      tag.style.color = techState.rsi9 > techState.rsi20 ? "var(--green)" : "var(--red)";
     }
 
     function evaluateAutoPaperTrigger() {
@@ -1240,110 +1638,7 @@
 
       appState.lastAutoSignalId = sigStamp;
       paperTradeSingle(confirmed.title, confirmed.side, confirmed.ltp, confirmed.lotSize, confirmed.key, confirmed.t1, confirmed.t2, confirmed.sl);
-      notifyUser(`🔔 TRING-TRING! AUTO-EXECUTED ${confirmed.title} @ ₹${confirmed.ltp}`);
-    }
-
-    function setChartMode(mode) {
-      chartMode = mode;
-      document.getElementById("mode-nifty").className = `tgl-btn ${mode === "NIFTY" ? "active" : ""}`;
-      document.getElementById("mode-fii").className = `tgl-btn ${mode === "FII_USD" ? "active" : ""}`;
-      drawCharts();
-    }
-
-    function drawCharts() {
-      const pCanvas = document.getElementById("priceChartCanvas");
-      const rCanvas = document.getElementById("rsiChartCanvas");
-      if (!pCanvas || !rCanvas || intradayCandles.length < 5) return;
-
-      const dpr = window.devicePixelRatio || 1;
-      const w = pCanvas.parentElement.clientWidth - 20;
-      pCanvas.width = w * dpr; pCanvas.height = 215 * dpr;
-      rCanvas.width = w * dpr; rCanvas.height = 82 * dpr;
-
-      const ctx = pCanvas.getContext("2d");
-      ctx.scale(dpr, dpr);
-      ctx.clearRect(0, 0, w, 215);
-
-      const div = chartMode === "FII_USD" ? appState.usdInr : 1;
-      const prices = intradayCandles.map(c => c[4] / div);
-      const vwaps = (techState.vwapSeries || []).map(v => v / div);
-      const sHigh = techState.sellersZoneHigh / div;
-      const sLow = techState.sellersZoneLow / div;
-      const bHigh = techState.buyersZoneHigh / div;
-      const bLow = techState.buyersZoneLow / div;
-      const tSup = (techState.tempSupport || Math.min(...prices)) / div;
-
-      const allVals = [...prices, ...vwaps, sHigh, bLow];
-      const minV = Math.min(...allVals);
-      const maxV = Math.max(...allVals);
-      const span = (maxV - minV) || 1;
-
-      const toX = i => 10 + (i / (prices.length - 1)) * (w - 20);
-      const toY = v => 195 - ((v - minV) / span) * 172;
-
-      const ySHigh = toY(sHigh), ySLow = toY(sLow);
-      ctx.fillStyle = "rgba(244, 63, 94, 0.24)";
-      ctx.fillRect(10, ySHigh, w - 20, Math.max(6, ySLow - ySHigh));
-      ctx.fillStyle = "#fda4af"; ctx.font = "bold 9px sans-serif";
-      ctx.fillText(`ACTUAL SELLERS' BLOCK (${sLow.toFixed(0)}–${sHigh.toFixed(0)})`, 14, Math.max(12, ySHigh - 3));
-
-      const yBHigh = toY(bHigh), yBLow = toY(bLow);
-      ctx.fillStyle = "rgba(16, 185, 129, 0.24)";
-      ctx.fillRect(10, yBHigh, w - 20, Math.max(6, yBLow - yBHigh));
-      ctx.fillStyle = "#6ee7b7";
-      ctx.fillText(`ACTUAL BUYERS' BLOCK (${bLow.toFixed(0)}–${bHigh.toFixed(0)})`, 14, Math.min(210, yBLow + 10));
-
-      const yTSup = toY(tSup);
-      ctx.strokeStyle = "#f43f5e"; ctx.lineWidth = 1; ctx.setLineDash([2, 2]);
-      ctx.beginPath(); ctx.moveTo(10, yTSup); ctx.lineTo(w - 10, yTSup); ctx.stroke();
-      ctx.setLineDash([]);
-      ctx.fillStyle = "#fb7185";
-      ctx.fillText(`Temp Liquidity / SL Hunt Line (${tSup.toFixed(0)})`, 14, yTSup - 3);
-
-      if (vwaps.length === prices.length) {
-        ctx.strokeStyle = "#fbbf24"; ctx.lineWidth = 1.5; ctx.setLineDash([4, 3]);
-        ctx.beginPath();
-        vwaps.forEach((v, i) => i === 0 ? ctx.moveTo(toX(i), toY(v)) : ctx.lineTo(toX(i), toY(v)));
-        ctx.stroke(); ctx.setLineDash([]);
-      }
-
-      ctx.strokeStyle = chartMode === "FII_USD" ? "#c084fc" : "#38bdf8";
-      ctx.lineWidth = 2.2; ctx.beginPath();
-      prices.forEach((v, i) => i === 0 ? ctx.moveTo(toX(i), toY(v)) : ctx.lineTo(toX(i), toY(v)));
-      ctx.stroke();
-
-      const lastP = prices[prices.length - 1];
-      document.getElementById("chartHeaderStat").textContent = chartMode === "FII_USD"
-        ? `FII USD Index: $${lastP.toFixed(2)} (INR ${appState.usdInr})`
-        : `Nifty: ${lastP.toFixed(2)} | VWAP: ${techState.vwap ?? "--"}`;
-
-      const rCtx = rCanvas.getContext("2d");
-      rCtx.scale(dpr, dpr); rCtx.clearRect(0, 0, w, 82);
-      const r9 = techState.rsi9Arr || [], r20 = techState.rsi20Arr || [];
-      const rY = v => 72 - (v / 100) * 62;
-
-      rCtx.strokeStyle = "rgba(148,163,184,0.2)";
-      [30, 50, 70].forEach(lvl => { rCtx.beginPath(); rCtx.moveTo(10, rY(lvl)); rCtx.lineTo(w - 10, rY(lvl)); rCtx.stroke(); });
-
-      rCtx.strokeStyle = "#fbbf24"; rCtx.lineWidth = 1.5; rCtx.beginPath();
-      let s20 = false;
-      r20.forEach((v, i) => { if (v !== null) { if (!s20) { rCtx.moveTo(toX(i), rY(v)); s20 = true; } else rCtx.lineTo(toX(i), rY(v)); } });
-      rCtx.stroke();
-
-      rCtx.strokeStyle = "#38bdf8"; rCtx.lineWidth = 1.8; rCtx.beginPath();
-      let s9 = false;
-      r9.forEach((v, i) => { if (v !== null) { if (!s9) { rCtx.moveTo(toX(i), rY(v)); s9 = true; } else rCtx.lineTo(toX(i), rY(v)); } });
-      rCtx.stroke();
-
-      document.getElementById("rsiHeaderStat").textContent = `RSI(9): ${techState.rsi9 ?? "--"} | RSI(20): ${techState.rsi20 ?? "--"}`;
-      const tag = document.getElementById("rsiSignalTag");
-      if (techState.confirmedTopReversal) {
-        tag.textContent = "🔴 SELLERS' BLOCK REJECTION → PUT CONFIRMED"; tag.style.color = "#fb7185";
-      } else if (techState.confirmedBottomReversal) {
-        tag.textContent = "🟢 POST-SL-HUNT BUYERS' REVERSAL → CALL CONFIRMED"; tag.style.color = "#34d399";
-      } else {
-        tag.textContent = "⏳ WATCHING LIQUIDITY SWEEP INTO ACTUAL ORDER BLOCK"; tag.style.color = "#fbbf24";
-      }
+      notifyUser(`🔔 TING-TONG! AUTO-EXECUTED ${confirmed.title} @ ₹${confirmed.ltp}`);
     }
 
     // --- BLACK-SCHOLES GREEKS CALCULATOR ---
@@ -1381,7 +1676,7 @@
       const idxVal = document.getElementById("ocIndex").value;
       const instKey = encodeURIComponent(idxVal);
       const expDate = document.getElementById("ocExpiry").value;
-      statusEl.textContent = `Syncing full option chain & Greeks (${expDate})...`;
+      statusEl.textContent = `Syncing option chain & Greeks (${expDate})...`;
 
       try {
         const res = await fetch(`https://api.upstox.com/v2/option/chain?instrument_key=${instKey}&expiry_date=${expDate}`, {
@@ -1389,10 +1684,11 @@
         });
         const json = await res.json();
         if (json.status !== "success" || !Array.isArray(json.data) || json.data.length === 0) {
-          statusEl.textContent = "No chain rows returned for " + expDate;
+          statusEl.textContent = `NSE/BSE contract sheet for ${expDate} opens closer to maturity (select M+1 to M+3 for active liquidity).`;
+          tbody.innerHTML = "";
           return;
         }
-        if (expDate === "2026-12-29" && idxVal === "NSE_INDEX|Nifty 50") {
+        if (expDate.startsWith("2026-12") && idxVal === "NSE_INDEX|Nifty 50") {
           decOptionChain = json.data;
         }
         const spot = json.data[0].underlying_spot_price || getQ(idxVal)?.ltp || 0;
@@ -1442,33 +1738,29 @@
 
     function renderAerial() {
       const n = getQ(INDEX_KEYS.NIFTY);
-      const b = getQ(INDEX_KEYS.BANKNIFTY);
       const sx = getQ(INDEX_KEYS.SENSEX);
       const v = getQ(INDEX_KEYS.VIX);
 
       document.getElementById("liveNifty").textContent = n ? n.ltp.toLocaleString("en-IN") : "--";
-      document.getElementById("liveNiftyChg").textContent = n ? `${n.chg >= 0 ? "+" : ""}${n.chg} (${n.pct}%)` : "Connect feed for LTP";
+      document.getElementById("liveNiftyChg").textContent = n ? `${n.chg >= 0 ? "+" : ""}${n.chg} (${n.pct}%)` : "Socket Ready";
       document.getElementById("liveNiftyChg").className = `metric-sub ${n && n.chg >= 0 ? "green" : "red"}`;
 
-      document.getElementById("liveBnf").textContent = sx ? sx.ltp.toLocaleString("en-IN") : (b ? b.ltp.toLocaleString("en-IN") : "--");
-      document.getElementById("liveBnfChg").textContent = sx ? `Sensex: ${sx.chg >= 0 ? "+" : ""}${sx.chg} (${sx.pct}%)` : "Syncing...";
+      document.getElementById("liveBnf").textContent = sx ? sx.ltp.toLocaleString("en-IN") : "--";
+      document.getElementById("liveBnfChg").textContent = sx ? `${sx.chg >= 0 ? "+" : ""}${sx.chg} (${sx.pct}%)` : "Socket Ready";
       document.getElementById("liveBnfChg").className = `metric-sub ${sx && sx.chg >= 0 ? "green" : "red"}`;
 
       document.getElementById("liveVix").textContent = v ? v.ltp.toFixed(2) : "--";
-      document.getElementById("vixRegime").textContent = `USD/INR: ₹${appState.usdInr.toFixed(2)}`;
+      document.getElementById("vixRegime").textContent = v ? (v.ltp < 17.5 ? "Calm Volatility" : "Elevated Fear") : "Volatility";
+
+      if (n) {
+        const fiiUsdPts = (n.ltp / appState.usdInr).toFixed(2);
+        document.getElementById("macroRatioSub").textContent = `FII USD: $${fiiUsdPts}`;
+      }
 
       document.getElementById("sellersZoneVal").textContent = `${techState.sellersZoneLow} – ${techState.sellersZoneHigh}`;
       document.getElementById("buyersZoneVal").textContent = `${techState.buyersZoneLow} – ${techState.buyersZoneHigh}`;
 
-      if (n) {
-        const distSell = +(techState.sellersZoneLow - n.ltp).toFixed(1);
-        const distBuy = +(n.ltp - techState.buyersZoneHigh).toFixed(1);
-        document.getElementById("sellersZoneDist").textContent = distSell <= 0 ? "INSIDE SELLERS' BLOCK — Watch Rejection" : `${distSell} pts below Sellers' Block`;
-        document.getElementById("buyersZoneDist").textContent = distBuy <= 0 ? "INSIDE BUYERS' BLOCK — Watch SL-Hunt Reversal" : `${distBuy} pts above Buyers' Block`;
-
-        const fiiUsdPts = (n.ltp / appState.usdInr).toFixed(2);
-        document.getElementById("fiiRatioBox").textContent = `$${fiiUsdPts} USD pts (INR ${appState.usdInr.toFixed(2)})`;
-      }
+      updateSentimentSpeedometers();
 
       const ranked = WATCHLIST_STOCKS.map(s => {
         const q = getQ(s.key);
@@ -1530,7 +1822,7 @@
               key: putRow.put_options.instrument_key, side: "BUY", badge: "SMC TOP PE", lotSize: 65,
               ltp: pe.ltp, entry: pe.ltp, t1: +(pe.ltp * 1.25).toFixed(1), t2: +(pe.ltp * 1.50).toFixed(1), sl: +(pe.ltp * 0.85).toFixed(1),
               gateType: "GO_SELL",
-              gateText: `🔴 SELLERS' BLOCK REJECTION CONFIRMED (${techState.sellersZoneLow}–${techState.sellersZoneHigh}) + RSI(9↓20)`,
+              gateText: `🔴 SELLERS' BLOCK REJECTION CONFIRMED (${techState.sellersZoneLow}–${techState.sellersZoneHigh})`,
               reason: "Triggered just below upper limit of Sellers' Block after liquidity sweep."
             });
           }
@@ -1546,7 +1838,7 @@
               key: callRow.call_options.instrument_key, side: "BUY", badge: "SMC BOTTOM CE", lotSize: 65,
               ltp: ce.ltp, entry: ce.ltp, t1: +(ce.ltp * 1.22).toFixed(1), t2: +(ce.ltp * 1.45).toFixed(1), sl: +(ce.ltp * 0.85).toFixed(1),
               gateType: "GO_BUY",
-              gateText: `🟢 BUYERS' BLOCK REVERSAL CONFIRMED (${techState.buyersZoneLow}–${techState.buyersZoneHigh}) + RSI(9↑20)`,
+              gateText: `🟢 BUYERS' BLOCK REVERSAL CONFIRMED (${techState.buyersZoneLow}–${techState.buyersZoneHigh})`,
               reason: "Triggered after Smart Money stop-loss sweep below temporary support."
             });
           }
@@ -1577,7 +1869,7 @@
         const high52 = q?.high52 || s.high52;
         const pctFromHigh = q && high52 ? +(((high52 - q.ltp) / high52) * 100).toFixed(1) : null;
         return { ...s, q, high52, pctFromHigh, nearTop: pctFromHigh !== null && pctFromHigh <= 2.0 };
-      }).filter(x => x.q && x.q.pct > 0.2 && !x.nearTop).sort((a, b) => b.q.pct - a.q.pct).slice(0, 4);
+      }).filter(x => x.q && x.q.pct > 0.1 && !x.nearTop).sort((a, b) => b.q.pct - a.q.pct).slice(0, 4);
 
       movers.forEach(m => {
         const ltp = m.q.ltp;
@@ -1620,7 +1912,7 @@
       const container = document.getElementById("oppsContainer");
       const list = allOpps.filter(o => currentOppFilter === "all" || o.seg === currentOppFilter);
       if (list.length === 0) {
-        container.innerHTML = `<div style="text-align:center;color:var(--text-2);font-size:12px;padding:18px;">Tap <strong>↻ Sync</strong> in the top bar to refresh live quotes and option chain opportunities.</div>`;
+        container.innerHTML = `<div style="text-align:center;color:var(--text-2);font-size:12px;padding:18px;">Tap <strong>↻ Sync</strong> in the top bar to load live quotes and option chain setups.</div>`;
         return;
       }
 
@@ -1724,8 +2016,8 @@
         if (isWeekly) {
           verdict = "⚠️ HIGH RISK — AVOID NEAR-EXPIRY THETA DECAY";
           colorCls = "red";
-          analysis = `Weekly options suffer severe Theta decay during US holiday sessions. Shift to <strong>29 Dec 2026</strong> or <strong>28 Jan 2027</strong> monthly contracts.`;
-          plan = `Use 29 Dec 2026 expiry with Delta between 0.45 and 0.60.`;
+          analysis = `Weekly options suffer severe Theta decay. Shift to <strong>Dec 2026</strong> or <strong>Jan 2027</strong> monthly contracts.`;
+          plan = `Select M+1 or M+2 expiry in the 13M Chain tab with Delta between 0.45 and 0.60.`;
         } else if (isPut && action === "BUY") {
           verdict = niftySpot > techState.buyersZoneHigh ? "✅ TACTICAL PUT VALID (WITH HARD SL)" : "⚠️ AT BUYERS' BLOCK — BOOK / TRAIL TIGHTLY";
           colorCls = niftySpot > techState.buyersZoneHigh ? "green" : "amber";
@@ -1745,7 +2037,7 @@
       } else if (seg === "COMMODITY") {
         verdict = "🟢 BULLISH COMMODITY TAILWIND (BULLION & CRUDE)";
         colorCls = "green";
-        analysis = `Strait of Hormuz vessel tensions and INR weakness (₹${appState.usdInr}) act as a strong floor for domestic MCX Gold and Silver.`;
+        analysis = `Middle East tensions and INR weakness (₹${appState.usdInr}) act as a strong floor for domestic MCX Gold and Silver.`;
         plan = `Buy on intraday dips with a 1.5% trailing stop-loss.`;
       } else {
         const match = WATCHLIST_STOCKS.find(s => sym.includes(s.sym));
@@ -1755,7 +2047,7 @@
         const headroom = (((high52 - curP) / high52) * 100).toFixed(1);
         verdict = headroom <= 2.0 ? "⚠️ NEAR 52-WEEK HIGH — MOMENTUM EXHAUSTED" : `🟢 FAVORABLE HEADROOM (${headroom}% BELOW 52W HIGH)`;
         colorCls = headroom <= 2.0 ? "red" : "green";
-        analysis = `${sym} is at <strong>₹${curP}</strong> (${headroom}% below 52W High ₹${high52}). FII 18-day cash buying (+₹5,843 Cr) supports domestic leaders.`;
+        analysis = `${sym} is at <strong>₹${curP}</strong> (${headroom}% below 52W High ₹${high52}). FII 18-day cash buying (+₹${appState.fiiCash} Cr) supports domestic leaders.`;
         plan = `Entry Zone: ₹${(curP * 0.995).toFixed(1)} | Target 1: ₹${(curP * 1.03).toFixed(1)} | Target 2: ₹${(curP * 1.06).toFixed(1)} | Stop Loss: ₹${(curP * 0.975).toFixed(1)}.`;
       }
 
@@ -1769,18 +2061,18 @@
     function paperThemeStock(sym) {
       const t = STRUCTURAL_THEMES.find(x => x.sym === sym);
       const q = t ? getQ(t.key) : null;
-      if (!q || !q.ltp) { alert("Connect live Upstox feed first."); return; }
+      if (!q || !q.ltp) { alert("Connect live Upstox socket first."); return; }
       paperTradeSingle(`${t.sym} (${t.theme})`, "BUY", q.ltp, t.lotSize, t.key, +(q.ltp * 1.045).toFixed(2), +(q.ltp * 1.09).toFixed(2), +(q.ltp * 0.965).toFixed(2));
     }
 
     function alertThemeStock(sym) {
       const t = STRUCTURAL_THEMES.find(x => x.sym === sym);
       const q = t ? getQ(t.key) : null;
-      if (!q || !q.ltp) { alert("Connect live Upstox feed first."); return; }
+      if (!q || !q.ltp) { alert("Connect live Upstox socket first."); return; }
       const target = +(q.ltp * 0.992).toFixed(2);
       appState.alerts.unshift({ id: Date.now(), symbol: t.sym, key: normKey(t.key), targetPrice: target, triggered: false });
-      saveState(); renderDesk(); playTringTring();
-      alert(`Gramophone Bell Alert set for ${t.sym} at ₹${target}`);
+      saveState(); renderDesk(); playRailwayTingTong();
+      alert(`Railway Ting-Tong Alert set for ${t.sym} at ₹${target}`);
     }
 
     function executeOppPaper(id) {
@@ -1808,7 +2100,7 @@
         status: "OPEN"
       });
       saveState();
-      syncAllFeeds(false);
+      subscribeSocketInstruments();
       renderDesk();
       switchView("desk");
     }
@@ -1839,16 +2131,15 @@
       appState.alerts.unshift({
         id: Date.now(), symbol: opp.title, key: normKey(opp.key), targetPrice: opp.entry, triggered: false
       });
-      saveState(); renderDesk(); playTringTring();
-      alert(`Gramophone Bell Alert armed for ${opp.title} at ₹${opp.entry}`);
+      saveState(); renderDesk(); playRailwayTingTong();
+      alert(`Railway Ting-Tong Alert armed for ${opp.title} at ₹${opp.entry}`);
     }
 
     function openOppAlgo(id) {
       const opp = buildDynamicOpportunities().find(x => x.id === id);
       if (!opp) return;
       document.getElementById("algoJsonBox").value = JSON.stringify({
-        strategy: "AnuragPulse_v13_InvestorGuide",
-        account_id: appState.accountId,
+        strategy: "AnuragPulse_Socket_Pro",
         sellers_block: [techState.sellersZoneLow, techState.sellersZoneHigh],
         buyers_block: [techState.buyersZoneLow, techState.buyersZoneHigh],
         symbol: opp.title, side: opp.side, quantity: appState.lots * opp.lotSize,
@@ -1870,7 +2161,7 @@
         if (!q || !q.ltp) return;
         if (Math.abs(q.ltp - a.targetPrice) / a.targetPrice <= 0.004) {
           a.triggered = true;
-          notifyUser(`🔔 TRING-TRING! ALERT HIT: ${a.symbol} @ ₹${q.ltp}`);
+          notifyUser(`🔔 TING-TONG! ALERT HIT: ${a.symbol} @ ₹${q.ltp}`);
         }
       });
 
@@ -1901,14 +2192,14 @@
           p.status = hitT2 ? "CLOSED (TARGET 2 HIT)" : (pnl >= 0 ? "CLOSED (PROFIT LOCKED)" : "CLOSED (SL HIT)");
           appState.realizedPnl += pnl;
           appState.paperCapital += pnl;
-          notifyUser(`🔔 TRING-TRING! ${p.status}: ${p.symbol} (${pnl >= 0 ? "+" : ""}₹${pnl.toFixed(1)})`);
+          notifyUser(`🔔 TING-TONG! ${p.status}: ${p.symbol} (${pnl >= 0 ? "+" : ""}₹${pnl.toFixed(1)})`);
         }
       });
       saveState();
     }
 
     function notifyUser(msg) {
-      playTringTring();
+      playRailwayTingTong();
       document.getElementById("alertToastMsg").textContent = msg;
       document.getElementById("alertToast").style.display = "flex";
       if ("Notification" in window && Notification.permission === "granted") {
@@ -1930,7 +2221,7 @@
       const open = appState.positions.filter(p => p.status === "OPEN");
       document.getElementById("posCount").textContent = open.length;
       document.getElementById("alertCount").textContent = appState.alerts.length;
-      document.getElementById("deskPollerTag").textContent = `Anti-Freeze Poller: ${open.length} Active Keys`;
+      document.getElementById("deskPollerTag").textContent = `Direct Socket: ${open.length} Open Strikes`;
 
       let unreal = 0;
       open.forEach(p => unreal += (p.side === "BUY" ? (p.ltp - p.entry) : (p.entry - p.ltp)) * p.qty);
@@ -1960,7 +2251,7 @@
                 <div style="display:flex;justify-content:space-between;align-items:center;">
                   <div>
                     <strong style="font-size:12px;">${p.symbol}</strong>
-                    <div style="font-size:10px;color:var(--text-2);">${p.side} • Qty: ${p.qty} • Entry: ₹${p.entry} • <span class="blue">Live LTP: ₹${p.ltp}</span></div>
+                    <div style="font-size:10px;color:var(--text-2);">${p.side} • Qty: ${p.qty} • Entry: ₹${p.entry} • <span class="blue">Socket LTP: ₹${p.ltp}</span></div>
                   </div>
                   <div style="text-align:right;">
                     <div style="font-size:14px;font-weight:800;" class="${pnl >= 0 ? "green" : "red"}">${pnl >= 0 ? "+" : ""}₹${pnl.toFixed(1)}</div>
@@ -1985,13 +2276,14 @@
     function saveFlows() {
       appState.fiiCash = parseFloat(document.getElementById("inFii").value) || 0;
       appState.diiCash = parseFloat(document.getElementById("inDii").value) || 0;
-      saveState(); closeModal("flowModal");
+      saveState(); closeModal("flowModal"); updateSentimentSpeedometers();
     }
 
     function saveUsdRate() {
       appState.usdInr = Math.max(50, parseFloat(document.getElementById("inUsdInr").value) || 92.83);
       document.getElementById("usdRateDisplay").textContent = appState.usdInr.toFixed(2);
-      saveState(); closeModal("usdModal"); drawCharts(); renderAerial();
+      document.getElementById("topUsdVal").textContent = appState.usdInr.toFixed(2);
+      saveState(); closeModal("usdModal"); updateSentimentSpeedometers(); drawCharts(); renderAerial();
     }
 
     function resetPaper() {
